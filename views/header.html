@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="header.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="left">
+                <div class="hamburger" onclick="toggleSidebar()">
+                    <i class="fa fa-bars"></i>
+                </div>
+                <div class="add">
+                    <button><i class="fa-solid fa-pencil"></i>Add Blog</button>
+                </div>
+            </div>
+            <div class="logo">
+                Blogit
+            </div>
+            <div class="right">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search...">
+                    <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
+                </div>
+                <img src="https://i.pravatar.cc/100" alt="User Avatar">
+            </div>
+        </div>
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-content">
+                <i class="fa fa-x" onclick="toggleSidebar()"></i>
+                <h2>Trending Posts</h2>
+                <ul id="trendingPosts">
+                    <!-- Trending posts will be populated here -->
+                </ul>
+                <h2>Categories I Follow</h2>
+                <ul id="categories">
+                    <!-- Categories will be populated here -->
+                </ul>
+                <h2>Users I Follow</h2>
+                <ul id="followedUsers">
+                    <!-- Followed users will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </header>
+    <script>
+        function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const transformValue = sidebar.style.transform;
+    if (!transformValue || transformValue === 'translateX(0px)') {
+            sidebar.style.transform = 'translateX(-450px)';
+        } else {
+            // Otherwise, reset the translation
+            sidebar.style.transform = 'translateX(0px)';
+        }
+}
+
+function searchBlogs() {
+    const query = document.getElementById("searchInput").value;
+    if (query.trim() !== "") {
+        fetch(`/search?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const trendingPosts = document.getElementById("trendingPosts");
+                trendingPosts.innerHTML = "";
+                data.blogs.forEach(blog => {
+                    const li = document.createElement("li");
+                    li.textContent = blog.title;
+                    trendingPosts.appendChild(li);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+    </script>
+</body>
+</html>

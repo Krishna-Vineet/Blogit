@@ -1,0 +1,157 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 80vh;
+    width: 100%;
+    background-color: #1f1f1f;
+}
+
+footer {
+    width: 100%;
+    background-color: #292929;
+}
+
+footer .logo {
+    width: 100%;
+    background-color: #292929;
+}
+
+footer .logo h1 {
+    font-family: 'Playwrite BE VLG', cursive;
+    font-size: 5vw;
+    color: #ffffff;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 5px solid #ffffff;
+    letter-spacing: 0.2em; /* Adds spacing between letters for a cleaner look */
+}
+
+footer .footer-content {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: #292929;
+    color: #ffffff;
+    align-items: start;
+    justify-items: center;
+    padding: 20px 20px;
+}
+
+.footer-content div {
+    width: 80%; /* Adjust width for better alignment */
+    text-align: center;
+}
+
+.categories h3, .feedback h3, .about h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #f5ba1a;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: auto;
+}
+
+.categories p {
+    margin: 5px 0;
+    font-size: 1em;
+}
+.categories p:hover{
+    color: #f5ba1a;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.feedback form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feedback textarea {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    background-color: #1f1f1f;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+.feedback button {
+    background-color: #f5ba1a;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+}
+
+.feedback button:hover {
+    background-color: #e1a70a;
+}
+
+.about {
+    text-align: center;
+}
+
+.about .links {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.about .links a {
+    color: #f5ba1a;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 0.9em;
+}
+
+.about .links a:hover {
+    text-decoration: underline;
+}
+
+.about .social-icons {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.about .social-icons a {
+    color: #fff;
+    font-size: 1.5em;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.about .social-icons a:hover {
+    color: #f5ba1a;
+}
+
+.about button {
+    background-color: #ff4c4c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+    margin-top: 10px;
+    margin-inline: auto;
+}
+
+.about button:hover {
+    background-color: #e13c3c;
+}

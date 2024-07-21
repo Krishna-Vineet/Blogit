@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="auth.css">
+    <title>Sign In</title>
+</head>
+<body>
+    <div class="form_wrapper">
+        <div class="form_container">
+          <div class="title_container">
+            <h2 class="company">Blogit</h2>
+            <h2>Login to Your Account</h2>
+          </div>
+          <div class="row clearfix">
+              <form method="post" action="/login">
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                  <input type="email" name="email" placeholder="Email" autocomplete="off" required />
+                </div>
+                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                  <input type="password" name="password" placeholder="Password" autocomplete="off" required />
+                </div>
+                
+                <div class="input_field checkbox_option">
+                      <input type="checkbox" id="cb3">
+                      <label for="cb3">Remember me</label>
+                  </div>
+                <input class="button" type="submit" value="Login" />
+              </form>
+              <h3>Don't have an account? <a href="register.html">Register</a></h3>
+            </div>
+          </div>
+        
+      </div>
+</body>
+</html>
