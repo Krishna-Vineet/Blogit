@@ -1,8 +1,8 @@
 import asyncHandler from "../utils/asyncHandler.js";
-import apiError from "../utils/apiErrors.js";
+import ApiError from "../utils/ApiErrors.js";
 import { User } from "../models/user.model.js";
 import {deleteFromCloudinary, uploadOnCloudinary} from "../utils/cloudinary.js";
-import apiResponse from "../utils/apiResponse.js";
+import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 
 
@@ -27,7 +27,7 @@ const generateAccessAndRefreshToken = async(userId) =>
 
         return { accessToken, refreshToken }
     } catch (error){
-        throw new apiError(500, "Something went wrong while generating refresh and access token.")
+        throw new ApiError(500, "Something went wrong while generating refresh and access token.")
     } 
 }
 
@@ -41,16 +41,16 @@ const registerUser = asyncHandler(async (req, res) => {
     const { email, username, password } =  req.body;
     
     if ( [email, username, password].some(field => field === "")) {
-        throw new apiError(400, "All fields are required");
+        throw new ApiError(400, "All fields are required");
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new apiError(400, "Invalid email address");
+      throw new ApiError(400, "Invalid email address");
     }
 
     if (password.length < 8) {
-      throw new apiError(400, "Password must be at least 8 characters long");
+      throw new ApiError(400, "Password must be at least 8 characters long");
     }
 
     password = await bcrypt.hash(password, 10)
@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
         $or: [{ username }, { email }]
     })
     if(existedUser){
-        return res.status(400).json(new apiResponse(400, {}, "User already exists", "/login"));
+        return res.status(400).json(new ApiResponse(400, {}, "User already exists", "/login"));
     }
  
     const user = await User.create({
@@ -71,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
     if(!createdUser){
-        throw new apiError(500, "Something went wrong while registering the user");
+        throw new ApiError(500, "Something went wrong while registering the user");
     }
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
 
@@ -84,15 +84,8 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new apiResponse(200, {createdUser, accessToken, refreshToken}, "User created successfully", '/')) || apiError(500, "Something went wrong while registering the user");
+    .json(new ApiResponse(200, {createdUser, accessToken, refreshToken}, "User created successfully", '/')) || ApiError(500, "Something went wrong while registering the user");
 })
-
-
-
-
-
-
-
 
 
 
@@ -107,156 +100,183 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
 
-    
-    const {email, username, password} = req.body;
+    // need auth middleware
+    const { email, username, password } = req.body;
 
-    if(!username && !email){
-        throw new apiError(400, "Username or Email is required");
+    if (!username && !email) {
+        throw new ApiError(400, "Username or Email is required");
     }
 
     const user = await User.findOne({
-        $or: [{username}, {email}]
-    })
+        $or: [{ username }, { email }]
+    });
 
-    if(!user){
-        throw new apiError(404, "User not found");
+    if (!user) {
+        throw new ApiError(404, "User not found");
     }
 
-    const isPassworValid = await user.isPasswordCorrect(password);
+    const isPasswordValid = await user.isPasswordCorrect(password);
 
-    if(!isPassworValid){
-        throw new apiError(401, "Invalid password");
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid password");
     }
-
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
 
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken"); // this is done to remove password and refresh token from response to share it with frontend
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
+    // Cookie options
     const options = {
         httpOnly: true,
-        secure: true
-    }
+        secure: process.env.NODE_ENV === 'production', // Only set secure cookie in production
+        sameSite: 'Strict' // Add sameSite for added security
+    };
 
+    // Send response with cookies and redirect URL
     return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(new apiResponse(
-        200,
-        {
-            user: loggedInUser, accessToken, refreshToken
-        },
-        "User logged in succesfully"
-    ))
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(
+            200,
+            {
+                user: loggedInUser,
+                accessToken,
+                refreshToken
+            },
+            "User logged in successfully",
+            "/" // Redirect URL (handle redirection on frontend if needed)
+        ));
+});
 
-})
 
-// can also add controlloer to change other details.., Just an advice, keep the file updating endpoints seperate to keep it optimised.
+
+
+
+
+
+
+
 const logoutUser = asyncHandler(async (req, res) => {
+    try {
+        // Unset the refresh token for the user
+        await User.findByIdAndUpdate(req.user._id, {
+            $unset: { refreshToken: "" } // Use empty string instead of 1
+        }, {
+            new: true
+        });
 
-            //  remove refresh token from db
-            // remove refresh token from cookie
-    await User.findByIdAndUpdate(req.user._id, {          // if we did findById, we had to remove token manually then save the details with validation:false, so just do this
-        // $set: {                                            // $set is used to update values, here we remove the refresh token
-        //     refreshToken: undefined
-        // }
-        $unset: {                         // we should use $unset instead of $set for this purpose, just put flag to fields which we want to remove
-            refreshToken: 1
-        }
-    },
-    {
-        new: true                 // this will return new updated user, with refresh token removed
-    })
+        // Options for clearing cookies
+        const options = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        };
 
-
-    const options = {
-        httpOnly: true,
-        secure: true
+        // Clear the cookies
+        return res
+            .status(200)
+            .clearCookie("accessToken", options)
+            .clearCookie("refreshToken", options)
+            .json(new ApiResponse(200, {}, "User logged out successfully", '/'));
+    } catch (error) {
+        // Handle unexpected errors
+        return res
+            .status(500)
+            .json(new ApiResponse(500, {}, "An error occurred while logging out"));
     }
+});
 
-    return res
-    .status(200)    
-    .clearCookie("accessToken", options)           // clearCookie method is given by cookieParser
-    .clearCookie("refreshToken", options)
-    .json(new apiResponse(200, {}, "User logged out successfully"))
 
-})
+
+
+
+
+
+
+
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken || req.headers["x-refresh-token"]; // for phones
 
     if(!incomingRefreshToken){
-        throw new apiError(401, "Unauthorised request");
+        throw new ApiError(401, "Unauthorised request");
     }
 
+    let decodedToken;
     try {
-            const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+            decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
 
     } catch (error) {
-            throw new apiError(401, error?.email || "Invalid refresh token");
+            throw new ApiError(401, error?.email || "Invalid refresh token");
     }       
-            // now we got decoded DataTransfer, and decoded has _id only (we gave only _id during refresh token creation).
-            //  lets now find user in db using that _id
 
     const user = await User.findById(decodedToken?._id);
 
     if(!user){
-        throw new apiError(401, "Invalid refresh token");
+        throw new ApiError(401, "Invalid refresh token");
     }
 
-    // Now we will match that the token taken from cookie, and token of sepecefic user in db, whose _id we got by decoding the cookie token
     
     if(incomingRefreshToken !== user?.refreshToken){
-        throw new apiError(401, "Refresh token is expired or used");
+        throw new ApiError(401, "Refresh token is expired or used");
     }
 
-    // Now when refresh token is found correctly, we need to generate new access and refresh token.
-
+ 
     const { newAccessToken, newRefreshToken } = await generateAccessAndRefreshToken(user._id);
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
     }
 
     res.status(200)
     .cookie("accessToken", newAccessToken, options)
     .cookie("refreshToken", newRefreshToken, options)
-    .json(new apiResponse(200, {newAccessToken, newRefreshToken}, "Access token refreshed successfully"))
+    .json(new ApiResponse(200, {newAccessToken, newRefreshToken}, "Access token refreshed successfully"))
  
 })
+
+
+
+
+
+
+
+
+
+
 
 const changeCurrentPassword = asyncHandler( async(req, res) => {
 
     const {oldPassword, newPassword} = req.body;
     const user = await User.findById(req.user?._id);
     if(!user){
-        throw new apiError(404, "Login again to change password");
+        throw new ApiError(404, "Login again to change password");
     }
     const isOldPasswordCorrect = await user.isPasswordCorrect(oldPassword);
     if (!isOldPasswordCorrect) {
-        throw new apiError(400, "Old password is incorrect");
+        throw new ApiError(400, "Old password is incorrect");
     }
     user.password = newPassword;
     await user.save({ validateBeforeSave: false });
 
-    // we are not doing findbyIdandUpdate(res.user?_id,{$set: {password: newPassword}, {new: true}}), as password need bycripting and logic to handle password update is already written in save method in user model.
 
-    return res.status(200).json(new apiResponse(200, {}, "Password changed successfully"));
+    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
 
 })
 
 const getCurrentUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user?._id).select("-password -refreshToken");
-    return res.status(200).json(new apiResponse(200, user, "User fetched successfully"));
+    return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
 })
 
 const updateAccountDetails = asyncHandler(async(req, res) => {
     const {fullName, email, username} = req.body
 
     if (!(fullName || email || username)) {
-        throw new apiError(400, "Invalid details for updation.")
+        throw new ApiError(400, "Invalid details for updation.")
     }
 
     const user = await User.findByIdAndUpdate(
@@ -274,14 +294,14 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
 
     return res
     .status(200)
-    .json(new apiResponse(200, user, "Account details updated successfully"))
+    .json(new ApiResponse(200, user, "Account details updated successfully"))
 });
 
 const updateUserAvatar = asyncHandler(async(req, res) => {
     const avatarLocalPath = req.file?.path       // we will inject multer middleware in route, but here we get single file only, so do req.file?.path instaed of req.files?.coverImage[0]?.path
 
     if (!avatarLocalPath) {
-        throw new apiError(400, "Avatar file is missing")
+        throw new ApiError(400, "Avatar file is missing")
     }
 
     //TODO: delete old image - assignment
@@ -291,7 +311,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
 
     if (!newAvatar.url) {
 
-        throw new apiError(400, "Error while uploading on avatar")
+        throw new ApiError(400, "Error while uploading on avatar")
         
     }
     const user = await User.findById(req.user?._id)
@@ -312,7 +332,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
     return res
     .status(200)
     .json(
-        new apiResponse(200, updatedUser, "Avatar image updated successfully")
+        new ApiResponse(200, updatedUser, "Avatar image updated successfully")
     )
 })
 
@@ -320,7 +340,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     const coverImageLocalPath = req.file?.path
 
     if (!coverImageLocalPath) {
-        throw new apiError(400, "Cover image file is missing")
+        throw new ApiError(400, "Cover image file is missing")
     }
 
     //TODO: delete old image - assignment // done
@@ -332,7 +352,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
     if (!coverImage.url) {
-        throw new apiError(400, "Error while uploading on avatar")
+        throw new ApiError(400, "Error while uploading on avatar")
         
     }
 
@@ -349,14 +369,14 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
     return res
     .status(200)
     .json(
-        new apiResponse(200, updatedUser, "Cover image updated successfully")
+        new ApiResponse(200, updatedUser, "Cover image updated successfully")
     )
 })
 
 const getUserChannelProfile = asyncHandler( async(req, res) => {
     const {username} = req.params;
     if(!username?.trim()){
-        throw new apiError(400, "Invalid username")
+        throw new ApiError(400, "Invalid username")
     }
     const channel = await User.aggregate([         // output of channel will be array of objects
         {
@@ -413,10 +433,10 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
     ])
 
     if(!channel?.length()){
-        throw new apiError(404, "Channel not exist")
+        throw new ApiError(404, "Channel not exist")
     }
 
-    return res.status(200).json(new apiResponse(200, channel[0], "Channel profile found successfully"))
+    return res.status(200).json(new ApiResponse(200, channel[0], "Channel profile found successfully"))
             // returning only the first object of the array, as it contains the main  data
 })
 
@@ -466,7 +486,7 @@ const getWatchHistory = asyncHandler(async(req, res) => {
         }
     ])
 
-    return res.status(200).json(new apiResponse(200, user[0].watchHistory, "Watch history found successfully"))
+    return res.status(200).json(new ApiResponse(200, user[0].watchHistory, "Watch history found successfully"))
 })
 
 

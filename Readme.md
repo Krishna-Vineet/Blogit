@@ -71,6 +71,13 @@ This project is a comprehensive blog management system with user authentication,
 
 ## Detailed Task for Krishna
 
+### 0. Create Mongoose Models:
+- User Model: Done on 22 Jul, 2024
+- Blog Model: Done on 22 Jul, 2024
+- Comment Model: Done on 22 Jul, 2024
+- Follow Model
+- Like Model 
+
 ### 1. User Authentication and Management
 - **Routes**:
   - `POST /register`: Register a new user.
@@ -165,3 +172,13 @@ This project is a comprehensive blog management system with user authentication,
    ```bash
    git clone https://github.com/yourusername/your-repository.git
    cd your-repository
+
+
+
+## Project Timeline
+- *15 Jul, 2024:* Got a task by Bharat Intern to make basic blogging page for them.
+- *17 Jul, 2024:* Decided to make an loaded full fledged blog webapp **BLOGIT** as a personal project, rejected Bharat Intern
+- *19 Jul, 2024:* Basic frontend design complete.
+- *20 Jul, 2024:* Team member added _Sunaina_
+- *21 Jul, 2024:* Backend work start
+- *22 Jul, 2024:* _Sunaina_ Kicked out from project
