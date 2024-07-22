@@ -6,6 +6,15 @@ import apiResponse from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
 
 
+
+
+
+
+
+
+
+
+
 const generateAccessAndRefreshToken = async(userId) =>
 {
     try{
@@ -22,102 +31,83 @@ const generateAccessAndRefreshToken = async(userId) =>
     } 
 }
 
+
+
+
+
+
+
 const registerUser = asyncHandler(async (req, res) => {
-    // get user details from frontend response
-    // validation - not empty
-    // check if user is already registered: username, email
-    // check for images, avatar compulsory
-    // upload it to cloudinary, check if it is avatar or not
-    // create user object and enter it in db
-    // remove password and refresh token field from response
-    // check for user creation, if it is registered or not
-    //  return response , otherwive error
-
-
-// get user details from frontend response
-    const { fullName, email, username, password } =  req.body;
+    const { email, username, password } =  req.body;
     
-// validation - not empty
-    if ( [fullName, email, username, password].some(field => field === "")) {
+    if ( [email, username, password].some(field => field === "")) {
         throw new apiError(400, "All fields are required");
     }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new apiError(400, "Invalid email address");
+    }
 
+    if (password.length < 8) {
+      throw new apiError(400, "Password must be at least 8 characters long");
+    }
 
-// check if user is already registered: username, email
+    password = await bcrypt.hash(password, 10)
+
     const existedUser = await  User.findOne({
         $or: [{ username }, { email }]
     })
     if(existedUser){
-        throw new apiError(409, "User already exist");
+        return res.status(400).json(new apiResponse(400, {}, "User already exists", "/login"));
     }
-
-// check for images, avatar compulsory
-    const avatarLocalPath = req.files?.avatar[0]?.path;
-    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
-    let coverImageLocalPath;
-    if(req.files && Array.isArray(req.files?.coverImage) && req.files?.coverImage.length > 0){
-        coverImageLocalPath = req.files?.coverImage[0]?.path;
-    }
-
-    if (!avatarLocalPath){
-        throw new apiError(400, "Avatar is required");
-    }
-
-// upload it to cloudinary, check if it is avatar or not
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
-    
-
-    // console.log(avatar);
-
-    if(!avatar){
-        throw new apiError(400, "Avatar file is required");
-    }
-
-
-// create user object and enter it in db
+ 
     const user = await User.create({
-        fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
         username: username.toLowerCase(),
         email,
         password
     })
     
-    // remove password and refresh token field from response
     const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
-    // console.log(createdUser);
-
-    // check for user creation, if it is registered or not
     if(!createdUser){
         throw new apiError(500, "Something went wrong while registering the user");
     }
-//  return response , otherwive error
-    return res.status(201).json(new apiResponse(200, createdUser, "User created successfully")) || apiError(500, "Something went wrong while registering the user");
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new apiResponse(200, {createdUser, accessToken, refreshToken}, "User created successfully", '/')) || apiError(500, "Something went wrong while registering the user");
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const loginUser = asyncHandler(async (req, res) => {
-    //  algorithm by me
-    // check for the refresh token and match, if yes, provide access key and login
-    // if no, take input -> username/email, password     req.body
-    // check if not empty
-    // check if exist in db, if no, redirect to register
-    // check if password is correct
-    // porvide refresh token and access token with expiries
-    // succesfuly login 
 
-
-    //  algorithm by sir
-    // req body => data
-    // username / email
-    // find the user
-    // password check
-    // access and refresh token
-    // send cookie
-    // successfully login
-
+    
     const {email, username, password} = req.body;
 
     if(!username && !email){

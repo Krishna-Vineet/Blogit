@@ -1,27 +1,167 @@
-My aim is to build a Blog Web app with minimalistic design and loaded with features. It won't contain irrelevant sections like About us, contact us, our work etc and will provide only relevant things to user.
+# Blogit: Blog Management System
 
-It will include simple registation and login pages for Swift authentication of users, user can read blogs, but some features need to have there account with us. 
+## Overview
 
-The homepage will include multiple sections for featured, latest and trending blogs, event adds and categories as well. 
+This project is a comprehensive blog management system with user authentication, blog creation and management, interactions, category management, search and filtering, file management, analytics, and event promotions. It is built using Node.js, Express, MongoDB, and Cloudinary.
 
-There will be an add Blog page that allow any registered user to share his thoughts. 
+## Features we are expecting
 
-The all blogs page will display all blogs based on category or filter selected. 
+### 1. User Authentication and Management
+- **Registration**: Users can register with email, username, and password.
+- **Login**: Users can log in with email and password.
+- **Logout**: Users can log out of their account.
+- **Profile Management**:
+  - View profile details (username, email, avatar, etc.).
+  - Update profile details (username, email, password, and avatar).
+  - Delete account.
 
-Single Blog Page will display each Blog in detail, there will be a follow button to author, like dislike, comments and related blogs section. 
+### 2. Blog Management
+- **Create Blog**:
+  - Add title, content, categories, and an image.
+  - Save the blog to the database.
+- **Read Blogs**:
+  - View all blogs on the homepage.
+  - View individual blog posts.
+  - View blogs by category.
+  - View blogs by user.
+- **Update Blog**:
+  - Edit the title, content, categories, and image of a blog.
+- **Delete Blog**:
+  - Delete a blog post.
 
-It includes simple header and footer that will be consistent throughout the application. Header will have search bar to search blogs in that page and and sidebar that activate on hamburger. Sidebar will have multiple quick links and Categories.
-Footer will be simple, having feedback box, quick links and privacy policy along with account managing button.
+### 3. Blog Interaction
+- **Comments**:
+  - Add comments to blogs.
+  - Edit comments.
+  - Delete comments.
+- **Likes/Dislikes**:
+  - Like or dislike a blog post.
+  - Display the count of likes and dislikes.
+- **Follow Users**:
+  - Follow/unfollow other users.
 
-User ID page might be the main attraction.
-It display the username, a follow button, his avatar, bio and number of followers, followings and blogs written by him. And later on the posts written by him. If user is seeing his own profile he will see change avatar and edit profile button and he will see the delete button for his blogs.
+### 4. Category Management
+- **View Categories**:
+  - Display a list of all categories.
+- **Add Category** (Admin functionality):
+  - Add a new category.
+- **Delete Category** (Admin functionality):
+  - Delete an existing category.
 
-Your work for now is to make design consistent across all pages including fonts, colours, don't size and weight, shadows and interactions etc.
-Make updates to look the pages more better.
+### 5. Search and Filter
+- **Search Blogs**:
+  - Search for blogs by keywords in the title or content.
+- **Filter Blogs**:
+  - Filter blogs by categories.
+  - Filter blogs by date (latest/trending).
 
-Later, to learn about .ejs files and how to use them as components with customised data. 
-To standardise the css by adding colour variables, font family, weight and size variables, and default styling on global css file to avoid conflicts when merging the pages. 
+### 6. File Management
+- **Image Upload**:
+  - Upload blog images using Cloudinary.
+  - Upload user avatars using Cloudinary.
 
-Manage which page to be open and with what data on visiting a particular link. Pass various relevant routes and actions on all functionalities to work seemless with backend. 
+### 7. Analytics and Statistics
+- **View Blog Statistics**:
+  - Display statistics such as total views, likes, dislikes, and comments.
 
-And last to make every page responsive to tablets and phone screens.
+### 8. Events and Promotions
+- **Upcoming Events/Webinars**:
+  - Display a section for upcoming events or webinars.
+  - Redirect to external event websites.
+
+## Detailed Task for Krishna
+
+### 1. User Authentication and Management
+- **Routes**:
+  - `POST /register`: Register a new user.
+  - `POST /login`: Log in a user.
+  - `POST /logout`: Log out a user.
+  - `GET /profile`: Get user profile details.
+  - `PUT /profile`: Update user profile details.
+  - `DELETE /profile`: Delete user account.
+- **Controllers**:
+  - `registerUser`, `loginUser`, `logoutUser`, `getProfile`, `updateProfile`, `deleteProfile`
+- **Middleware**:
+  - `authenticateUser`, `authorizeUser`
+
+### 2. Blog Management
+- **Routes**:
+  - `GET /blogs`: Get all blogs.
+  - `GET /blogs/:id`: Get a single blog by ID.
+  - `POST /blogs`: Create a new blog.
+  - `PUT /blogs/:id`: Update a blog by ID.
+  - `DELETE /blogs/:id`: Delete a blog by ID.
+- **Controllers**:
+  - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`
+- **Middleware**:
+  - `authenticateUser`, `authorizeUser`
+
+### 3. Blog Interaction
+- **Routes**:
+  - `POST /blogs/:id/comments`: Add a comment to a blog.
+  - `PUT /blogs/:id/comments/:commentId`: Edit a comment.
+  - `DELETE /blogs/:id/comments/:commentId`: Delete a comment.
+  - `POST /blogs/:id/like`: Like a blog.
+  - `POST /blogs/:id/dislike`: Dislike a blog.
+  - `POST /users/:id/follow`: Follow a user.
+  - `POST /users/:id/unfollow`: Unfollow a user.
+- **Controllers**:
+  - `addComment`, `editComment`, `deleteComment`, `likeBlog`, `dislikeBlog`, `followUser`, `unfollowUser`
+- **Middleware**:
+  - `authenticateUser`
+
+### 4. Category Management
+- **Routes**:
+  - `GET /categories`: Get all categories.
+  - `POST /categories`: Add a new category (Admin).
+  - `DELETE /categories/:id`: Delete a category (Admin).
+- **Controllers**:
+  - `getAllCategories`, `addCategory`, `deleteCategory`
+- **Middleware**:
+  - `authenticateUser`, `authorizeAdmin`
+
+### 5. Search and Filter
+- **Routes**:
+  - `GET /blogs/search`: Search for blogs.
+  - `GET /blogs/category/:category`: Filter blogs by category.
+  - `GET /blogs/date/:date`: Filter blogs by date.
+- **Controllers**:
+  - `searchBlogs`, `filterBlogsByCategory`, `filterBlogsByDate`
+
+### 6. File Management
+- **Routes**:
+  - `POST /upload/blog-image`: Upload a blog image.
+  - `POST /upload/avatar`: Upload a user avatar.
+- **Controllers**:
+  - `uploadBlogImage`, `uploadAvatar`
+- **Middleware**:
+  - `authenticateUser`, `uploadImage`
+
+### 7. Analytics and Statistics
+- **Routes**:
+  - `GET /blogs/:id/statistics`: Get statistics for a blog.
+- **Controllers**:
+  - `getBlogStatistics`
+
+### 8. Events and Promotions
+- **Routes**:
+  - `GET /events`: Get all upcoming events.
+- **Controllers**:
+  - `getAllEvents`
+
+### Next Steps
+1. **Set up Controllers**: Implement the logic for each route in the controllers.
+2. **Create Routes**: Define routes in the Express application.
+3. **Integrate Middleware**: Use middleware for authentication, authorization, and file uploads.
+4. **Connect to MongoDB**: Ensure the database is set up and connected.
+
+## Detailed Task for Sunaina
+- Add your taks by yourself, write (done) in front of task after completing them
+
+## At last, we both will test every thing.
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/your-repository.git
+   cd your-repository
