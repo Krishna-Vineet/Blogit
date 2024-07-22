@@ -75,8 +75,8 @@ This project is a comprehensive blog management system with user authentication,
 - User Model: Done on 22 Jul, 2024
 - Blog Model: Done on 22 Jul, 2024
 - Comment Model: Done on 22 Jul, 2024
-- Follow Model
-- Like Model 
+- Follow Model: Done on 22 Jul, 2024
+- Like Model : Done on 22 Jul, 2024
 
 ### 1. User Authentication and Management
 - **Routes**:
@@ -87,9 +87,9 @@ This project is a comprehensive blog management system with user authentication,
   - `PUT /profile`: Update user profile details.
   - `DELETE /profile`: Delete user account.
 - **Controllers**:
-  - `registerUser`, `loginUser`, `logoutUser`, `getProfile`, `updateProfile`, `deleteProfile`
+  - `registerUser`, `loginUser`, `logoutUser`, `getProfile`, `updateUserDetails`, `changeCurrentPassword`, `updateAvatar`, `deleteUserAccount`        All done on 22 Jul, 2024
 - **Middleware**:
-  - `authenticateUser`, `authorizeUser`
+  - `authenticateUser`, `multer`      Done on 21 July, 2024
 
 ### 2. Blog Management
 - **Routes**:
