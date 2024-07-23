@@ -101,7 +101,7 @@ This project is a comprehensive blog management system with user authentication,
 - **Controllers**:
   - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`
 - **Middleware**:
-  - `authenticateUser`, `authorizeUser`
+  - `authenticateUser`, `multer`      Done on 21 July, 2024
 
 ### 3. Blog Interaction
 - **Routes**:
@@ -117,44 +117,12 @@ This project is a comprehensive blog management system with user authentication,
 - **Middleware**:
   - `authenticateUser`
 
-### 4. Category Management
-- **Routes**:
-  - `GET /categories`: Get all categories.
-  - `POST /categories`: Add a new category (Admin).
-  - `DELETE /categories/:id`: Delete a category (Admin).
-- **Controllers**:
-  - `getAllCategories`, `addCategory`, `deleteCategory`
-- **Middleware**:
-  - `authenticateUser`, `authorizeAdmin`
-
-### 5. Search and Filter
-- **Routes**:
-  - `GET /blogs/search`: Search for blogs.
-  - `GET /blogs/category/:category`: Filter blogs by category.
-  - `GET /blogs/date/:date`: Filter blogs by date.
-- **Controllers**:
-  - `searchBlogs`, `filterBlogsByCategory`, `filterBlogsByDate`
-
-### 6. File Management
-- **Routes**:
-  - `POST /upload/blog-image`: Upload a blog image.
-  - `POST /upload/avatar`: Upload a user avatar.
-- **Controllers**:
-  - `uploadBlogImage`, `uploadAvatar`
-- **Middleware**:
-  - `authenticateUser`, `uploadImage`
-
 ### 7. Analytics and Statistics
 - **Routes**:
   - `GET /blogs/:id/statistics`: Get statistics for a blog.
 - **Controllers**:
   - `getBlogStatistics`
 
-### 8. Events and Promotions
-- **Routes**:
-  - `GET /events`: Get all upcoming events.
-- **Controllers**:
-  - `getAllEvents`
 
 ### Next Steps
 1. **Set up Controllers**: Implement the logic for each route in the controllers.

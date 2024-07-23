@@ -17,8 +17,7 @@ const blogSchema = new Schema(
             required: true
         },
         categories: [{
-            type: String,
-            required: true
+            type: String
         }],
         image: {
             type: String,
@@ -31,14 +30,6 @@ const blogSchema = new Schema(
         dislikes: {
             type: Number,
             default: 0
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now
         }
     },
     {
