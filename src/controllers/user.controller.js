@@ -298,7 +298,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 });
 
 
-const getUserDetail = asyncHandler(async (req, res) => {
+const getUserDetails = asyncHandler(async (req, res) => {
     try {
         const { userId: requestedUserId } = req.body;
         const currentUserId = req.user._id;
@@ -580,7 +580,13 @@ const getUserDetail = asyncHandler(async (req, res) => {
 // })
 
 
-
-export { registerUser, loginUser, logoutUser, refreshAccessToken,
-    changeCurrentPassword, getCurrentUser, updateUserDetails,
-    updateUserAvatar, updateUserCoverImage, getUserChannelProfile, deleteUserAccount, getUserDetail, getWatchHistory };
+export {
+    registerUser,
+    loginUser,
+    logoutUser,
+    changeCurrentPassword,
+    updateUserAvatar,
+    updateUserDetails,
+    deleteUserAccount,
+    getUserDetails
+}

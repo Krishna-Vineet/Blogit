@@ -16,23 +16,16 @@ app.use(cookieParser())                  // we can access cookies through this m
 
 
 
+import userRoutes from './routes/user.routes.js';
+import blogRoutes from './routes/blog.routes.js';
+import commentRoutes from './routes/comment.routes.js';
+import followRoutes from './routes/follow.routes.js';
 
 
-// routes import
-import userRouter from './routes/user.routes.js';
-// import blogRouter from './routes/blog.routes.js';
-// import followRouter from './routes/follow.routes.js';
-// import commentRouter from "./routes/comment.routes.js";
-// import likeRouter from "./routes/like.routes.js";
+// Routes
+app.use('/users', userRoutes);
+app.use('/blogs', blogRoutes);
+app.use('/comments', commentRoutes);
+app.use('/follows', followRoutes);
 
-
-// routes declaration
-app.use("/users", userRouter);
-// app.use("/comments", commentRouter);
-// app.use("/likes", likeRouter);
-// app.use("/blogs", blogRouter);
-// app.use("/follows", followRouter);
-
-
-// exporting app
-export default app 
+export default app;

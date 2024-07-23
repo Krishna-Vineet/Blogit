@@ -24,6 +24,6 @@ const dislikeSchema = new Schema(
     }
 );
 
-Dislike = mongoose.model("Dislike", dislikeSchema);
+const Dislike = mongoose.model("Dislike", dislikeSchema);
 
 export default Dislike;

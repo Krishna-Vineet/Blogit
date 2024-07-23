@@ -18,6 +18,6 @@ const followSchema = new Schema(
     }
 );
 
-Follow = mongoose.model("Follow", followSchema);
+const Follow = mongoose.model("Follow", followSchema);
 
 export default Follow;

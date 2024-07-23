@@ -80,7 +80,7 @@ const deleteBlog = asyncHandler(async (req, res) => {
 });
 
 // Get all blogs
-const getAllBlogsByUser = asyncHandler(async (req, res) => {
+const getAllBlogsOfUser = asyncHandler(async (req, res) => {
     // Get userId from auth middleware or request parameters
     const userId = req.user?._id || req.params.userId;
 
@@ -169,4 +169,91 @@ const getBlogById = asyncHandler(async (req, res) => {
 });
 
 
+// Controller to like or unlike a blog
+const likeBlog = asyncHandler(async (req, res) => {
+    const { blogId } = req.params;
+    const userId = req.user._id;
 
+    // Find the blog
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+        throw new ApiError(404, "Blog not found");
+    }
+
+    // Check if the user has already liked the blog
+    const existingLike = await Like.findOne({ blog: blogId, user: userId });
+    if (existingLike) {
+        // Remove the like if it exists
+        await Like.findByIdAndDelete(existingLike._id);
+        // Update blog's like count
+        blog.likesCount -= 1;
+        await blog.save();
+    } else {
+        // Check if the user has disliked the blog
+        const existingDislike = await Dislike.findOne({ blog: blogId, user: userId });
+        if (existingDislike) {
+            // Remove the dislike if it exists
+            await Dislike.findByIdAndDelete(existingDislike._id);
+            // Update blog's dislike count
+            blog.dislikesCount -= 1;
+        }
+        // Add the like
+        await Like.create({ blog: blogId, user: userId });
+        // Update blog's like count
+        blog.likesCount += 1;
+        await blog.save();
+    }
+
+    // Send success response
+    res.status(200).json(new ApiResponse(200, {}, "Like status updated successfully"));
+});
+
+
+// Controller to dislike or remove dislike from a blog
+const dislikeBlog = asyncHandler(async (req, res) => {
+    const { blogId } = req.params;
+    const userId = req.user._id;
+
+    // Find the blog
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+        throw new ApiError(404, "Blog not found");
+    }
+
+    // Check if the user has already disliked the blog
+    const existingDislike = await Dislike.findOne({ blog: blogId, user: userId });
+    if (existingDislike) {
+        // Remove the dislike if it exists
+        await Dislike.findByIdAndDelete(existingDislike._id);
+        // Update blog's dislike count
+        blog.dislikesCount -= 1;
+        await blog.save();
+    } else {
+        // Check if the user has liked the blog
+        const existingLike = await Like.findOne({ blog: blogId, user: userId });
+        if (existingLike) {
+            // Remove the like if it exists
+            await Like.findByIdAndDelete(existingLike._id);
+            // Update blog's like count
+            blog.likesCount -= 1;
+        }
+        // Add the dislike
+        await Dislike.create({ blog: blogId, user: userId });
+        // Update blog's dislike count
+        blog.dislikesCount += 1;
+        await blog.save();
+    }
+
+    // Send success response
+    res.status(200).json(new ApiResponse(200, {}, "Dislike status updated successfully"));
+});
+
+export {
+    createBlog,
+    updateBlog,
+    deleteBlog,
+    getBlogById,
+    getAllBlogsOfUser,
+    likeBlog,
+    dislikeBlog
+}

@@ -99,7 +99,7 @@ This project is a comprehensive blog management system with user authentication,
   - `PUT /blogs/:id`: Update a blog by ID.
   - `DELETE /blogs/:id`: Delete a blog by ID.
 - **Controllers**:
-  - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`
+  - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`  All done on 23 Jul, 2024
 - **Middleware**:
   - `authenticateUser`, `multer`      Done on 21 July, 2024
 
