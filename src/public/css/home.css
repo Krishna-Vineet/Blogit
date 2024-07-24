@@ -10,13 +10,6 @@ body {
     color: #fff;
 }
 
-header, footer {
-    background-color: #292929;
-    padding: 20px;
-    color: #fff;
-    text-align: center;
-}
-
 main {
     padding: 20px;
 }
@@ -132,7 +125,7 @@ main {
 }
 
 
-.latest-blogs, .trending-blogs {
+.latest-blogs, .popular-blogs {
     margin-bottom: 30px;
 }
 

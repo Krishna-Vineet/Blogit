@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/home.css">
+    <title>Homepage</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+    
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h1>Welcome to Blogit!</h1>
+                <p>Your go-to place for the latest and greatest in blogging. Discover, explore, and share your thoughts with the world.</p>
+                <div class="cta-buttons">
+                    <a href="#explore-blogs" class="btn explore-btn">Explore Blogs</a>
+                    <a href="#add-blog" class="btn add-blog-btn">Add Blog</a>
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- Categories Section -->
+        <section class="categories">
+            <h2>Explore by Categories</h2>
+            <div class="category">
+                <i class="fa fa-laptop" aria-hidden="true"></i>
+                <p>Tech</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-plane" aria-hidden="true"></i>
+                <p>Travel</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-utensils" aria-hidden="true"></i>
+                <p>Food</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-heartbeat" aria-hidden="true"></i>
+                <p>Health</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-flask" aria-hidden="true"></i>
+                <p>Science</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-tshirt" aria-hidden="true"></i>
+                <p>Fashion</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-dollar" aria-hidden="true"></i>
+                <p>Finance</p>
+            </div>
+            <div class="category">
+                <i class="fa fa-futbol" aria-hidden="true"></i>
+                <p>Sports</p>
+            </div>
+        </section>
+        
+
+        <!-- Latest Blogs Section -->
+        <section class="latest-blogs">
+            <h2>Latest Blogs</h2>
+            <div class="blog-grid">
+                <% blogs.forEach(blog => { %>
+                    <div class="blog-card">
+                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
+                        <div class="blog-info">
+                            <h3><%= blog.title %></h3>
+                            <p><%= blog.description %></p>
+                            <a href="/blog/<%= blog.id %>">Read More</a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <a href="/blogs/latest" class="view-more">View More Latest Blogs</a>
+        </section>
+
+
+        <!-- Upcoming Events Section -->
+        <section class="upcoming-events">
+            <h2>Upcoming Events & Webinars</h2>
+            <div class="events-grid">
+                <% events.forEach(event => { %>
+                    <div class="event-card">
+                        <div class="event-image">
+                            <img src="<%= event.image %>" alt="<%= event.title %>">
+                        </div>
+                        <div class="event-details">
+                            <h3><%= event.title %></h3>
+                            <p><%= event.description %></p>
+                            <a href="<%= event.link %>" target="_blank">Learn More</a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </section>
+        
+
+        <!-- Popular Blogs Section -->
+        <section class="popular-blogs">
+            <h2>Popular Blogs</h2>
+            <div class="blog-grid">
+                <% popularBlogs.forEach(blog => { %>
+                    <div class="blog-card">
+                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
+                        <div class="blog-info">
+                            <h3><%= blog.title %></h3>
+                            <p><%= blog.description %></p>
+                            <a href="/blog/<%= blog.id %>">Read More</a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <a href="/blogs/popular" class="view-more">View More Trending Blogs</a>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="blogs-statistics">
+            <h2>Blogit Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p class="stat-value"><%= statistics.totalUsers %></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Blogs</h3>
+                    <p class="stat-value"><%= statistics.totalBlogs %></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Top Author</h3>
+                    <p class="stat-value"><%= statistics.topAuthor %></p>
+                </div>
+                <div class="stat-card">
+                    <h3>Most Liked Blog</h3>
+                    <p class="stat-value"><%= statistics.mostLikedBlog %></p>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+    
+    <%- include('partials/footer') %>
+</body>
+</html>

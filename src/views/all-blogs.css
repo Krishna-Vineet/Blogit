@@ -10,11 +10,6 @@ body {
     color: #ffffff;
 }
 
-header, footer {
-    background-color: #292929;
-    padding: 20px;
-    text-align: center;
-}
 
 main {
     padding: 20px;

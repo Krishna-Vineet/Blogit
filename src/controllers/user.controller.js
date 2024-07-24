@@ -37,6 +37,29 @@ const generateAccessAndRefreshToken = async(userId) =>
 }
 
 
+const home = asyncHandler(async (req, res) => {
+    const blogs = [
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
+        // Add more blog objects
+    ];
+    const events = [
+        { id: 1, image: 'https://via.placeholder.com/350x200', title: 'Event Title 1', description: 'Join us for an insightful session on cutting-edge technology. Reserve your spot today!', link: 'https://example.com' },
+        // Add more event objects
+    ];
+    const popularBlogs = [
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
+        // Add more blog objects
+    ];
+    const statistics = {
+        totalUsers: 120,
+        totalBlogs: 45,
+        topAuthor: 'Hitesh Rai',
+        mostLikedBlog: 'Exploring the Himalayas'
+    };
+    res.render('home', { blogs, events, popularBlogs, statistics });
+});
+
+
 const registerUser = asyncHandler(async (req, res) => {
     const { email, username, password } =  req.body;
     
@@ -376,217 +399,6 @@ const getUserDetails = asyncHandler(async (req, res) => {
 
 
 
-
-
-
-// const refreshAccessToken = asyncHandler(async (req, res) => {
-//     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken || req.headers["x-refresh-token"]; // for phones
-
-//     if(!incomingRefreshToken){
-//         throw new ApiError(401, "Unauthorised request");
-//     }
-
-//     let decodedToken;
-//     try {
-//             decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-//     } catch (error) {
-//             throw new ApiError(401, error?.email || "Invalid refresh token");
-//     }       
-
-//     const user = await User.findById(decodedToken?._id);
-
-//     if(!user){
-//         throw new ApiError(401, "Invalid refresh token");
-//     }
-
-    
-//     if(incomingRefreshToken !== user?.refreshToken){
-//         throw new ApiError(401, "Refresh token is expired or used");
-//     }
-
- 
-//     const { newAccessToken, newRefreshToken } = await generateAccessAndRefreshToken(user._id);
-
-//     const options = {
-//         httpOnly: true,
-//         secure: process.env.NODE_ENV === 'production',
-//         sameSite: 'Strict'
-//     }
-
-//     res.status(200)
-//     .cookie("accessToken", newAccessToken, options)
-//     .cookie("refreshToken", newRefreshToken, options)
-//     .json(new ApiResponse(200, {newAccessToken, newRefreshToken}, "Access token refreshed successfully"))
- 
-// })
-
-// const updateUserCoverImage = asyncHandler(async(req, res) => {
-//     const coverImageLocalPath = req.file?.path
-
-//     if (!coverImageLocalPath) {
-//         throw new ApiError(400, "Cover image file is missing")
-//     }
-
-//     //TODO: delete old image - assignment // done
-//     const user = await User.findById(req.user?._id)
-//     const oldCoverImage = user.coverImage;
-//     await deleteFromCloudinary(oldCoverImage);
-
-
-//     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
-//     if (!coverImage.url) {
-//         throw new ApiError(400, "Error while uploading on avatar")
-        
-//     }
-
-//     const updatedUser = await User.findByIdAndUpdate(
-//         req.user?._id,
-//         {
-//             $set:{
-//                 coverImage: coverImage.url
-//             }
-//         },
-//         {new: true}
-//     ).select("-password, -refreshToken")
-
-//     return res
-//     .status(200)
-//     .json(
-//         new ApiResponse(200, updatedUser, "Cover image updated successfully")
-//     )
-// })
-
-// const getUserProfile = asyncHandler( async(req, res) => {
-//     const {username} = req.params;
-//     if(!username?.trim()){
-//         throw new ApiError(400, "Invalid username")
-//     }
-//     const channel = await User.aggregate([         // output of channel will be array of objects
-//         {
-//             $match: {                   // matching the username to get specific user detail
-//                 username: username?.toLowerCase()         
-//             }
-//         },
-//         {
-//             $lookup: {                       // searching in Subscription model ducuments, in ducument we get user _id in channel field, that document will stored in subscribers (it is array of objects)
-//                 from: "subscriptions",       // Subscription model will be stored as subscriptions in database
-//                 localField: "_id",
-//                 foreignField: "channel",
-//                 as: "subscribers"
-//             }
-//         },
-//         {
-//             $lookup: {                       // searching in Subscription model ducuments, in ducument we get user _id in subscriber field, that document will stored in subscribedTo (it is array of objects)
-//                 from: "subscriptions",       // these lookup aggegation pipelines are to look for some specific data, and work with them
-//                 localField: "_id",
-//                 foreignField: "subscriber",
-//                 as: "subscribedTo"
-//             }
-//         },
-//         {
-//             $addFields: {                    // addFeilds pipeline is used to add new fields in model dociment, here user
-//                 subscribersCount: {                 // count the obbjects in subscribers array to get no of subscribers
-//                     $size: "$subscribers"
-//                 },
-//                 channelsSubscribedToCount: {       // count the obbjects in subscribedTo array to get no of channels subscribed
-//                     $size: "$subscribedTo"
-//                 },
-//                 isSubscribed: {                     // check if user is subscribed or not, will return a true, false which will help the frontend developer
-//                     $cond: {                    // condition pipeline is used to apply conditions
-//                         if: { $in: [req.user?._id, "$subscribers.subscriber"] },     // in pipeline, searching if user with _id is present in any subscriber object in subscribers array   
-//                         then: true,
-//                         else: false
-//                     }
-//                 }
-//             }
-//         },
-//         {
-//             $project: {
-//                 fullName: 1,
-//                 username: 1,
-//                 email: 1,
-//                 avatar: 1,
-//                 coverImage: 1,
-//                 subscribersCount: 1,
-//                 channelsSubscribedToCount: 1,
-//                 isSubscribed: 1,
-//                 createdAt: 1
-//             }
-//         }
-//     ])
-
-//     if(!channel?.length()){
-//         throw new ApiError(404, "Channel not exist")
-//     }
-
-//     return res.status(200).json(new ApiResponse(200, channel[0], "Channel profile found successfully"))
-//             // returning only the first object of the array, as it contains the main  data
-// })
-
-// const getWatchHistory = asyncHandler(async(req, res) => {
-//     // the _id we get from user isnt the actual Mongodb id, but the Mongoose id, mongoose, when contact to mondodb, itself convert this id to mongo db id.
-//     // but the aggregation pipelines goes directly to mongodb, mongoose, doesnt interfare here, so we can't directly use _id in aggregation pipeline, we will manually call mongoose there
-
-//     const user = await User.aggregate([
-//         {
-//             $match: {
-//                 _id: new mongoose.Types.ObjectId(req.user?._id)       // matching the user id, so that we can get his watch history
-//             }
-//         },
-//         {
-//              $lookup: {
-//                  from: "videos",                // in video model ducuments whereever we have user _id watchHistory field, we took array of thode video documents as watchHistory
-//                  localField: "watchHistory",    // but one field there was owner, now we need owner details that are mentioned there, so use a sub pipeline for it
-//                  foreignField: "_id",
-//                  as: "watchHistory",                     
-//                  pipeline: [                // sub pipeline to get owner details
-//                      {
-//                          $lookup: {         // owner was nothing but user, so got the user whose _id was in owner field
-//                              from: "users",
-//                              localField: "owner",
-//                              foreignField: "_id",
-//                              as: "owner",
-//                              pipeline: [
-//                                 {
-//                                     $project: {         // from there we need only name and avatar, so project them only
-//                                         fullName: 1,
-//                                         username: 1,
-//                                         avatar: 1
-//                                     }
-//                                 }
-//                              ]
-//                          }
-//                      },
-//                      {
-//                         $addFields: {
-//                             owner: {       // rewriting the owner field with the first object of the owner array
-//                                 $first: "$owner"
-//                             }
-//                         }
-//                      }
-//                  ]
-//              }
-//         }
-//     ])
-
-//     return res.status(200).json(new ApiResponse(200, user[0].watchHistory, "Watch history found successfully"))
-// })
-
-// const getCurrentUser = asyncHandler(async (req, res) => {
-//     const user = await User.findById(req.user?._id).select("-password -refreshToken");
-//     return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
-// })
-
-
 export {
-    registerUser,
-    loginUser,
-    logoutUser,
-    changeCurrentPassword,
-    updateUserAvatar,
-    updateUserDetails,
-    deleteUserAccount,
-    getUserDetails
+    home, registerUser, loginUser, logoutUser, changeCurrentPassword, updateUserAvatar, updateUserDetails, deleteUserAccount, getUserDetails
 }

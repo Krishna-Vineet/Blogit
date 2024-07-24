@@ -192,9 +192,5 @@ const dislikeComment = asyncHandler(async (req, res) => {
 });
 
 export {
-    addComment,
-    editComment,
-    deleteComment,
-    likeComment,
-    dislikeComment
+    addComment, editComment, deleteComment, likeComment, dislikeComment
 }
