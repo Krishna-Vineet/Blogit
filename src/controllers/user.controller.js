@@ -40,23 +40,40 @@ const generateAccessAndRefreshToken = async(userId) =>
 const home = asyncHandler(async (req, res) => {
     const blogs = [
         { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
         // Add more blog objects
     ];
     const events = [
+        { id: 1, image: 'https://via.placeholder.com/350x200', title: 'Event Title 1', description: 'Join us for an insightful session on cutting-edge technology. Reserve your spot today!', link: 'https://example.com' },
         { id: 1, image: 'https://via.placeholder.com/350x200', title: 'Event Title 1', description: 'Join us for an insightful session on cutting-edge technology. Reserve your spot today!', link: 'https://example.com' },
         // Add more event objects
     ];
     const popularBlogs = [
         { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
+        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
         // Add more blog objects
     ];
     const statistics = {
         totalUsers: 120,
-        totalBlogs: 45,
+        totalBlogs: 465,
         topAuthor: 'Hitesh Rai',
         mostLikedBlog: 'Exploring the Himalayas'
     };
-    res.render('home', { blogs, events, popularBlogs, statistics });
+    const trendingPosts = [
+        { id: 1, title: 'Trending Post 1', link: '#' },
+        { id: 2, title: 'Trending Post 2', link: '#' },
+        // Add more trending posts
+    ];
+    const followedUsers = [
+        { id: 1, name: 'John Doe', link: '#' },
+        { id: 2, name: 'Jane Smith', link: '#' },
+        // Add more followed users
+    ];
+
+    res.render('home', { blogs, events, popularBlogs, statistics, trendingPosts, categories, followedUsers });
 });
 
 

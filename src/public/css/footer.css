@@ -4,30 +4,17 @@ footer {
     background-color: #292929;
 }
 
-footer .logo {
-    width: 100%;
-    background-color: #292929;
-}
-
-footer .logo h1 {
-    font-family: 'Playwrite BE VLG', cursive;
-    font-size: 5vw;
-    color: #ffffff;
-    text-align: center;
-    padding-bottom: 10px;
-    border-bottom: 5px solid #ffffff;
-    letter-spacing: 0.2em; /* Adds spacing between letters for a cleaner look */
-}
 
 footer .footer-content {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    background-color: #292929;
+    background-color: #2c2c2c;
     color: #ffffff;
     align-items: start;
     justify-items: center;
     padding: 20px 20px;
+    border-top: 5px solid #f5ba1a;
 }
 
 .footer-content div {
@@ -44,11 +31,15 @@ footer .footer-content {
     width: auto;
 }
 
-.categories p {
+.footer-content .categories{
+    margin: 0;
+    padding: 0;
+}
+.footer-content .categories p {
     margin: 5px 0;
     font-size: 1em;
 }
-.categories p:hover{
+.footer-content .categories p:hover{
     color: #f5ba1a;
     cursor: pointer;
     text-decoration: underline;

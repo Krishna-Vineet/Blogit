@@ -1,72 +1,107 @@
 <link rel="stylesheet" href="/css/header.css">
 
-    <header>
-        <div class="header-container">
-            <div class="left">
-                <div class="hamburger" onclick="toggleSidebar()">
-                    <i class="fa fa-bars"></i>
-                </div>
-                <div class="add">
-                    <button><i class="fa-solid fa-pencil"></i>Add Blog</button>
-                </div>
+<header>
+    <div class="header-container">
+        <div class="left">
+            <div class="hamburger" onclick="toggleSidebar()">
+                <i class="fa fa-bars"></i>
             </div>
-            <div class="logo">
-                Blogit
-            </div>
-            <div class="right">
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search...">
-                    <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
-                </div>
-                <img src="https://i.pravatar.cc/100" alt="User Avatar">
+            <div class="add">
+                <button><i class="fa-solid fa-pencil"></i>Add Blog</button>
             </div>
         </div>
-        <div id="sidebar" class="sidebar">
-            <div class="sidebar-content">
-                <i class="fa fa-x" onclick="toggleSidebar()"></i>
-                <h2>Trending Posts</h2>
-                <ul id="trendingPosts">
-                    <!-- Trending posts will be populated here -->
-                </ul>
-                <h2>Categories I Follow</h2>
-                <ul id="categories">
-                    <!-- Categories will be populated here -->
-                </ul>
-                <h2>Users I Follow</h2>
-                <ul id="followedUsers">
-                    <!-- Followed users will be populated here -->
-                </ul>
-            </div>
+        <div class="logo">
+            Blogit
         </div>
-    </header>
-    <script>
-        function toggleSidebar() {
-    const sidebar = document.getElementById("sidebar");
-    const transformValue = sidebar.style.transform;
-    if (!transformValue || transformValue === 'translateX(0px)') {
-            sidebar.style.transform = 'translateX(-450px)';
-        } else {
-            // Otherwise, reset the translation
-            sidebar.style.transform = 'translateX(0px)';
-        }
-}
+        <div class="right">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleKeyPress(event)">
+                <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
+            </div>
+            <img src="https://i.pravatar.cc/100" alt="User Avatar">
+        </div>
+    </div>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <i class="fa fa-x" onclick="toggleSidebar()"></i>
+            <h2>Trending Posts</h2>
+            <ul id="trendingPosts">
+                <li class="blog-banner">
+                    <img src="https://via.placeholder.com/300x200" alt="Blog Image">
+                    <div class="blog-details">
+                        <h3>Trending Blog Title 1</h3>
+                        <p>Short description of the trending blog.</p>
+                    </div>
+                </li>
+                <li class="blog-banner">
+                    <img src="https://via.placeholder.com/300x200" alt="Blog Image">
+                    <div class="blog-details">
+                        <h3>Trending Blog Title 2</h3>
+                        <p>Short description of the trending blog.</p>
+                    </div>
+                </li>
+            </ul>
+            <h2>Top Authors</h2>
+            <ul id="topAuthors">
+                <li class="author-banner">
+                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
+                    <div class="author-details">
+                        <h3>Author Name 1</h3>
+                        <p>Short bio of the author.</p>
+                    </div>
+                </li>
+                <li class="author-banner">
+                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
+                    <div class="author-details">
+                        <h3>Author Name 2</h3>
+                        <p>Short bio of the author.</p>
+                    </div>
+                </li>
+                <li class="author-banner">
+                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
+                    <div class="author-details">
+                        <h3>Author Name 3</h3>
+                        <p>Short bio of the author.</p>
+                    </div>
+                </li>
+            </ul>
+            <!-- ejs if(user) { -->
+                <h2>Blogs from People I Follow</h2>
+                <ul id="followedBlogs">
+                    <li class="blog-banner">
+                        <img src="https://via.placeholder.com/300x200" alt="Blog Image">
+                        <div class="blog-details">
+                            <h3>Followed Blog Title 1</h3>
+                            <p>Short description of the blog from followed user.</p>
+                        </div>
+                    </li>
+                    <li class="blog-banner">
+                        <img src="https://via.placeholder.com/300x200" alt="Blog Image">
+                        <div class="blog-details">
+                            <h3>Followed Blog Title 2</h3>
+                            <p>Short description of the blog from followed user.</p>
+                        </div>
+                    </li>
+                </ul>
+            <!-- ejs } -->
+        </div>
+    </div>
+</header>
 
-function searchBlogs() {
-    const query = document.getElementById("searchInput").value;
-    if (query.trim() !== "") {
-        fetch(`/search?query=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                const trendingPosts = document.getElementById("trendingPosts");
-                trendingPosts.innerHTML = "";
-                data.blogs.forEach(blog => {
-                    const li = document.createElement("li");
-                    li.textContent = blog.title;
-                    trendingPosts.appendChild(li);
-                });
-            })
-            .catch(error => console.error('Error:', error));
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
     }
-}
 
-    </script>
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            searchBlogs();
+        }
+    }
+
+    function searchBlogs() {
+        const query = document.getElementById('searchInput').value;
+        // Add your search logic here
+        console.log('Searching for:', query);
+    }
+</script>
