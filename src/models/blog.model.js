@@ -22,11 +22,11 @@ const blogSchema = new Schema(
         image: {
             type: String
         },
-        likes: {
+        likesCount: {
             type: Number,
             default: 0
         },
-        dislikes: {
+        dislikesCount: {
             type: Number,
             default: 0
         }

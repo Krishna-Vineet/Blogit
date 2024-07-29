@@ -10,7 +10,7 @@ const dislikeSchema = new Schema(
         },
         entityType: {
             type: String,
-            enum: ["blog", "comment"],
+            enum: ["Blog", "Comment"],
             required: true
         },
         entityId: {
