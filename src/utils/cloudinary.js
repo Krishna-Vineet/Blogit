@@ -34,6 +34,8 @@ const deleteFromCloudinary = async (cloudinaryURL) => {
     // Find the index of the 'upload' part (or 'fetch' for fetched images)
     const uploadIndex = parts.indexOf('upload');
     if (uploadIndex === -1) {
+        console.log('not a valid url');
+        return;
         throw new Error('Invalid Cloudinary URL');
     }
     // The public_id is after the version number, which is one position after 'upload'

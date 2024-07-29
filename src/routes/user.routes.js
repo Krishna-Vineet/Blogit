@@ -1,6 +1,6 @@
 import express from "express";
+
 import {
-    home,
     registerUser,
     loginUser,
     logoutUser,
@@ -15,14 +15,15 @@ import verifyJWT from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get('/', home);
+
+
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.post('/logout', logoutUser);
+router.post('/logout', verifyJWT, logoutUser);
 router.patch('/update', verifyJWT, updateUserDetails);
 router.patch('/update-avatar', verifyJWT, upload.single('avatar'), updateUserAvatar);
 router.patch('/update-password', verifyJWT, changeCurrentPassword);
 router.delete('/delete-account', verifyJWT, deleteUserAccount);
-router.get('/profile/:userId', verifyJWT, getUserDetails);
+router.get('/profile/:userId', verifyJWT, getUserDetails);  
 
 export default router;

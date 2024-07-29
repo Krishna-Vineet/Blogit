@@ -1,5 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiErrors.js";
+import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import Blog from "../models/blog.model.js";
 import Comment from "../models/comment.model.js";
@@ -37,46 +38,6 @@ const generateAccessAndRefreshToken = async(userId) =>
 }
 
 
-const home = asyncHandler(async (req, res) => {
-    const blogs = [
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 1', description: 'Short description of the blog post. This is a brief overview.' },
-        // Add more blog objects
-    ];
-    const events = [
-        { id: 1, image: 'https://via.placeholder.com/350x200', title: 'Event Title 1', description: 'Join us for an insightful session on cutting-edge technology. Reserve your spot today!', link: 'https://example.com' },
-        { id: 1, image: 'https://via.placeholder.com/350x200', title: 'Event Title 1', description: 'Join us for an insightful session on cutting-edge technology. Reserve your spot today!', link: 'https://example.com' },
-        // Add more event objects
-    ];
-    const popularBlogs = [
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
-        { id: 1, image: 'https://via.placeholder.com/300x200', title: 'Blog Title 3', description: 'Short description of the blog post. This is a brief overview.' },
-        // Add more blog objects
-    ];
-    const statistics = {
-        totalUsers: 120,
-        totalBlogs: 465,
-        topAuthor: 'Hitesh Rai',
-        mostLikedBlog: 'Exploring the Himalayas'
-    };
-    const trendingPosts = [
-        { id: 1, title: 'Trending Post 1', link: '#' },
-        { id: 2, title: 'Trending Post 2', link: '#' },
-        // Add more trending posts
-    ];
-    const followedUsers = [
-        { id: 1, name: 'John Doe', link: '#' },
-        { id: 2, name: 'Jane Smith', link: '#' },
-        // Add more followed users
-    ];
-
-    res.render('home', { blogs, events, popularBlogs, statistics, trendingPosts, categories, followedUsers });
-});
-
-
 const registerUser = asyncHandler(async (req, res) => {
     const { email, username, password } =  req.body;
     
@@ -93,13 +54,12 @@ const registerUser = asyncHandler(async (req, res) => {
       throw new ApiError(400, "Password must be at least 8 characters long");
     }
 
-    password = await bcrypt.hash(password, 10)
 
     const existedUser = await  User.findOne({
         $or: [{ username }, { email }]
     })
     if(existedUser){
-        return res.status(400).json(new ApiResponse(400, {}, "User already exists", "/login"));
+        throw new ApiError(400, "User already exists");
     }
  
     const user = await User.create({
@@ -174,22 +134,21 @@ const loginUser = asyncHandler(async (req, res) => {
                 accessToken,
                 refreshToken
             },
-            "User logged in successfully",
-            "/" // Redirect URL (handle redirection on frontend if needed)
+            "User logged in successfully"
         ));
 });
 
 
 const logoutUser = asyncHandler(async (req, res) => {
     try {
-        await User.findByIdAndUpdate(req?.user?._id, {
+        const user = await User.findByIdAndUpdate(req?.user?._id, {
             $unset: {
+                accessToken: "",
                 refreshToken: ""
             }
         }, {
             new: true
-        });
-
+        }).lean().select("-password -refreshToken");
         const options = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -200,7 +159,7 @@ const logoutUser = asyncHandler(async (req, res) => {
             .status(200)
             .clearCookie("accessToken", options)
             .clearCookie("refreshToken", options)
-            .json(new ApiResponse(200, {}, "User logged out successfully", '/'));
+            .json(new ApiResponse(200, user, "User logged out successfully"));
     } catch (error) {
         throw new ApiError(500, "Something went wrong while logging out the user");
     }
@@ -221,11 +180,14 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
     if (!isOldPasswordCorrect) {
         throw new ApiError(400, "Old password is incorrect");
     }
+    if (newPassword.length < 8) {
+        throw new ApiError(400, "Password must be at least 8 characters long");
+    }
     user.password = newPassword;
-    await user.save({ validateBeforeSave: false });
+    const updatedUser = await user.save({ validateBeforeSave: false }).select("-password -refreshToken");
 
 
-    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully"));
+    return res.status(200).json(new ApiResponse(200, updatedUser, "Password changed successfully"));
 
 })
 
@@ -235,6 +197,10 @@ const updateUserDetails = asyncHandler(async(req, res) => {
 
     if (!(email || username || bio)) {
         throw new ApiError(400, "Invalid details for updation.")
+    }
+
+    if(!req.user){
+        throw new ApiError(400, "Login again to update account details")
     }
 
     try {
@@ -249,7 +215,7 @@ const updateUserDetails = asyncHandler(async(req, res) => {
             },
             {new: true}
             
-        ).select("-password, -refreshToken")
+        ).select("-refreshToken -password");
     
         return res
         .status(200)
@@ -260,6 +226,10 @@ const updateUserDetails = asyncHandler(async(req, res) => {
 });
 
 const updateUserAvatar = asyncHandler(async(req, res) => {
+
+    if(!req.user){
+        throw new ApiError(400, "Login again to update avatar")
+    }
     const avatarLocalPath = req.file?.path       // we will inject multer middleware in route, but here we get single file only, so do req.file?.path instaed of req.files?.coverImage[0]?.path
 
     if (!avatarLocalPath) {
@@ -274,8 +244,9 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
         
     }
     const user = await User.findById(req.user?._id)
-    const oldAvatar = user.avatar;
-    await deleteFromCloudinary(oldAvatar);
+    if (user.avatar) {
+        await deleteFromCloudinary(user.avatar)
+    }
 
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -286,7 +257,7 @@ const updateUserAvatar = asyncHandler(async(req, res) => {
             }
         },
         {new: true}
-    ).select("-password, -refreshToken")
+    ).select("-password -refreshToken")
 
     return res
     .status(200)
@@ -299,7 +270,19 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
     try {
         const userId = req.user?._id;
 
-        // Delete user's blogs
+        if (!userId) {
+            throw new ApiError(400, "Login first to delete your account");
+        }
+
+        // Delete images from Cloudinary
+        const blogs = await Blog.find({ author: userId });
+        for (const blog of blogs) {
+            if (blog.image) {
+                await deleteFromCloudinary(blog.image);
+            }
+        }
+
+        // Delete blogs from the database
         await Blog.deleteMany({ author: userId });
 
         // Delete user's comments
@@ -315,9 +298,13 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
         await Follow.deleteMany({
             $or: [{ follower: userId }, { following: userId }]
         });
+        if(req.user?.avatar) await deleteFromCloudinary(req.user?.avatar);
 
         // Finally, delete the user
-        await User.findByIdAndDelete(userId);
+        const user = await User.findByIdAndDelete(userId);
+        if (user.avatar) {
+            await deleteFromCloudinary(user.avatar);
+        }
 
         // Clear cookies
         const options = {
@@ -330,7 +317,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
             .status(200)
             .clearCookie("accessToken", options)
             .clearCookie("refreshToken", options)
-            .json(new ApiResponse(200, {}, "Account deleted successfully", '/'));
+            .json(new ApiResponse(200, user, "Account deleted successfully", '/'));
 
     } catch (error) {
         throw new ApiError(500, "An error occurred while deleting the account", error);
@@ -340,7 +327,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
 const getUserDetails = asyncHandler(async (req, res) => {
     try {
-        const { userId: requestedUserId } = req.body;
+        const requestedUserId = req.params.userId; // Changed to req.params
         const currentUserId = req.user._id;
 
         const userId = requestedUserId || currentUserId;
@@ -352,7 +339,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
         }
 
         const userDetailsPipeline = [
-            { $match: { _id: mongoose.Types.ObjectId(userId) } },
+            { $match: { _id: new mongoose.Types.ObjectId(userId) } },
             {
                 $lookup: {
                     from: 'follows',
@@ -387,14 +374,12 @@ const getUserDetails = asyncHandler(async (req, res) => {
                     blogsCount: { $size: "$blogs" },
                     blogs: 1,
                     isFollowed: {
-                        $in: [mongoose.Types.ObjectId(currentUserId), "$followers.follower"]
+                        $in: [new mongoose.Types.ObjectId(currentUserId), "$followers.follower"]
                     }
                 }
             }
         ];
-
         const userDetails = await User.aggregate(userDetailsPipeline).exec();
-
         if (!userDetails.length) {
             throw new ApiError(404, "User details not found");
         }
@@ -402,20 +387,12 @@ const getUserDetails = asyncHandler(async (req, res) => {
         res.status(200).json(new ApiResponse(200, userDetails[0], "User details fetched successfully"));
 
     } catch (error) {
+        console.error("Error fetching user details:", error);
         throw new ApiError(500, "An error occurred while fetching user details", error);
     }
 });
 
 
 
-
-
-
-
-
-
-
-
-export {
-    home, registerUser, loginUser, logoutUser, changeCurrentPassword, updateUserAvatar, updateUserDetails, deleteUserAccount, getUserDetails
+export {registerUser, loginUser, logoutUser, changeCurrentPassword, updateUserAvatar, updateUserDetails, deleteUserAccount, getUserDetails
 }

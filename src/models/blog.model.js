@@ -20,8 +20,7 @@ const blogSchema = new Schema(
             type: String
         }],
         image: {
-            type: String,
-            default: 'https://i.pinimg.com/564x/2b/93/e7/2b93e7a5ab3080d4896be65adde7ac8f.jpg' // Default image URL
+            type: String
         },
         likes: {
             type: Number,

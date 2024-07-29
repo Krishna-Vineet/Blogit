@@ -68,7 +68,7 @@
             <div class="blog-grid">
                 <% blogs.forEach(blog => { %>
                     <div class="blog-card">
-                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
+                        <img src="<%= blog.imageUrl %>" alt="<%= blog.title %>">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
                             <p><%= blog.description %></p>
@@ -88,7 +88,7 @@
                 <% events.forEach(event => { %>
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="<%= event.image %>" alt="<%= event.title %>">
+                            <img src="<%= event.imageUrl %>" alt="<%= event.title %>">
                         </div>
                         <div class="event-details">
                             <h3><%= event.title %></h3>
@@ -107,7 +107,7 @@
             <div class="blog-grid">
                 <% popularBlogs.forEach(blog => { %>
                     <div class="blog-card">
-                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
+                        <img src="<%= blog.imageUrl %>" alt="<%= blog.title %>">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
                             <p><%= blog.description %></p>

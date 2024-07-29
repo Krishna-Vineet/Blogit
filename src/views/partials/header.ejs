@@ -1,5 +1,4 @@
 <link rel="stylesheet" href="/css/header.css">
-
 <header>
     <div class="header-container">
         <div class="left">
@@ -7,7 +6,7 @@
                 <i class="fa fa-bars"></i>
             </div>
             <div class="add">
-                <button><i class="fa-solid fa-pencil"></i>Add Blog</button>
+                <button onclick="location.href='/add-blog'"><i class="fa-solid fa-pencil"></i>Add Blog</button>
             </div>
         </div>
         <div class="logo">
@@ -15,93 +14,61 @@
         </div>
         <div class="right">
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleKeyPress(event)">
+                <input type="text" id="searchInput" placeholder="Search..." onkeypress="if(event.keyCode == 13) searchBlogs()">
                 <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
             </div>
-            <img src="https://i.pravatar.cc/100" alt="User Avatar">
+            <% if (user) { %>
+                <a href="/profile"><img src="<%= user.avatarUrl || 'https://i.pravatar.cc/100' %>" alt="User Avatar"></a>
+            <% } else { %>
+                <button class="sign-in" onclick="location.href='/login'"><i class="fa fa-user"></i> Sign In</button>
+            <% } %>
         </div>
     </div>
     <div id="sidebar" class="sidebar">
         <div class="sidebar-content">
-            <i class="fa fa-x" onclick="toggleSidebar()"></i>
-            <h2>Trending Posts</h2>
+            <div class="cross">
+
+                <i class="fa fa-x" onclick="toggleSidebar()"></i>
+            </div>
+            <h2>Trending Blogs</h2>
             <ul id="trendingPosts">
-                <li class="blog-banner">
-                    <img src="https://via.placeholder.com/300x200" alt="Blog Image">
-                    <div class="blog-details">
-                        <h3>Trending Blog Title 1</h3>
-                        <p>Short description of the trending blog.</p>
-                    </div>
-                </li>
-                <li class="blog-banner">
-                    <img src="https://via.placeholder.com/300x200" alt="Blog Image">
-                    <div class="blog-details">
-                        <h3>Trending Blog Title 2</h3>
-                        <p>Short description of the trending blog.</p>
-                    </div>
-                </li>
+                <% trendingBlogs.forEach(blog => { %>
+                    <li class="blog-banner">
+                        <img src="<%= blog.imageUrl %>" alt="Blog Image">
+                        <div class="blog-details">
+                            <h3><%= blog.title %></h3>
+                            <p>by <%= blog.author.username %></p>
+                        </div>
+                    </li>
+                <% }) %>
             </ul>
             <h2>Top Authors</h2>
             <ul id="topAuthors">
-                <li class="author-banner">
-                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
-                    <div class="author-details">
-                        <h3>Author Name 1</h3>
-                        <p>Short bio of the author.</p>
-                    </div>
-                </li>
-                <li class="author-banner">
-                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
-                    <div class="author-details">
-                        <h3>Author Name 2</h3>
-                        <p>Short bio of the author.</p>
-                    </div>
-                </li>
-                <li class="author-banner">
-                    <img src="https://via.placeholder.com/100x100" alt="Author Image">
-                    <div class="author-details">
-                        <h3>Author Name 3</h3>
-                        <p>Short bio of the author.</p>
-                    </div>
-                </li>
+                <% popularBlogs.forEach(blog => { %>
+                    <li class="author-banner">
+                        <img src="<%= blog.author.avatarUrl %>" alt="Author Avatar">
+                        <div class="author-details">
+                            <h3><%= blog.title %></h3>
+                            <p><%= blog.author.username %></p>
+                        </div>
+                    </li>
+                <% }) %>
             </ul>
-            <!-- ejs if(user) { -->
+            <% if (user) { %>
                 <h2>Blogs from People I Follow</h2>
-                <ul id="followedBlogs">
-                    <li class="blog-banner">
-                        <img src="https://via.placeholder.com/300x200" alt="Blog Image">
-                        <div class="blog-details">
-                            <h3>Followed Blog Title 1</h3>
-                            <p>Short description of the blog from followed user.</p>
-                        </div>
-                    </li>
-                    <li class="blog-banner">
-                        <img src="https://via.placeholder.com/300x200" alt="Blog Image">
-                        <div class="blog-details">
-                            <h3>Followed Blog Title 2</h3>
-                            <p>Short description of the blog from followed user.</p>
-                        </div>
-                    </li>
+                <ul id="followedUsersBlogs">
+                    <% followedUsers.forEach(blog => { %>
+                        <li class="blog-banner">
+                            <img src="<%= blog.imageUrl %>" alt="Blog Image">
+                            <div class="blog-details">
+                                <h3><%= blog.title %></h3>
+                                <p>by <%= blog.author.username %></p>
+                            </div>
+                        </li>
+                    <% }) %>
                 </ul>
-            <!-- ejs } -->
+            <% } %>
         </div>
     </div>
 </header>
-
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('active');
-    }
-
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            searchBlogs();
-        }
-    }
-
-    function searchBlogs() {
-        const query = document.getElementById('searchInput').value;
-        // Add your search logic here
-        console.log('Searching for:', query);
-    }
-</script>
+<script src="/js/header.js"></script>

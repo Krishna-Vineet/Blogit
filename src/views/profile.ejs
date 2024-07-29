@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/profile.css">
+    <title>Profile: <%= user ? user.username : 'Guest' %></title>
+</head>
+<body>
+    <% include partials/header %>
+    
+    <main>
+        <div id="avatar">
+            <img src="<%= user && user.avatarUrl ? user.avatarUrl : 'https://i.pravatar.cc/300' %>" alt="avatar">
+            <% if (user && user.isSelf) { %>
+                <a class="change" id="changeAvatarLink" href="#">Change Avatar</a>
+                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+            <% } %>
+        </div>
+        <div id="details">
+            <div class="name">
+                <h1><%= user ? user.username : 'Guest' %></h1>
+                <% if (user && user.isSelf) { %>
+                    <a href="/profile/edit" class="follow">Change Username</a>
+                <% } else if (user) { %>
+                    <a href="#" class="follow">Follow</a>
+                <% } %>
+            </div>
+            <div class="bio">
+                <p><%= user ? user.bio : 'This is a guest profile.' %></p>
+            </div>
+            <div class="detail">
+                <h3><span><%= user ? user.followersCount : 0 %></span> Followers</h3>
+                <h3><span><%= user ? user.followingCount : 0 %></span> Following</h3>
+                <h3><span><%= user ? user.blogsCount : 0 %></span> Blogs</h3>
+            </div>
+        </div>
+    </main>
+    <section>
+        <h2>Blogs by <%= user ? user.username : 'Guest' %></h2>
+        <div class="userBlogCategory">
+            <h3>Category: </h3>
+            <a href="#" class="active">All</a>
+            <!-- Add dynamic category links -->
+        </div>
+        <div id="userBlogs">
+            <!-- Dynamic blog entries here -->
+        </div>
+    </section>
+
+    <% include partials/footer %>
+    <script src="/js/profile.js"></script>
+</body>
+</html>
