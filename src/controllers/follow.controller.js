@@ -8,7 +8,6 @@ import Follow from "../models/follow.model.js";
 const toggleFollow = asyncHandler(async (req, res) => {
     const {targetUserId} = req.params;
     const currentUserId = req.user._id;
-    console.log(targetUserId, currentUserId);
 
     // Ensure the user is not trying to follow/unfollow themselves
     if (targetUserId === currentUserId.toString()) {

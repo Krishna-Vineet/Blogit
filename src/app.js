@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import verifyJWT from "./middlewares/auth.middleware.js";
+import ApiError from "./utils/ApiErrors.js";
 
 const app = express();
 
@@ -28,7 +29,28 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Redirects
+app.get('/', verifyJWT, (req, res) => {
+    if (req.user) {
+        res.redirect('/home')
+    } else {
+        res.redirect('/login')
+    }
+})
 
+app.get('/login', (req, res) => {
+    res.render('login')
+})
+app.get('/register', (req, res) => {
+    res.render('register')
+})
+app.get('/home', (req, res) => {
+    res.render('home')
+})
+
+
+
+import siteRoutes from './routes/site.routes.js';
 import userRoutes from './routes/user.routes.js';
 import blogRoutes from './routes/blog.routes.js';
 import commentRoutes from './routes/comment.routes.js';
@@ -37,9 +59,24 @@ import followRoutes from './routes/follow.routes.js';
 
 
 // Routes
+// app.use('', functionsRoutes);
 app.use('/user', userRoutes);
 app.use('/blog', blogRoutes);
 app.use('/comment', commentRoutes);
 app.use('/follow', followRoutes);
+
+
+
+
+// app.use((err, req, res, next) => {
+//     if (err instanceof ApiError) {
+//         res.status(err.statusCode).json({ message: err.message });
+//     } else {
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// });
+
+
+
 
 export default app;

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/auth.css">
+    <title>Sign Up</title>
+</head>
+<body>
+    <div class="form_wrapper">
+        <div class="form_container">
+            <div class="title_container">
+                <h2 class="company">Blogit</h2>
+                <h2>Register Yourself</h2>
+            </div>
+            <div class="row clearfix">
+                <form id="registerForm">
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                        <input type="text" name="username" suggestion="off" placeholder="Username" suggestion="off" required />
+                    </div>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                        <input type="email" name="email" suggestion="off" placeholder="Email" suggestion="off" required />
+                    </div>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                        <input type="password" name="password" suggestion="off" placeholder="Password" suggestion="off" required />
+                    </div>
+                    <div class="input_field checkbox_option">
+                        <input type="checkbox" id="cb1" required>
+                        <label for="cb1">I agree with terms and conditions</label>
+                    </div>
+                    <div class="input_field checkbox_option">
+                        <input type="checkbox" id="cb2">
+                        <label for="cb2">I want to receive the newsletter</label>
+                    </div>
+                    <input class="button" type="submit" value="Register" />
+                </form>
+                <h3>Already have an account? <a href="/login">Login</a></h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            try {
+                const response = await fetch('/user/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    console.log(response);
+                    const errorData = await response.json();
+                    alert(errorData.message);
+                } else {
+                    const responseData = await response.json();
+                    console.log(responseData);
+                    await fetch('/', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                }
+            } catch (error) {
+                alert('An unexpected error occurred');
+            }
+        });
+    </script>
+</body>
+</html>

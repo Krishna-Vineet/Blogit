@@ -70,6 +70,9 @@ body {
     position: relative;
     margin-bottom: 20px;
   }
+  .form_wrapper .login_username{
+    margin-bottom: 5px;
+  }
   .form_wrapper .input_field > span {
     position: absolute;
     left: 0;
@@ -88,7 +91,7 @@ body {
   }
   .form_wrapper input {
     width: 100%;
-    padding: 8px 10px 9px 35px;
+    padding: 9px 10px 9px 35px;
     height: 35px;
     border: 1px solid #cfcfcf;
     background: #2c2c2c;
@@ -183,7 +186,13 @@ body {
     height: 20px;
     border-color: #ffffff;
   }
-  
+  p.or{
+    text-align: center;
+    margin-bottom: 5px;
+    font-size: 1.2em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
  h3{
   font-weight: 300;
   margin-top: 10px;
@@ -192,6 +201,7 @@ body {
   color: #f5ba1a;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
  }
  h3 a:hover{
   text-decoration: underline;
@@ -239,9 +249,5 @@ body {
   
     .form_container .row .col_half.last {
       border-left: none;
-    }
-  
-    .remember_me {
-      padding-bottom: 20px;
     }
   }

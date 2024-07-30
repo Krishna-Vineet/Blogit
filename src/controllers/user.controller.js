@@ -38,20 +38,20 @@ const generateAccessAndRefreshToken = async(userId) =>
 }
 
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res, next) => {
     const { email, username, password } =  req.body;
     
     if ( [email, username, password].some(field => field === "")) {
-        throw new ApiError(400, "All fields are required");
+        return next(new ApiError(400, "All fields are required"));
     }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new ApiError(400, "Invalid email address");
+      return next(new ApiError(400, "Invalid email address"));
     }
 
     if (password.length < 8) {
-      throw new ApiError(400, "Password must be at least 8 characters long");
+      return next(new ApiError(400, "Password must be at least 8 characters long"));
     }
 
 
@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async (req, res) => {
         $or: [{ username }, { email }]
     })
     if(existedUser){
-        throw new ApiError(400, "User already exists");
+       return next(new ApiError(400, "User already exists"));
     }
  
     const user = await User.create({
@@ -71,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
     if(!createdUser){
-        throw new ApiError(500, "Something went wrong while registering the user");
+        return next(new ApiError(500, "Something went wrong while registering the user"));
     }
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
 
@@ -84,7 +84,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, {createdUser, accessToken, refreshToken}, "User created successfully", '/')) || ApiError(500, "Something went wrong while registering the user");
+    .json(new ApiResponse(200, {createdUser, accessToken, refreshToken}, "User created successfully")) || ApiError(500, "Something went wrong while registering the user");
 })
 
 
