@@ -150,3 +150,7 @@ This project is a comprehensive blog management system with user authentication,
 - *20 Jul, 2024:* Team member added _Sunaina_
 - *21 Jul, 2024:* Backend work start
 - *22 Jul, 2024:* _Sunaina_ Kicked out from project
+- *26 Jul, 2024:* 1st round Backend work finished
+- *27 Jul, 2024:* Frontend Integration Begins
+- *28 Jul, 2024:* Undo every integration due to lots of error
+- *30 Jul, 2024:* All routes till date are tested in Postman

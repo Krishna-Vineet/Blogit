@@ -7,7 +7,7 @@ const followSchema = new Schema(
             ref: "User",
             required: true,
         },
-        hasFollow: {
+        hasFollowed: {
             type: Schema.Types.ObjectId,
             ref: "User",
             required: true,

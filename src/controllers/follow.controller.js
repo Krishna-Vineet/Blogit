@@ -6,8 +6,9 @@ import Follow from "../models/follow.model.js";
 
 // Controller to toggle follow status
 const toggleFollow = asyncHandler(async (req, res) => {
-    const { userId: targetUserId } = req.params;
+    const {targetUserId} = req.params;
     const currentUserId = req.user._id;
+    console.log(targetUserId, currentUserId);
 
     // Ensure the user is not trying to follow/unfollow themselves
     if (targetUserId === currentUserId.toString()) {
@@ -21,7 +22,7 @@ const toggleFollow = asyncHandler(async (req, res) => {
     }
 
     // Check if the current user is already following the target user
-    const existingFollow = await Follow.findOne({ follower: currentUserId, following: targetUserId });
+    const existingFollow = await Follow.findOne({ hasFollowed: currentUserId, isFollowed: targetUserId });
 
     if (existingFollow) {
         // If already following, unfollow
@@ -38,7 +39,7 @@ const toggleFollow = asyncHandler(async (req, res) => {
         return res.status(200).json(new ApiResponse(200, { isFollowed: false }, "User unfollowed successfully"));
     } else {
         // If not following, follow
-        await Follow.create({ follower: currentUserId, following: targetUserId });
+        await Follow.create({ hasFollowed: currentUserId, isFollowed: targetUserId });
 
         // Update follow counts
         targetUser.followersCount += 1;

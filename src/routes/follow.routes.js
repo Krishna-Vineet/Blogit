@@ -4,6 +4,6 @@ import verifyJWT from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.post('/follow/:id', verifyJWT, toggleFollow);
+router.post('/:targetUserId', verifyJWT, toggleFollow);
 
 export default router;
