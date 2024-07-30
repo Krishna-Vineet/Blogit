@@ -12,6 +12,9 @@ const addComment = asyncHandler(async (req, res) => {
     const { text } = req.body;
     const userId = req.user._id;
 
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized");
+    }
     // Check if text is provided
     if (!text) {
         throw new ApiError(400, "Comment text is required");
@@ -25,14 +28,10 @@ const addComment = asyncHandler(async (req, res) => {
 
     // Create a new comment
     const comment = await Comment.create({
-        text,
+        content: text,
         author: userId,
         blog: blogId
     });
-
-    // Add the comment ID to the blog's comments array
-    blog.comments.push(comment._id);
-    await blog.save();
 
     // Populate the comment with the necessary fields
     const populatedComment = await Comment.findById(comment._id)
@@ -66,12 +65,12 @@ const editComment = asyncHandler(async (req, res) => {
     }
 
     // Update the comment
-    comment.text = text;
+    comment.content = text;
     await comment.save();
 
     // Fetch like and dislike counts from separate models
-    const likeCount = await Like.countDocuments({ comment: commentId });
-    const dislikeCount = await Dislike.countDocuments({ comment: commentId });
+    const likeCount = await Like.countDocuments({ entityType: "Comment", entityId: commentId });
+    const dislikeCount = await Dislike.countDocuments({ entityType: "Comment", entityId: commentId });
 
     // Populate the comment with the necessary fields for the response
     const updatedComment = await Comment.findById(commentId)
@@ -102,14 +101,14 @@ const deleteComment = asyncHandler(async (req, res) => {
     }
 
     // Delete the comment
-    await Comment.findByIdAndDelete(commentId);
+    const deletedComment = await Comment.findByIdAndDelete(commentId);
 
     // Delete associated likes and dislikes
-    await Like.deleteMany({ comment: commentId });
-    await Dislike.deleteMany({ comment: commentId });
+    await Like.deleteMany({ entityType: "Comment", entityId: commentId });
+    await Dislike.deleteMany({ entityType: "Comment", entityId: commentId });
 
     // Send success response
-    res.status(200).json(new ApiResponse(200, {}, "Comment deleted successfully"));
+    res.status(200).json(new ApiResponse(200, deletedComment, "Comment deleted successfully"));
 });
 
 // Controller to like or unlike a comment
@@ -124,7 +123,7 @@ const likeComment = asyncHandler(async (req, res) => {
     }
 
     // Check if the user has already liked the comment
-    const existingLike = await Like.findOne({ comment: commentId, user: userId });
+    const existingLike = await Like.findOne({ entityType: "Comment", entityId: commentId, user: userId });
     if (existingLike) {
         // Remove the like if it exists
         await Like.findByIdAndDelete(existingLike._id);
@@ -133,7 +132,7 @@ const likeComment = asyncHandler(async (req, res) => {
         await comment.save();
     } else {
         // Check if the user has disliked the comment
-        const existingDislike = await Dislike.findOne({ comment: commentId, user: userId });
+        const existingDislike = await Dislike.findOne({ entityType: "Comment", entityId: commentId, user: userId });
         if (existingDislike) {
             // Remove the dislike if it exists
             await Dislike.findByIdAndDelete(existingDislike._id);
@@ -141,14 +140,14 @@ const likeComment = asyncHandler(async (req, res) => {
             comment.dislikesCount -= 1;
         }
         // Add the like
-        await Like.create({ comment: commentId, user: userId });
+        await Like.create({ entityType: "Comment", entityId: commentId, user: userId });
         // Update comment's like count
         comment.likesCount += 1;
         await comment.save();
     }
-
+    const updatedComment = await Comment.findById(commentId);
     // Send success response
-    res.status(200).json(new ApiResponse(200, {}, "Like status updated successfully"));
+    res.status(200).json(new ApiResponse(200, updatedComment, "Like status updated successfully"));
 });
 
 
@@ -164,7 +163,7 @@ const dislikeComment = asyncHandler(async (req, res) => {
     }
 
     // Check if the user has already disliked the comment
-    const existingDislike = await Dislike.findOne({ comment: commentId, user: userId });
+    const existingDislike = await Dislike.findOne({ entityType: "Comment", entityId: commentId, user: userId });
     if (existingDislike) {
         // Remove the dislike if it exists
         await Dislike.findByIdAndDelete(existingDislike._id);
@@ -173,7 +172,7 @@ const dislikeComment = asyncHandler(async (req, res) => {
         await comment.save();
     } else {
         // Check if the user has liked the comment
-        const existingLike = await Like.findOne({ comment: commentId, user: userId });
+        const existingLike = await Like.findOne({ entityType: "Comment", entityId: commentId, user: userId });
         if (existingLike) {
             // Remove the like if it exists
             await Like.findByIdAndDelete(existingLike._id);
@@ -181,14 +180,15 @@ const dislikeComment = asyncHandler(async (req, res) => {
             comment.likesCount -= 1;
         }
         // Add the dislike
-        await Dislike.create({ comment: commentId, user: userId });
+        await Dislike.create({ entityType: "Comment", entityId: commentId, user: userId });
         // Update comment's dislike count
         comment.dislikesCount += 1;
         await comment.save();
     }
+    const updatedComment = await Comment.findById(commentId);
 
     // Send success response
-    res.status(200).json(new ApiResponse(200, {}, "Dislike status updated successfully"));
+    res.status(200).json(new ApiResponse(200, updatedComment, "Dislike status updated successfully"));
 });
 
 export {

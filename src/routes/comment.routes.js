@@ -11,9 +11,9 @@ import verifyJWT from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post('/add/:blogId', verifyJWT, addComment);
-router.patch('/edit/:id', verifyJWT, editComment);
-router.delete('/delete/:id', verifyJWT, deleteComment);
-router.post('/like/:id', verifyJWT, likeComment);
-router.post('/dislike/:id', verifyJWT, dislikeComment);
+router.patch('/edit/:commentId', verifyJWT, editComment);
+router.post('/like/:commentId', verifyJWT, likeComment);
+router.post('/dislike/:commentId', verifyJWT, dislikeComment);
+router.delete('/delete/:commentId', verifyJWT, deleteComment);
 
 export default router;

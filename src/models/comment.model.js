@@ -16,18 +16,15 @@ const commentSchema = new Schema(
             ref: "Blog",
             required: true,
         },
-        likedBy: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
-        dislikedBy: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-            },
-        ],
+        likesCount: {
+            type: Number,
+            default: 0
+        },
+       dislikesCount: {
+            type: Number,
+            default: 0
+        }
+        ,
     },
     {
         timestamps: true,
