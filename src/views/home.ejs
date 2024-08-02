@@ -18,7 +18,9 @@
                 <p>Your go-to place for the latest and greatest in blogging. Discover, explore, and share your thoughts with the world.</p>
                 <div class="cta-buttons">
                     <a href="#explore-blogs" class="btn explore-btn">Explore Blogs</a>
-                    <a href="#add-blog" class="btn add-blog-btn">Add Blog</a>
+                    <% if (user) { %>
+                        <a href='/add-blog' class="btn add-blog-btn">Add Blog</a>
+                    <%  } %>
                 </div>
             </div>
         </section>
@@ -66,13 +68,13 @@
         <section class="latest-blogs">
             <h2>Latest Blogs</h2>
             <div class="blog-grid">
-                <% blogs.forEach(blog => { %>
+                <% latestBlogs.forEach(blog => { %>
                     <div class="blog-card">
-                        <img src="<%= blog.imageUrl %>" alt="<%= blog.title %>">
+                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
-                            <p><%= blog.description %></p>
-                            <a href="/blog/<%= blog.id %>">Read More</a>
+                            <p><%= blog.content.substring(0, 100) %></p>
+                            <a href="/blog/view/<%= blog._id %>">Read More</a>
                         </div>
                     </div>
                 <% }) %>
@@ -85,18 +87,37 @@
         <section class="upcoming-events">
             <h2>Upcoming Events & Webinars</h2>
             <div class="events-grid">
-                <% events.forEach(event => { %>
-                    <div class="event-card">
-                        <div class="event-image">
-                            <img src="<%= event.imageUrl %>" alt="<%= event.title %>">
-                        </div>
-                        <div class="event-details">
-                            <h3><%= event.title %></h3>
-                            <p><%= event.description %></p>
-                            <a href="<%= event.link %>" target="_blank">Learn More</a>
-                        </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/350x200" alt="Event 1">
                     </div>
-                <% }) %>
+                    <div class="event-details">
+                        <h3>Event Title 1</h3>
+                        <p>Join us for an insightful session on cutting-edge technology. Reserve your spot today!</p>
+                        <a href="https://example.com" target="_blank">Learn More</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/350x200" alt="Event 2">
+                    </div>
+                    <div class="event-details">
+                        <h3>Event Title 2</h3>
+                        <p>Don't miss this webinar featuring industry experts. Click to find out more!</p>
+                        <a href="https://example.com" target="_blank">Learn More</a>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://via.placeholder.com/350x200" alt="Event 2">
+                    </div>
+                    <div class="event-details">
+                        <h3>Event Title 2</h3>
+                        <p>Don't miss this webinar featuring industry experts. Click to find out more!</p>
+                        <a href="https://example.com" target="_blank">Learn More</a>
+                    </div>
+                </div>
+                <!-- Add more event cards as needed -->
             </div>
         </section>
         
@@ -107,11 +128,11 @@
             <div class="blog-grid">
                 <% popularBlogs.forEach(blog => { %>
                     <div class="blog-card">
-                        <img src="<%= blog.imageUrl %>" alt="<%= blog.title %>">
+                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
-                            <p><%= blog.description %></p>
-                            <a href="/blog/<%= blog.id %>">Read More</a>
+                            <p><%= blog.content.substring(0, 100) %></p>
+                            <a href="/blog/view/<%= blog._id %>">Read More</a>
                         </div>
                     </div>
                 <% }) %>

@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="/css/header.css">
-<header>
+
     <div class="header-container">
         <div class="left">
             <div class="hamburger" onclick="toggleSidebar()">
@@ -14,61 +15,32 @@
         </div>
         <div class="right">
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search..." onkeypress="if(event.keyCode == 13) searchBlogs()">
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search..." onkeypress="if(event.keyCode == 13) searchBlogs()">
                 <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
             </div>
-            <% if (user) { %>
-                <a href="/profile"><img src="<%= user.avatarUrl || 'https://i.pravatar.cc/100' %>" alt="User Avatar"></a>
-            <% } else { %>
-                <button class="sign-in" onclick="location.href='/login'"><i class="fa fa-user"></i> Sign In</button>
-            <% } %>
+            <div id="user-profile">
+                <!-- User profile will be dynamically updated -->
+            </div>
         </div>
     </div>
     <div id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="cross">
-
                 <i class="fa fa-x" onclick="toggleSidebar()"></i>
             </div>
             <h2>Trending Blogs</h2>
             <ul id="trendingPosts">
-                <% trendingBlogs.forEach(blog => { %>
-                    <li class="blog-banner">
-                        <img src="<%= blog.imageUrl %>" alt="Blog Image">
-                        <div class="blog-details">
-                            <h3><%= blog.title %></h3>
-                            <p>by <%= blog.author.username %></p>
-                        </div>
-                    </li>
-                <% }) %>
+                <!-- Trending blogs will be dynamically updated -->
             </ul>
-            <h2>Top Authors</h2>
+            <h2>Popular Authors</h2>
             <ul id="topAuthors">
-                <% popularBlogs.forEach(blog => { %>
-                    <li class="author-banner">
-                        <img src="<%= blog.author.avatarUrl %>" alt="Author Avatar">
-                        <div class="author-details">
-                            <h3><%= blog.title %></h3>
-                            <p><%= blog.author.username %></p>
-                        </div>
-                    </li>
-                <% }) %>
+                <!-- Top authors will be dynamically updated -->
             </ul>
-            <% if (user) { %>
-                <h2>Blogs from People I Follow</h2>
-                <ul id="followedUsersBlogs">
-                    <% followedUsers.forEach(blog => { %>
-                        <li class="blog-banner">
-                            <img src="<%= blog.imageUrl %>" alt="Blog Image">
-                            <div class="blog-details">
-                                <h3><%= blog.title %></h3>
-                                <p>by <%= blog.author.username %></p>
-                            </div>
-                        </li>
-                    <% }) %>
-                </ul>
-            <% } %>
+            <div id="followedBlogsSection">
+                <!-- Followed user blogs will be dynamically updated -->
+            </div>
         </div>
     </div>
-</header>
-<script src="/js/header.js"></script>
+    <script src="/js/header.js"></script>
+
+

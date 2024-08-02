@@ -1,26 +1,23 @@
-import User from "../models/user.model";
-import Blog from "../models/blog.model";
-import Comment from "../models/comment.model";
-import Like from "../models/like.model";
-import Dislike from "../models/dislike.model";
-import Follow from "../models/follow.model";
+import User from "../models/user.model.js";
+import Blog from "../models/blog.model.js";
+import Comment from "../models/comment.model.js";
+import Like from "../models/like.model.js";
+import Dislike from "../models/dislike.model.js";
+import Follow from "../models/follow.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiErrors.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-
 const getHomePage = asyncHandler(async (req, res, next) => {
-    if (!req.user) {
-        return next(new ApiError(400, "User not found"));
+    let user = null;
+    if (req?.user?._id) {
+        user = await User.findById(req.user._id).select("-password -refreshToken");
     }
-    const user = await User.findById(req.user._id).select("-password -refreshToken");
+    
     try {
         // Fetch latest blogs
-        const blogs = await Blog.find({}).sort({ createdAt: -1 }).limit(10);
-
-        // Fetch upcoming events
-        const events = await Event.find({}).sort({ date: 1 }).limit(10);
+        const latestBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(10);
 
         // Fetch popular blogs
         const popularBlogs = await Blog.find({}).sort({ likes: -1 }).limit(10);
@@ -32,34 +29,66 @@ const getHomePage = asyncHandler(async (req, res, next) => {
         const mostLikedBlog = await Blog.findOne().sort({ likes: -1 });
 
         // Fetch trending blogs
-        const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(10);
+        // const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(3);
 
         // Fetch blogs from people user follows (assuming req.user contains the logged-in user's info)
-        let followedUsersBlogs = [];
-        if (req.user) {
-            const followedUsers = await User.find({ _id: { $in: req.user.following } });
-            followedUsersBlogs = await Blog.find({ author: { $in: followedUsers.map(user => user._id) } }).limit(10);
-        }
+        // let followedUserBlogs = [];
+        // if (user) {
+        //     const followedUsers = await Follow.find({ follower: user._id }).populate('following', '_id');
+        //     followedUserBlogs = await Blog.find({ author: { $in: followedUsers.map(follow => follow.following._id) } }).limit(10);
+        // }
 
         // Render the home page with fetched data
-        res.render('home', {
-            user: req.user,
-            blogs,
-            events,
+        const data = {
+            user,
+            latestBlogs,
             popularBlogs,
+            // topAuthors,
             statistics: {
                 totalUsers,
                 totalBlogs,
                 topAuthor: topAuthor ? topAuthor.username : 'N/A',
                 mostLikedBlog: mostLikedBlog ? mostLikedBlog.title : 'N/A'
             },
-            trendingBlogs,
-            followedUsersBlogs
-        });
+            // trendingBlogs,
+            // followedUserBlogs
+        };
+        res.render('home', data);
     } catch (error) {
-        next(error);
+        return next(new ApiError(500, "Something went wrong while fetching home page data"));
     }
 });
 
 
-export { getHomePage }
+const getHeaderDetails = asyncHandler(async (req, res, next) => {
+    let user = null;
+    if (req?.user?._id) {
+        user = await User.findById(req.user._id).select("-password -refreshToken");
+    }
+    try {
+        const topAuthors = await User.find({}).sort({ blogCount: -1 }).limit(3);
+        const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(3);
+    
+            // Fetch blogs from people user follows (assuming req.user contains the logged-in user's info)
+        let followedUserBlogs = [];
+        if (user) {
+            const followedUsers = await Follow.find({ follower: user._id }).populate('following', '_id');
+            followedUserBlogs = await Blog.find({ author: { $in: followedUsers.map(follow => follow.following._id) } }).limit(10);
+        }
+
+        res.json({ user, topAuthors, trendingBlogs, followedUserBlogs });
+    } catch (error) {
+        return next(new ApiError(500, "Something went wrong while fetching header details"));
+    }
+    
+    
+})
+
+
+const getAddBlogPage = asyncHandler(async (req, res, next) => {
+    
+    
+    res.render('add-blog');
+})  
+
+export { getHomePage, getAddBlogPage, getHeaderDetails };

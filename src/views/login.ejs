@@ -16,16 +16,16 @@
             <h2>Login to Your Account</h2>
           </div>
           <div class="row clearfix">
-              <form id="loginForm">
+              <form id="loginForm" autocomplete="off">
                 <div class="input_field login_username"> <span><i aria-hidden="true" class="fa fa-user"></i></span>
-                  <input type="text" name="username" suggestion="off" placeholder="Username" autocomplete="off" />
+                  <input type="text" name="username" placeholder="Username" />
                 </div>
-                <p class="or">or</p>
+                <p class="or">OR</p>
                 <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
-                  <input type="email" name="email" suggestion="off" placeholder="Email" autocomplete="off" />
+                  <input type="email" name="email" placeholder="Email" />
                 </div>
                 <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
-                  <input type="password" name="password" suggestion="off" placeholder="Password" autocomplete="off" required />
+                  <input type="password" name="password" suggestion="off" placeholder="Password" required />
                 </div>
                 
                 <!-- <div class="input_field checkbox_option">
@@ -52,29 +52,25 @@
             };
 
             try {
-                const response = await fetch('/user/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+        const response = await fetch('/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
 
-                if (!response.ok) {
-                    console.log(response);
-                    const errorData = await response.json();
-                    alert(errorData.message);
-                } else {
-                    const responseData = await response.json();
-                    console.log(responseData.data);
-                    await fetch('/', {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-                }
-            } catch (error) {
-                alert('An unexpected error occurred');
-            }
+        if (!response.ok) {
+            const errorData = await response.json();
+            alert(errorData.errorMessage || 'An unexpected error occurred');
+        } else {
+            const responseData = await response.json();
+            console.log(responseData.data.user);
+            window.location.href = '/';
+        }
+    } catch (error) {
+        alert('An unexpected error occurred');
+    }
         });
     </script>
 </body>

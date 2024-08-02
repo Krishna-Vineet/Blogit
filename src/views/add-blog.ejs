@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css" />
+    <link rel="stylesheet" href="css/add-blog.css">
+    <title>Add Blog</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <div class="body">
+        <div class="container">
+            
+            <h2>Add Blog</h2>
+            <form id="addBlogForm" autocomplete="off">
+                <div class="input_field">
+                    <input type="text" id="blogTitle" name="blogTitle" placeholder="Blog Title" required>
+                </div>
+                <div class="input_field">
+                    <label for="blogImage">Choose Blog Image</label>
+                    <input type="file" id="blogImage" name="blogImage" accept="image/*" required>
+                    <div class="file-info" id="fileInfo">No file chosen</div>
+                </div>
+                <div class="image-preview" id="imagePreview"></div>
+                <div class="input_field">
+                    <div id="editor" name="blogContent" placeholder="Write your blog content here..."></div>
+                </div>
+                <div class="input_field">
+                    <select id="categorySelect">
+                        <option value="">Select Category</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Food">Food</option>
+                        <option value="Health">Health</option>
+                        <option value="Science">Science</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Sports">Sports</option>
+                    </select>
+                </div>
+                <div class="category-container" id="categoryContainer"></div>
+                <div class="input_field publish-button-input">
+                    <button type="submit">Publish Blog</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.ckeditor.com/ckeditor5/35.0.0/classic/ckeditor.js"></script>
+    <script src="js/add-blog.js"></script>
+    <%- include('partials/footer') %>
+</body>
+</html>

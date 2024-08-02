@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project is a comprehensive blog management system with user authentication, blog creation and management, interactions, category management, search and filtering, file management, analytics, and event promotions. It is built using Node.js, Express, MongoDB, and Cloudinary.
+This project is a comprehensive blog management system with user authentication, blog creation and management, interactions, search and filtering, file management, analytics, and event promotions. It is built using Node.js, Express, MongoDB, and Cloudinary.
 
 ## Features we are expecting
 
@@ -72,11 +72,11 @@ This project is a comprehensive blog management system with user authentication,
 ## Detailed Task for Krishna
 
 ### 0. Create Mongoose Models:
-- User Model: Done on 22 Jul, 2024
-- Blog Model: Done on 22 Jul, 2024
-- Comment Model: Done on 22 Jul, 2024
-- Follow Model: Done on 22 Jul, 2024
-- Like Model : Done on 22 Jul, 2024
+- User Model
+- Blog Model
+- Comment Model
+- Follow Model
+- Like Model
 
 ### 1. User Authentication and Management
 - **Routes**:
@@ -87,9 +87,9 @@ This project is a comprehensive blog management system with user authentication,
   - `PUT /profile`: Update user profile details.
   - `DELETE /profile`: Delete user account.
 - **Controllers**:
-  - `registerUser`, `loginUser`, `logoutUser`, `getProfile`, `updateUserDetails`, `changeCurrentPassword`, `updateAvatar`, `deleteUserAccount`        All done on 22 Jul, 2024
+  - `registerUser`, `loginUser`, `logoutUser`, `getProfile`, `updateUserDetails`, `changeCurrentPassword`, `updateAvatar`, `deleteUserAccount`
 - **Middleware**:
-  - `authenticateUser`, `multer`      Done on 21 July, 2024
+  - `authenticateUser`, `multer`
 
 ### 2. Blog Management
 - **Routes**:
@@ -99,9 +99,9 @@ This project is a comprehensive blog management system with user authentication,
   - `PUT /blogs/:id`: Update a blog by ID.
   - `DELETE /blogs/:id`: Delete a blog by ID.
 - **Controllers**:
-  - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`  All done on 23 Jul, 2024
+  - `getAllBlogs`, `getBlogById`, `createBlog`, `updateBlog`, `deleteBlog`
 - **Middleware**:
-  - `authenticateUser`, `multer`      Done on 21 July, 2024
+  - `authenticateUser`, `multer`
 
 ### 3. Blog Interaction
 - **Routes**:
@@ -145,7 +145,7 @@ This project is a comprehensive blog management system with user authentication,
 
 ## Project Timeline
 - *15 Jul, 2024:* Got a task by Bharat Intern to make basic blogging page for them.
-- *17 Jul, 2024:* Decided to make an loaded full fledged blog webapp **BLOGIT** as a personal project, rejected Bharat Intern
+- *17 Jul, 2024:* Decided to make an loaded full fledged blog webapp **BLOGIT** as a personal project,        rejected Bharat Intern
 - *19 Jul, 2024:* Basic frontend design complete.
 - *20 Jul, 2024:* Team member added _Sunaina_
 - *21 Jul, 2024:* Backend work start
@@ -154,3 +154,5 @@ This project is a comprehensive blog management system with user authentication,
 - *27 Jul, 2024:* Frontend Integration Begins
 - *28 Jul, 2024:* Undo every integration due to lots of error
 - *30 Jul, 2024:* All routes till date are tested in Postman
+- *31 Jul, 2024:* Authentication frontend-backend integration done along with token logic.
+- *02 Aug, 2024:* Header, HomePage and Add Blog page linked with db and backend.

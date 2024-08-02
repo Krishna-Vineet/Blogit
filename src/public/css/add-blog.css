@@ -1,0 +1,274 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: #fff;
+}
+.body {
+
+    background-color: #1f1f1f;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin-top: 90px;
+    margin-bottom: 30px;
+}
+.container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.input_field {
+    margin-bottom: 20px;
+}
+.input_field input[type="text"],
+.input_field textarea {
+    width: 100%;
+    font-size: 20px;
+    padding: 10px;
+    border: none;
+    background-color: #292929;
+    color: #fff;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.input_field input[type="text"]:focus,
+.input_field textarea:focus {
+    border-bottom: 1px solid #f5ba1a;
+}
+.input_field textarea {
+    height: 300px;
+}
+.input_field input[type="file"] {
+    display: none;
+}
+.input_field label {
+    display: block;
+    padding: 10px;
+    background-color: #f5ba1a;
+    color: #fff;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+.input_field label:hover {
+    background-color: #e1a70a;
+}
+.input_field .file-info {
+    text-align: center;
+    margin-top: 10px;
+    color: #cacaca;
+}
+.publish-button-input {
+    display: flex;
+    justify-content: flex-end;
+}
+.input_field button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #f5ba1a;
+    border: none;
+    color: #fff;
+    margin-left: auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.input_field button[type="submit"]:hover {
+    background-color: #e1a70a;
+}
+.image-preview {
+    margin-bottom: 20px;
+    text-align: center;
+}
+.image-preview img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    max-height: 300px; /* restrict the height */
+}
+/* Styling for CKEditor */
+.ck-editor__editable_inline {
+    background-color: #292929;
+    color: #fff;
+    border: 1px solid #f5ba1a;
+}
+.ck-editor__editable_inline:focus {
+    border: 1px solid #e1a70a;
+}
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+.category-chip {
+    background-color: #f5ba1a;
+    color: #1f1f1f;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+.category-chip .remove-btn {
+    margin-left: 10px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #1f1f1f;
+    font-size: 1rem;
+}
+.input_field select {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #292929;
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.input_field select:focus {
+    border-bottom: 1px solid #f5ba1a;
+}
+
+
+
+
+
+
+
+
+
+
+    /* Custom CKEditor 5 Theme Override */
+.ck-editor__editable {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    padding: 15px !important;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;
+}
+.ck-rounded-corners .ck.ck-editor__main>.ck-editor__editable, .ck.ck-editor__main>.ck-editor__editable.ck-rounded-corners{
+    height: 200px;
+}
+
+.ck.ck-toolbar {
+    background-color: #292929 !important;
+    border: none !important;
+}
+
+.ck.ck-toolbar__items {
+    color: #fff !important;
+}
+
+
+.ck.ck-button {
+    color: #fff !important;
+}
+
+.ck.ck-button__label {
+    color: #fff !important;
+}
+
+.ck.ck-dropdown__panel {
+    background-color: #292929 !important;
+    border: 1px solid #fff !important;
+}
+
+.ck.ck-list__item {
+    color: #fff !important;
+}
+.ck.ck-dropdown.ck-heading-dropdown .ck-dropdown__panel .ck-list__item{
+    color: #fff !important;
+    background-color: #292929 !important;
+}
+
+.ck.ck-balloon-panel,
+.ck.ck-balloon-panel * {
+    background-color: #292929 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+.ck.ck-dropdown__panel .ck.ck-list__item:hover,
+.ck.ck-dropdown__panel .ck.ck-list__item.ck-on {
+    background-color: #f5ba1a !important;
+    color: #fff !important;
+}
+
+.ck.ck-editor__top {
+    background-color: #292929 !important;
+}
+
+.ck.ck-toolbar__separator {
+    background-color: #fff !important;
+}
+
+.ck.ck-editor__editable_inline {
+    border-color: #fff !important;
+}
+
+.ck.ck-editor__editable.ck-blurred {
+    border-color: #fff !important;
+}
+
+.ck.ck-dropdown.ck-heading-dropdown {
+    background-color: #292929 !important;
+    color: #fff !important;
+}
+
+.ck.ck-dropdown.ck-heading-dropdown .ck.ck-list__item.ck-on,
+.ck.ck-dropdown.ck-heading-dropdown .ck.ck-list__item:hover {
+    background-color: #f5ba1a !important;
+    color: #fff !important;
+}
+
+.ck.ck-icon {
+    fill: #fff !important;
+}
+
+/* Highlight toolbar buttons on hover and active */
+.ck.ck-button.ck-on .ck.ck-icon,
+.ck.ck-button:hover .ck.ck-icon {
+    fill: #292929 !important;
+}
+
+.ck.ck-button.ck-on,
+.ck.ck-button:hover {
+    background-color: #f5bb1a96 !important;
+    color: #292929 !important;
+}
+.ck.ck-button.ck-on,
+.ck.ck-button:active {
+    background-color: #f5bb1a !important;
+    color: #000000 !important;
+}
+
+/* Customize heading dropdown */
+.ck.ck-dropdown__panel.ck-heading-dropdown .ck.ck-list__item {
+    background-color: #292929 !important;
+    color: #fff !important;
+}
+
+.ck.ck-dropdown__panel.ck-heading-dropdown .ck.ck-list__item:hover,
+.ck.ck-dropdown__panel.ck-heading-dropdown .ck.ck-list__item.ck-on {
+    background-color: #f5ba1a !important;
+    color: #fff !important;
+}
+
+.ck.ck-button.ck-on .ck.ck-dropdown__panel {
+    background-color: #292929 !important;
+    color: #fff !important;
+}
+
+.ck.ck-button.ck-on:hover .ck.ck-dropdown__panel {
+    background-color: #f5ba1a !important;
+    color: #fff !important;
+}

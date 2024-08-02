@@ -1,6 +1,4 @@
-header {
-    width: 100%;
-}
+
 
 .header-container {
     display: grid;
@@ -127,6 +125,9 @@ header {
 
 .sidebar-content h2 {
     margin-bottom: 20px;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .sidebar-content ul {
