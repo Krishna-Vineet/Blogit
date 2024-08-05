@@ -156,3 +156,4 @@ This project is a comprehensive blog management system with user authentication,
 - *30 Jul, 2024:* All routes till date are tested in Postman
 - *31 Jul, 2024:* Authentication frontend-backend integration done along with token logic.
 - *02 Aug, 2024:* Header, HomePage and Add Blog page linked with db and backend.
+- *05 Aug, 2024:* First phase of backend done, all pages and data is accessible.

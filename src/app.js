@@ -47,7 +47,6 @@ app.get('/login', (req, res) => res.render('login'))
 app.get('/register', (req, res) => res.render('register'))
 
 
-
 import siteRoutes from './routes/site.routes.js';
 import userRoutes from './routes/user.routes.js';
 import blogRoutes from './routes/blog.routes.js';

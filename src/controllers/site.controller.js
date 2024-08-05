@@ -17,10 +17,10 @@ const getHomePage = asyncHandler(async (req, res, next) => {
     
     try {
         // Fetch latest blogs
-        const latestBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(10);
+        const latestBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(8).populate("author", "_id username avatar");
 
         // Fetch popular blogs
-        const popularBlogs = await Blog.find({}).sort({ likes: -1 }).limit(10);
+        const popularBlogs = await Blog.find({}).sort({ likes: -1 }).limit(8).populate("author", "_id username avatar");
 
         // Fetch statistics
         const totalUsers = await User.countDocuments();
@@ -53,6 +53,8 @@ const getHomePage = asyncHandler(async (req, res, next) => {
             // trendingBlogs,
             // followedUserBlogs
         };
+        // console.log(data);
+        
         res.render('home', data);
     } catch (error) {
         return next(new ApiError(500, "Something went wrong while fetching home page data"));
@@ -86,9 +88,19 @@ const getHeaderDetails = asyncHandler(async (req, res, next) => {
 
 
 const getAddBlogPage = asyncHandler(async (req, res, next) => {
-    
-    
-    res.render('add-blog');
-})  
+    if (!req.user) {
+        console.log("Login to add blog");
+        res.render('login');
+    }
+    res.render('add-blog', {user: true});
+}) 
 
-export { getHomePage, getAddBlogPage, getHeaderDetails };
+const getAllBlogs = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user._id) ? true : false;
+    const blogs = await Blog.find({}).sort({ createdAt: -1 }).populate("author", "_id username avatar");
+    res.render('all-blogs', { blogs, user });
+})
+
+
+
+export { getHomePage, getAddBlogPage, getHeaderDetails, getAllBlogs };

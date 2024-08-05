@@ -3,7 +3,8 @@ import express from "express";
 import {
    getHomePage,
    getAddBlogPage,
-   getHeaderDetails
+   getHeaderDetails,
+   getAllBlogs
    } from "../controllers/site.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
@@ -16,6 +17,7 @@ const router = express.Router();
 // router.post('/login', loginUser);
 router.get('/home', verifyJWT, getHomePage);
 router.get('/add-blog', verifyJWT, getAddBlogPage);
+router.get('/all-blogs', verifyJWT, getAllBlogs);
 router.get('/header-data', verifyJWT, getHeaderDetails);
 
 // router.patch('/update', verifyJWT, updateUserDetails);

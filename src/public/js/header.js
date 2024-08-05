@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate user information
                 const userProfile = document.getElementById('user-profile');
                 if (user) {
-                    userProfile.innerHTML = `<a href="/profile"><img src="${user.avatar || 'https://i.pravatar.cc/100'}" alt="User Avatar"></a>`;
+                    userProfile.innerHTML = `<a href="/user/profile/${user._id}"><img src="${user.avatar || 'https://i.pravatar.cc/100'}" alt="User Avatar"></a>`;
                 } else {
                     userProfile.innerHTML = '<button class="sign-in" onclick="location.href=\'/login\'"><i class="fa fa-user"></i> Sign In</button>';
                 }

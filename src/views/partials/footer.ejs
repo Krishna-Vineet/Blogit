@@ -30,9 +30,15 @@
                     <a href="#"><i class="fab fa-github"></i></a>
                     <a href="#"><i class="fab fa-discord"></i></a>
                 </div>
-                <button>Logout</button>
-                <button>Delete Account</button> <!-- Login button if user is logged out -->
+                <% if (user) { %>
+                <button id="logout">Logout</button>
+                <button id="deleteAccount">Delete Account</button> <!-- Login button if user is logged out -->
+                <% } else { %>
+                <button id="login">Login</button> <!-- Login button if user is logged out -->
+                <button id="register">Register</button> <!-- Login button if user is logged out -->
+                <% } %>
             </div>
             
         </div>
+        <script src="/js/footer.js"></script>
     </footer>

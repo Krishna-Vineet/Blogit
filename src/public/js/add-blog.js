@@ -23,8 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const blogTitle = document.getElementById('blogTitle').value;
         const blogImage = document.getElementById('blogImage').files[0];
         const blogContent = document.getElementById('editor').value;
-        const categories = Array.from(document.querySelectorAll('.category-chip'))
-            .map(chip => chip.textContent.trim().replace('×', '').trim());
+        const categories = Array.from(document.querySelectorAll('.category-chip')).map(chip => chip.textContent.trim().replace(' ×', ''));
 
         // Form validation
         if (!blogTitle || !blogContent) {
@@ -36,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('title', blogTitle);
         formData.append('content', blogContent);
         formData.append('categories', JSON.stringify(categories));
+        
         if (blogImage) {
             formData.append('image', blogImage);
         }

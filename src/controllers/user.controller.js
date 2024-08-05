@@ -340,17 +340,39 @@ const getUserDetails = asyncHandler(async (req, res) => {
     try {
         const requestedUserId = req.params.userId; // Changed to req.params
         const currentUserId = req.user._id;
-
+        // console.log(requestedUserId, currentUserId);
+        
         const userId = requestedUserId || currentUserId;
-
+        const isSelf = requestedUserId == currentUserId;
         // Check if the user exists
-        const user = await User.findById(userId).select('-password -refreshToken');
-        if (!user) {
+        const userExist = await User.findById(userId).select('-password -refreshToken');
+        if (!userExist) {
             throw new ApiError(404, "User not found");
         }
 
+        const blogs = await Blog.find({ author: userId }).populate("author", "_id username avatar")
+
+        const categoryCount = {};
+
+        blogs.forEach(blog => {
+            blog.categories.forEach(category => {
+                if (categoryCount[category]) {
+                    categoryCount[category]++;
+                } else {
+                    categoryCount[category] = 1;
+                }
+            });
+        });
+        
+        // Convert the categoryCount object to an array of { category, count } objects for easier rendering
+        const categoriesWithCount = Object.keys(categoryCount).map(category => {
+            return { category, count: categoryCount[category] };
+        });
+        
+          
+
         const userDetailsPipeline = [
-            { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+            { $match: { _id: new mongoose.Types.ObjectId(String(userId)) } },
             {
                 $lookup: {
                     from: 'follows',
@@ -383,19 +405,18 @@ const getUserDetails = asyncHandler(async (req, res) => {
                     followersCount: { $size: "$followers" },
                     followingCount: { $size: "$following" },
                     blogsCount: { $size: "$blogs" },
-                    blogs: 1,
                     isFollowed: {
-                        $in: [new mongoose.Types.ObjectId(currentUserId), "$followers.follower"]
+                        $in: [new mongoose.Types.ObjectId(String(currentUserId)), "$followers.follower"]
                     }
                 }
             }
         ];
-        const userDetails = await User.aggregate(userDetailsPipeline).exec();
-        if (!userDetails.length) {
+        const user = await User.aggregate(userDetailsPipeline).exec();
+        if (!user.length) {
             throw new ApiError(404, "User details not found");
         }
-
-        res.status(200).json(new ApiResponse(200, userDetails[0], "User details fetched successfully"));
+        console.log({ ...user[0], ...{isSelf}, ...categoriesWithCount });
+        res.render('profile', {user: { ...user[0], ...{blogs}, ...{isSelf}, ...{categoriesWithCount} }});
 
     } catch (error) {
         console.error("Error fetching user details:", error);

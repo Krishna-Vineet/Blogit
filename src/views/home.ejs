@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/home.css">
+    
+    <link rel="stylesheet" href="css/blog.css">
     <title>Homepage</title>
 </head>
 <body>
@@ -17,7 +19,7 @@
                 <h1>Welcome to Blogit!</h1>
                 <p>Your go-to place for the latest and greatest in blogging. Discover, explore, and share your thoughts with the world.</p>
                 <div class="cta-buttons">
-                    <a href="#explore-blogs" class="btn explore-btn">Explore Blogs</a>
+                    <a href="/all-blogs" class="btn explore-btn">Explore Blogs</a>
                     <% if (user) { %>
                         <a href='/add-blog' class="btn add-blog-btn">Add Blog</a>
                     <%  } %>
@@ -69,14 +71,7 @@
             <h2>Latest Blogs</h2>
             <div class="blog-grid">
                 <% latestBlogs.forEach(blog => { %>
-                    <div class="blog-card">
-                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
-                        <div class="blog-info">
-                            <h3><%= blog.title %></h3>
-                            <p><%= blog.content.substring(0, 100) %></p>
-                            <a href="/blog/view/<%= blog._id %>">Read More</a>
-                        </div>
-                    </div>
+                    <%- include('partials/blog', { blog }) %>
                 <% }) %>
             </div>
             <a href="/blogs/latest" class="view-more">View More Latest Blogs</a>
@@ -127,14 +122,7 @@
             <h2>Popular Blogs</h2>
             <div class="blog-grid">
                 <% popularBlogs.forEach(blog => { %>
-                    <div class="blog-card">
-                        <img src="<%= blog.image %>" alt="<%= blog.title %>">
-                        <div class="blog-info">
-                            <h3><%= blog.title %></h3>
-                            <p><%= blog.content.substring(0, 100) %></p>
-                            <a href="/blog/view/<%= blog._id %>">Read More</a>
-                        </div>
-                    </div>
+                    <%- include('partials/blog', { blog }) %>
                 <% }) %>
             </div>
             <a href="/blogs/popular" class="view-more">View More Trending Blogs</a>

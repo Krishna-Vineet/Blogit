@@ -16,9 +16,10 @@ const blogSchema = new Schema(
             type: Schema.Types.Mixed, // To store HTML content
             required: true
         },
-        categories: [{
-            type: String
-        }],
+        categories: {
+            type: Array,
+            default: []
+        },
         image: {
             type: String
         },

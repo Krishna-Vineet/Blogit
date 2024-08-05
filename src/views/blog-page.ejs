@@ -5,44 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Single Blog Page</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link rel="stylesheet" href="blog-page.css">
+    <link rel="stylesheet" href="/css/blog-page.css">
 </head>
 <body>
+    <%- include('partials/header') %>
     <main>
-        <div class="blog-header" style="background-image: url('https://via.placeholder.com/1500x500');">
+        <div class="blog-header" style="background-image: url('<%= blog.image %>');">
             <div class="blog-title">
-                <h1>Blog Heading</h1>
+                <h1><%= blog.title %></h1>
                 <div class="author-details">
-                    <img src="https://via.placeholder.com/50" alt="Author">
+                    <img src="<%= blog.author.avatar || `https://via.placeholder.com/50`%>"  alt="Author">
                     <div class="author-info">
-                        <h4>Author Name</h4>           
+                        <h4><%= blog.author.username %></h4>           
                         <!-- add date of blog -->
-                        <p>15 Blogs</p>
+                        <p><%= blog.author.blogCount %></p>
                     </div>
-                    <button class="follow-btn">Follow</button>
+                    <% if (blog.author.isSelf) { %>
+                     
+                    <% } else { %>
+                        <% if (blog.author.isFollowed) { %>
+                            <button class="follow-btn">Unfollow</button>
+                        <% } else { %>
+                            <button class="follow-btn">Follow</button>
+                        <% } %>
+                    <% } %>
                 </div>
             </div>
         </div>
         <div class="blog-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula libero eu nulla eleifend, a scelerisque nisl fermentum. Proin vel ligula a est dictum fermentum. Nulla facilisi. Ut tincidunt varius nunc, a vehicula nisl bibendum ut.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula libero eu nulla eleifend, a scelerisque nisl fermentum. Proin vel ligula a est dictum fermentum. Nulla facilisi. Ut tincidunt varius nunc, a vehicula nisl bibendum ut.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula libero eu nulla eleifend, a scelerisque nisl fermentum. Proin vel ligula a est dictum fermentum. Nulla facilisi. Ut tincidunt varius nunc, a vehicula nisl bibendum ut.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula libero eu nulla eleifend, a scelerisque nisl fermentum. Proin vel ligula a est dictum fermentum. Nulla facilisi. Ut tincidunt varius nunc, a vehicula nisl bibendum ut.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vehicula libero eu nulla eleifend, a scelerisque nisl fermentum. Proin vel ligula a est dictum fermentum. Nulla facilisi. Ut tincidunt varius nunc, a vehicula nisl bibendum ut.</p>
+            <%- blog.content %>
         </div>
         <div class="blog-actions">
             <div class="likes-dislikes">
                 <div class="like">
                     <i class="fa fa-thumbs-up"></i>
-                    <p class="like-count">2.1k</p>
+                    <p class="like-count"><%= blog.likesCount %></p>
                 </div>
                 <div class="dislike">
                     <i class="fa fa-thumbs-down"></i>
-                    <p class="dislike-count">769</p>
+                    <p class="dislike-count"><%= blog.dislikesCount %></p>
                 </div>
             </div>
             <div class="blog-category">
-                <p>Category: Travel</p>
+                <p>Category: <%= blog.categories %></p>
             </div>
             <div class="social-sharing">
                 <p>Share:</p>
@@ -191,5 +196,6 @@
         </div>
         
     </main>
+    <%- include('partials/footer') %>
 </body>
 </html>

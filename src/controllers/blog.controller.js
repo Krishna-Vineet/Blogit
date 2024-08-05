@@ -8,11 +8,13 @@ import Follow from "../models/follow.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiErrors.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
+import { isFloat64Array } from "util/types";
 
 // Create a new blog
 const createBlog = asyncHandler(async (req, res, next) => {
     
-    const { title, content, categories = [] } = req.body;
+    const { title, content } = req.body;
+    let { categories } = req.body;
     const imageLocalPath = req.file?.path;
     let image = "";
     const user = await User.findById(req.user?._id);
@@ -22,8 +24,14 @@ const createBlog = asyncHandler(async (req, res, next) => {
     if ([title, content].some(field => field === "")) {
         return next(new ApiError(400, "Title and content are required"));
     }
-    if (imageLocalPath) {
-        
+
+    if (categories) {
+        categories = JSON.parse(categories);
+    } else {
+        categories = [];
+    }
+
+    if (imageLocalPath) {    
         image = await uploadOnCloudinary(imageLocalPath);
         image = image.secure_url;
     }
@@ -32,7 +40,7 @@ const createBlog = asyncHandler(async (req, res, next) => {
         title,
         content,
         author: user._id,
-        categories: Array.isArray(categories) ? categories : [categories],
+        categories,
         image
     });
 
@@ -130,21 +138,28 @@ const getBlogById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user?._id;
     
-
+    
+    
+ 
     const blog = await Blog.findById(id).populate('author', 'username avatar');
     if (!blog) {
         throw new ApiError(404, "Blog not found");
     }
     
-
+    const user = await User.findById(req.user._id) ? true : false;
     const author = await User.findById(blog.author._id);
+    
     const blogCount = await Blog.countDocuments({ author: author._id });
 
 
     let isFollowed = false;
     if (userId) {
         const follow = await Follow.findOne({ follower: userId, following: author._id });
-        isFollowed = !!follow;
+        if (follow) {
+            isFollowed = true;
+        } else {
+            isFollowed = false;
+        }
     }
 
     const likesCount = await Like.countDocuments({ entityId: id, entityType: 'Blog' });
@@ -164,6 +179,7 @@ const getBlogById = asyncHandler(async (req, res) => {
     );
 
     const responseData = {
+        user,
         blog: {
             _id: blog._id,
             title: blog.title,
@@ -178,14 +194,17 @@ const getBlogById = asyncHandler(async (req, res) => {
                 avatar: author.avatar,
                 bio: author.bio,
                 blogCount: blogCount,
-                isFollowed: userId && userId.toString() !== author._id.toString() ? isFollowed : undefined
+                isSelf: userId && userId.toString() === author._id.toString() ? true : false,
+                isFollowed
             },
             comments: commentsWithLikesDislikes
         }
     };
 
 
-    res.status(200).json(new ApiResponse(200, responseData, "Blog fetched successfully"));
+    console.log(responseData);
+    res.render('blog-page', responseData);
+    
 });
 
 

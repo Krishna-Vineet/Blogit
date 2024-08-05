@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/profile.css">
+
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="/css/user-blog.css">
+
     <title>Profile: <%= user ? user.username : 'Guest' %></title>
 </head>
 <body>
-    <% include partials/header %>
+    <%- include('partials/header') %>
     
     <main>
         <div id="avatar">
-            <img src="<%= user && user.avatarUrl ? user.avatarUrl : 'https://i.pravatar.cc/300' %>" alt="avatar">
+            <img src="<%= user.avatar || 'https://i.pravatar.cc/300' %>" alt="avatar">
             <% if (user && user.isSelf) { %>
                 <a class="change" id="changeAvatarLink" href="#">Change Avatar</a>
                 <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
@@ -40,15 +45,33 @@
         <h2>Blogs by <%= user ? user.username : 'Guest' %></h2>
         <div class="userBlogCategory">
             <h3>Category: </h3>
-            <a href="#" class="active">All</a>
-            <!-- Add dynamic category links -->
+            <a href="#" class="active" data-filter="all">All</a>
+            <% user.categoriesWithCount.forEach(category => { %>
+                <a href="#" data-filter="category" data-category="<%= category.category %>"><%= category.category %> (<%= category.count %>)</a>
+            <% }) %>
         </div>
+        
+        <div class="sortOptions">
+            <h3>Sort by: </h3>
+            <a href="#" data-sort="likesCount" data-order="asc">Likes Ascending</a>
+            <a href="#" data-sort="likesCount" data-order="desc">Likes Descending</a>
+            <a href="#" data-sort="updatedAt" data-order="asc">Date Ascending</a>
+            <a href="#" data-sort="updatedAt" data-order="desc">Date Descending</a>
+        </div>
+        
         <div id="userBlogs">
-            <!-- Dynamic blog entries here -->
+          <% user.blogs.forEach(blog => { %>
+            <% if (user.isSelf) { %>
+                <%- include('partials/user-blog', { blog }) %>
+            <% } else { %>
+                <%- include('partials/blog', { blog }) %>
+            <% } %>
+          <% }) %>
         </div>
     </section>
 
-    <% include partials/footer %>
+    <%- include('partials/footer') %>
     <script src="/js/profile.js"></script>
 </body>
 </html>
+ 
