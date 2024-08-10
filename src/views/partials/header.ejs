@@ -10,7 +10,7 @@
                 <button onclick="location.href='/add-blog'"><i class="fa-solid fa-pencil"></i>Add Blog</button>
             </div>
         </div>
-        <div class="logo">
+        <div class="logo" onclick="location.href='/'">
             Blogit
         </div>
         <div class="right">
@@ -19,15 +19,15 @@
                 <button type="button" onclick="searchBlogs()"><i class="fa fa-search"></i></button>
             </div>
             <div id="user-profile">
-                <!-- User profile will be dynamically updated -->
+                <div></div>
             </div>
         </div>
     </div>
     <div id="sidebar" class="sidebar">
+        <div class="cross">
+            <i class="fa fa-x" onclick="toggleSidebar()"></i>
+        </div>
         <div class="sidebar-content">
-            <div class="cross">
-                <i class="fa fa-x" onclick="toggleSidebar()"></i>
-            </div>
             <h2>Trending Blogs</h2>
             <ul id="trendingPosts">
                 <!-- Trending blogs will be dynamically updated -->

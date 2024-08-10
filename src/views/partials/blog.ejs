@@ -3,25 +3,33 @@
         <img src="<%= blog.image %>" alt="Blog Image">
     
         <div class="blog-insights">
-            <h4><%= blog.categories %></h4>
+            <h4><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
             <div class="like">
-                <i class="fa fa-thumbs-up"></i>
+                <% if (blog.likedByUser) { %>
+                    <i class="fa fa-thumbs-up liked"></i>
+                <% } else { %>
+                    <i class="fa fa-thumbs-up"></i>
+                <% } %>
                 <p class="like-count"><%= blog.likesCount %></p>
             </div>
             <div class="dislike">
-                <i class="fa fa-thumbs-down"></i>
+                <% if (blog.dislikedByUser) { %>
+                    <i class="fa fa-thumbs-down disliked"></i>
+                <% } else { %>
+                    <i class="fa fa-thumbs-down"></i>
+                <% } %>
                 <p class="dislike-count"><%= blog.dislikesCount %></p>
             </div>
         </div>
         <div class="heading">
             <h3><%= blog.title %></h3>
-            <p><%- blog.content.replaceAll("<li>", '&diamondsuit;').replaceAll(/<[^>]+>/g, '').replaceAll(/<\/[^>]+>/g, '').substring(0, 255).trim() %></p>
+            <div> <%- blog.content.replace('<h2>', '<h3>').replace('</h2>', '</h3>').replace('<h1>', '<h3>').replace('</h1>', '</h3>') %> </div>
         </div>
         <div class="writer-detail">
             <div onclick="window.location.href='user/profile/<%= blog.author._id %>'" class="writer">
                 <img src="<%= blog.author.avatar || 'https://i.pravatar.cc/100' %>" alt="Writer Image">
                 <h4><%= blog.author.username %></h4>
             </div>
-            <h4 class="date"><%= blog.updatedAt.toLocaleDateString() %></h4>
+            <div><h4 class="date"><%= blog.updatedAt.toLocaleDateString() %></h4></div>
         </div>
     </div>

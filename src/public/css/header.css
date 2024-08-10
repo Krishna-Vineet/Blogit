@@ -9,6 +9,7 @@
     background-color: #2c2c2c;
     background: linear-gradient(180deg, rgba(44,44,44,1) 0%, rgba(44,44,44,1) 70%, rgba(44,44,44,0.8) 100%);
     position: fixed;
+    top: 0;
     z-index: 1000;
 }
 
@@ -51,6 +52,7 @@
     text-align: center;
     align-self: center;
     justify-self: center;
+    cursor: pointer;
     flex-grow: 1;
 }
 
@@ -87,8 +89,14 @@
     justify-content: right;
     gap: 10px;
 }
-
-.right img {
+.right #user-profile div {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #f5ba1a;
+    background: #2c2c2c;
+}
+.right #user-profile img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -113,12 +121,18 @@
 }
 .sidebar-content {
     padding: 20px;
+    padding-top: 0;
     color: #fff;
 }
-.sidebar-content .cross{
-    position: fixed;
+.sidebar .cross{
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    right: 0;
+    background: #111;
+    background: linear-gradient(180deg, #111111 75%, #11111100 100%);
 }
-.sidebar-content .cross i {
+.sidebar .cross i {
     cursor: pointer;
     font-size: 1.5em;
 }
@@ -144,9 +158,16 @@
     gap: 10px;
 }
 
-.blog-banner img, .author-banner img {
+.blog-banner img {
     width: 80px;
     height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.author-banner img {
+    width: 40px;
+    height: 40px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -173,9 +194,3 @@
     font-size: 1.5em;
 }
 
-.right img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid #f5ba1a;
-}

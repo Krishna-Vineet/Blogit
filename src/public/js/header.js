@@ -47,7 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate followed user blogs if user is logged in
                 if (user) {
                     const followedBlogsSection = document.getElementById('followedBlogsSection');
+                    if (followedUserBlogs.length > 0) {
                     followedBlogsSection.innerHTML = '<h2>Blogs from People I Follow</h2><ul id="followedUsersBlogs"></ul>';
+                    }
                     const followedUsersBlogs = document.getElementById('followedUsersBlogs');
                     followedUsersBlogs.innerHTML = ''; // Clear existing content
                     followedUserBlogs.forEach(blog => {
@@ -65,6 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Error fetching header data:', error);
             });
+        
+
+        
     });
 
 
@@ -79,11 +84,52 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function searchBlogs() {
-        const query = document.getElementById('searchInput').value;
+        // Get the search query
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        
+        // Remove existing highlights
+        removeHighlights();
+    
         if (query) {
-            window.location.href = `/search?query=${query}`;
+            // Get all text nodes
+            const content = document.querySelectorAll('.content');
+            content.forEach(container => {
+                highlightText(container, query);
+            });
         }
     }
+    
+    function highlightText(container, query) {
+        // Use a TreeWalker to traverse text nodes
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        
+        while (node = walker.nextNode()) {
+            const text = node.nodeValue;
+            const index = text.toLowerCase().indexOf(query);
+            if (index !== -1) {
+                const span = document.createElement('span');
+                span.className = 'highlight';
+                const matchedText = text.substr(index, query.length);
+                span.appendChild(document.createTextNode(matchedText));
+    
+                const after = document.createTextNode(text.substr(index + query.length));
+                node.nodeValue = text.substr(0, index);
+                node.parentNode.insertBefore(span, node.nextSibling);
+                node.parentNode.insertBefore(after, span.nextSibling);
+            }
+        }
+    }
+    
+    function removeHighlights() {
+        const highlights = document.querySelectorAll('.highlight');
+        highlights.forEach(span => {
+            const parent = span.parentNode;
+            parent.replaceChild(document.createTextNode(span.textContent), span);
+            parent.normalize(); // Combine adjacent text nodes
+        });
+    }
+    
     
     function checkEnter(event) {
         if (event.key === 'Enter') {

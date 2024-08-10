@@ -17,7 +17,7 @@ const getHomePage = asyncHandler(async (req, res, next) => {
     
     try {
         // Fetch latest blogs
-        const latestBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(8).populate("author", "_id username avatar");
+        const latestBlogs = await Blog.find({}).sort({ createdAt: -1 }).populate("author", "_id username avatar");
 
         // Fetch popular blogs
         const popularBlogs = await Blog.find({}).sort({ likes: -1 }).limit(8).populate("author", "_id username avatar");
@@ -69,7 +69,7 @@ const getHeaderDetails = asyncHandler(async (req, res, next) => {
     }
     try {
         const topAuthors = await User.find({}).sort({ blogCount: -1 }).limit(3);
-        const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(3);
+        const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(10).populate("author", "_id username avatar");
     
             // Fetch blogs from people user follows (assuming req.user contains the logged-in user's info)
         let followedUserBlogs = [];

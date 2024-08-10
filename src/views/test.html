@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+     body {
+    font-family: 'Arial', sans-serif;
+    background: url('https://static.vecteezy.com/system/resources/previews/007/278/150/non_2x/dark-background-abstract-with-light-effect-vector.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px ;
+}
+.bc {
+    /* font-size: 10px; */
+    font-weight: bold;
+    align-items: center;
+    display: flex;
+    color: white;
+}
+.bc img {
+    height: 40px;
+    width: 40px;
+    border-radius: 30px;
+    /* margin-right: 20px; */
+    max-width: 50px;
+    /* margin-bottom: 10px; */
+    /* margin-bottom: 15px; */
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* gap: 15px; */
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    text-decoration: wavy;
+    color: #333;
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    /* font-size: 18px; */
+    font-weight: 400;
+}
+nav ul li a:hover{
+    font-weight: 700;
+}
+
+.auth-buttons {
+    display:flex;
+    gap: 10px;
+    text-decoration: none;
+}
+.auth-buttons .lang-btn,
+.auth-buttons .login-btn {
+    background: linear-gradient(45deg, #44829a, #3e3b43);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.auth-buttons .lang-btn:hover,
+.auth-buttons .login-btn:hover {
+    background: linear-gradient(45deg, #17485b, #8b8791);
+    font-weight: 600;
+} 
+</style>
+<body>
+    <header>
+        <div class="bc"> <img src="https://e7.pngegg.com/pngimages/936/826/png-clipart-bitcoin-logo-bitcoin-farm-cryptocurrency-cloud-mining-money-bitcoin-computer-wallpaper-sphere-thumbnail.png" alt="">ICOLand</div>
+        <nav>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Benefit</a></li>
+                <li><a href="#">Roadmap</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">FAQs</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Page</a></li>
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <button class="lang-btn">EN</button>
+            <button class="login-btn">Login</button>
+            <!-- <a href="#" class="lang-btn">EN</a>
+            <a href="#" class="login-btn">Login</a> -->
+        </div>
+    </header>
+
+</body>
+</html>

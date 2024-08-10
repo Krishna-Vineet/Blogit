@@ -36,11 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-        const filterLinks = document.querySelectorAll('.userBlogCategory a');
+        const categorySelect = document.getElementById('categorySelect');
         const sortLinks = document.querySelectorAll('.sortOptions a');
         const blogsContainer = document.querySelector('#userBlogs');
         let blogs = Array.from(blogsContainer.children);
+        let filteredBlogs = [...blogs]; // Track the currently filtered blogs
     
         // Function to render blogs
         function renderBlogs(blogs) {
@@ -49,22 +49,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         // Filter blogs
-        filterLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const filter = link.getAttribute('data-filter');
-                const category = link.getAttribute('data-category');
+        categorySelect.addEventListener('change', function () {
+            const category = categorySelect.value;
     
-                filterLinks.forEach(link => link.classList.remove('active'));
-                link.classList.add('active');
+            if (category === 'all') {
+                filteredBlogs = [...blogs];
+            } else {
+                filteredBlogs = blogs.filter(blog => blog.querySelector('.category').innerText.includes(category));
+            }
+            
+            // Reset the sorting links active state
+            sortLinks.forEach(link => link.classList.remove('active'));
     
-                if (filter === 'all') {
-                    renderBlogs(blogs);
-                } else {
-                    const filteredBlogs = blogs.filter(blog => blog.querySelector('.category').innerText.includes(category));
-                    renderBlogs(filteredBlogs);
-                }
-            });
+            renderBlogs(filteredBlogs);
         });
     
         // Sort blogs
@@ -77,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sortLinks.forEach(link => link.classList.remove('active'));
                 link.classList.add('active');
     
-                let sortedBlogs = [...blogs];
+                let sortedBlogs = [...filteredBlogs];
                 if (sort === 'likesCount' || sort === 'dislikesCount') {
                     sortedBlogs.sort((a, b) => {
                         const aCount = parseInt(a.querySelector(`.${sort} span`).innerText, 10);

@@ -1,22 +1,26 @@
-
-    <div class="profile-blog" onclick="window.location.href='/blog/view/<%= blog._id %>'">
-        <img src="<%= blog.image || 'https://via.placeholder.com/200x120' %>" alt="Blog Image">
-        <div class="blog-content">
-            <h4 class="category"><%= blog.categories %></h4>
-            <h2 class="title"><%= blog.title %></h2>
-            <p class="excerpt"><%= blog.content.replaceAll("<li>", '&diamondsuit;').replaceAll(/<[^>]+>/g, '').replaceAll(/<\/[^>]+>/g, '').substring(0, 255).trim() %></p>
-            <div class="blog-actions">
-                <button class="edit-btn"><i class="fa fa-edit"></i> Edit</button>
-                <button class="delete-btn"><i class="fa fa-trash"></i> Delete</button>
+<div class="profile-blog" onclick="window.location.href='/blog/view/<%= blog._id %>'">
+    <img src="<%= blog.image || 'https://via.placeholder.com/200x120' %>" alt="Blog Image">
+    <div class="blog-actions">
+        <button class="edit-btn"><i class="fa fa-edit"></i> Edit</button>
+        <button class="delete-btn"><i class="fa fa-trash"></i> Delete</button>
+    </div>
+    <div class="blog-content">
+        <h2 class="title"><%= blog.title %></h2>
+        <div class="excerpt"><%- blog.content %></div>
+    </div>
+    <div class="blog-meta">
+        <span class="category"><%= blog.categories %></span>
+        <div class="blog-stats">
+            <span class="date"><%= blog.updatedAt.toLocaleDateString() %></span>
+            <div class="comments">
+                <i class="fa fa-comments"></i> <span><%= blog.commentsCount %></span>
             </div>
-            <div class="blog-stats">
-                <span class="date"><%= blog.updatedAt.toLocaleDateString() %></span>
-                <div class="likes">
-                    <i class="fa fa-thumbs-up"></i> <span><%= blog.likesCount %></span>
-                </div>
-                <div class="dislikes">
-                    <i class="fa fa-thumbs-down"></i> <span><%= blog.dislikesCount %></span>
-                </div>
+            <div class="likes">
+                <i class="fa fa-thumbs-up"></i> <span><%= blog.likesCount %></span>
+            </div>
+            <div class="dislikes">
+                <i class="fa fa-thumbs-down"></i> <span><%= blog.dislikesCount %></span>
             </div>
         </div>
     </div>
+</div>

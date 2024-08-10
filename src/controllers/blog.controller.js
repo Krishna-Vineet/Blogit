@@ -165,6 +165,9 @@ const getBlogById = asyncHandler(async (req, res) => {
     const likesCount = await Like.countDocuments({ entityId: id, entityType: 'Blog' });
     const dislikesCount = await Dislike.countDocuments({ entityId: id, entityType: 'Blog' });
 
+    const likedByUser = await Like.findOne({ userId: userId, entityId: id, entityType: 'Blog' }) ? true : false;
+    const dislikedByUser = await Dislike.findOne({ userId: userId, entityId: id, entityType: 'Blog' })? true : false;
+
     const comments = await Comment.find({ blog: id }).populate('author', 'username avatar');
     const commentsWithLikesDislikes = await Promise.all(
         comments.map(async (comment) => {
@@ -186,8 +189,12 @@ const getBlogById = asyncHandler(async (req, res) => {
             content: blog.content,
             categories: blog.categories,
             image: blog.image,
-            likesCount: likesCount,
-            dislikesCount: dislikesCount,
+            createdAt: blog.createdAt,
+            updatedAt: blog.updatedAt,
+            likesCount,
+            dislikesCount,
+            likedByUser,
+            dislikedByUser,
             author: {
                 _id: author._id,
                 username: author.username,

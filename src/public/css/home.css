@@ -1,3 +1,4 @@
+@import url('https://unpkg.com/flickity@2.3.0/dist/flickity.min.css');
 * {
     margin: 0;
     padding: 0;
@@ -105,6 +106,7 @@ main {
     border-radius: 5px;
     text-align: center;
     transition: background 0.3s;
+    cursor: pointer;
 }
 
 .category i {
@@ -142,19 +144,21 @@ h2 {
     gap: 20px;
     justify-content: center;
 }
-/* 
+
 .blog-card {
     background-color: #3a3a3a;
     border-radius: 10px;
     overflow: hidden;
     width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 100%);
+    box-shadow: 0 4px 8px #0000004d;
     transition: transform 0.3s, box-shadow 0.3s;
+    margin: 15px;
 }
 
 .blog-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #2a2a2a 0%, #4e4e4e 100%);
+    box-shadow: 0 10px 20px #00000090;/* box-shadow: 0 8px 16px #00000080; */
 }
 
 .blog-card img {
@@ -167,25 +171,34 @@ h2 {
 }
 
 .blog-info h3 {
+    height: 1.2em;
+    overflow: hidden;
     margin-bottom: 10px;
     font-size: 1.2em;
 }
 
-.blog-info p {
+.blog-info div {
     margin-bottom: 10px;
-    height: 120px;
+    height: 135px;
+    overflow: hidden;
+    *{
+        color: #e7e7e7;
+    }
+    li {
+        margin-left: 20px;
+    }
 }
 
 .blog-info a {
     color: #f5ba1a;
     text-decoration: none;
-    display: block;
+    /* display: block; */
     font-weight: bold;
 }
 
 .blog-info a:hover {
     text-decoration: underline;
-} */
+} 
 
 .view-more {
     display: block;
@@ -233,6 +246,7 @@ h2 {
 .event-card:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #f5bb1a0e, #555555);
 }
 
 .event-image img {
@@ -302,7 +316,7 @@ h2 {
 }
 
 .stat-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
@@ -315,4 +329,36 @@ h2 {
 .stat-card .stat-value {
     font-size: 2em;
     font-weight: bold;
+}
+.cursor {
+    --x-px: calc(var(--x) * 1px);
+    --y-px: calc(var(--y) * 1px);
+    --border: 2px;
+    background: linear-gradient(135deg, #333333, #444444);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.cursor:before, .cursor:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    inset: 0px;
+    border-radius: inherit;
+    background: radial-gradient(500px circle at var(--x-px) var(--y-px), #f5cf674d, transparent 40%);
+}
+.cursor:before {
+    z-index: 1;
+}
+.cursor:after {
+    opacity: 0;
+    z-index: 2;
+    transition: opacity 0.4s ease;
+}
+.cursor:hover:after {
+    opacity: 1;
 }

@@ -9,30 +9,28 @@
     <link rel="stylesheet" href="/css/blog.css">
     <link rel="stylesheet" href="/css/user-blog.css">
 
-    <title>Profile: <%= user ? user.username : 'Guest' %></title>
+    <title>Profile: @<%= user ? user.username : 'Guest' %></title>
 </head>
 <body>
     <%- include('partials/header') %>
     
     <main>
-        <div id="avatar">
-            <img src="<%= user.avatar || 'https://i.pravatar.cc/300' %>" alt="avatar">
-            <% if (user && user.isSelf) { %>
-                <a class="change" id="changeAvatarLink" href="#">Change Avatar</a>
-                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
-            <% } %>
-        </div>
+        
         <div id="details">
             <div class="name">
-                <h1><%= user ? user.username : 'Guest' %></h1>
+                <h1>@<%= user ? user.username : 'Guest' %></h1>
                 <% if (user && user.isSelf) { %>
-                    <a href="/profile/edit" class="follow">Change Username</a>
+                    <a href="/profile/edit" class=" btn followed"><i class="fa-solid fa-user-pen"></i>Edit Profile</a>
                 <% } else if (user) { %>
-                    <a href="#" class="follow">Follow</a>
+                    <% if (user.isfollowed) { %>
+                        <a href="#" class="btn followed">Unfollow</a>
+                    <% } else {%>
+                    <a href="#" class="btn notfollowed">Follow</a>
+                    <% } %>
                 <% } %>
             </div>
             <div class="bio">
-                <p><%= user ? user.bio : 'This is a guest profile.' %></p>
+                <%= user ? user.bio : 'This is a guest profile.' %>
             </div>
             <div class="detail">
                 <h3><span><%= user ? user.followersCount : 0 %></span> Followers</h3>
@@ -40,23 +38,31 @@
                 <h3><span><%= user ? user.blogsCount : 0 %></span> Blogs</h3>
             </div>
         </div>
+        <div id="avatar">
+            <img src="<%= user.avatar || 'https://i.pravatar.cc/300' %>" alt="avatar">
+            <% if (user && user.isSelf) { %>
+                <a class="change" id="changeAvatarLink" href="#"><i class="fa-solid fa-pen-to-square"></i></a>
+                <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
+            <% } %>
+        </div>
     </main>
     <section>
         <h2>Blogs by <%= user ? user.username : 'Guest' %></h2>
         <div class="userBlogCategory">
             <h3>Category: </h3>
-            <a href="#" class="active" data-filter="all">All</a>
-            <% user.categoriesWithCount.forEach(category => { %>
-                <a href="#" data-filter="category" data-category="<%= category.category %>"><%= category.category %> (<%= category.count %>)</a>
-            <% }) %>
+            <select id="categorySelect">
+                <option value="all">All (<%= user.blogsCount %>)</option>
+                <% user.categoriesWithCount.forEach(category => { %>
+                    <option value="<%= category.category %>"><%= category.category %> (<%= category.count %>)</option>
+                <% }) %>
+            </select>
         </div>
         
         <div class="sortOptions">
             <h3>Sort by: </h3>
-            <a href="#" data-sort="likesCount" data-order="asc">Likes Ascending</a>
-            <a href="#" data-sort="likesCount" data-order="desc">Likes Descending</a>
-            <a href="#" data-sort="updatedAt" data-order="asc">Date Ascending</a>
-            <a href="#" data-sort="updatedAt" data-order="desc">Date Descending</a>
+            <a href="#" data-sort="likesCount" data-order="asc">Popularity</a>
+            <a href="#" data-sort="updatedAt" data-order="asc">Oldest</a>
+            <a href="#" data-sort="updatedAt" data-order="desc">Latest</a>
         </div>
         
         <div id="userBlogs">
@@ -65,7 +71,7 @@
                 <%- include('partials/user-blog', { blog }) %>
             <% } else { %>
                 <%- include('partials/blog', { blog }) %>
-            <% } %>
+            <%  } %>
           <% }) %>
         </div>
     </section>
@@ -75,3 +81,4 @@
 </body>
 </html>
  
+
