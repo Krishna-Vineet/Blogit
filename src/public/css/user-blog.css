@@ -93,20 +93,20 @@
     color: #ffffff;
 }
 
-.blog-stats .date, .blog-stats .comments, .blog-stats .likes, .blog-stats .dislikes {
+.blog-stats .date, .blog-stats .comments, .blog-stats .likesCount, .blog-stats .dislikesCount {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.blog-stats .comments i, .blog-stats .likes i, .blog-stats .dislikes i {
+.blog-stats .comments i, .blog-stats .likesCount i, .blog-stats .dislikesCount i {
     color: #ffffff;
 }
 
-.blog-stats .likes i {
+.blog-stats .likesCount i {
     color: #45db00;
 }
 
-.blog-stats .dislikes i {
+.blog-stats .dislikesCount i {
     color: #ff0000;
 }

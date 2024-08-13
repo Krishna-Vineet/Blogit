@@ -8,7 +8,6 @@ import Follow from "../models/follow.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiErrors.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
-import { isFloat64Array } from "util/types";
 
 // Create a new blog
 const createBlog = asyncHandler(async (req, res, next) => {
@@ -134,52 +133,64 @@ const getAllBlogsOfUser = asyncHandler(async (req, res) => {
 
 
 // Get a single blog
-const getBlogById = asyncHandler(async (req, res) => {
+const getBlogById = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const userId = req.user?._id;
     
-    
-    
- 
     const blog = await Blog.findById(id).populate('author', 'username avatar');
     if (!blog) {
-        throw new ApiError(404, "Blog not found");
+        return next (new ApiError(404, "Blog not found"));
     }
     
-    const user = await User.findById(req.user._id) ? true : false;
+    const user = await User.findById(req.user._id).select("-password -refreshToken");
     const author = await User.findById(blog.author._id);
     
     const blogCount = await Blog.countDocuments({ author: author._id });
 
+    // Get follower count
+    const followerCount = await Follow.countDocuments({ following: author._id });
 
     let isFollowed = false;
     if (userId) {
         const follow = await Follow.findOne({ follower: userId, following: author._id });
-        if (follow) {
-            isFollowed = true;
-        } else {
-            isFollowed = false;
-        }
+        isFollowed = !!follow;
     }
 
     const likesCount = await Like.countDocuments({ entityId: id, entityType: 'Blog' });
     const dislikesCount = await Dislike.countDocuments({ entityId: id, entityType: 'Blog' });
 
-    const likedByUser = await Like.findOne({ userId: userId, entityId: id, entityType: 'Blog' }) ? true : false;
-    const dislikedByUser = await Dislike.findOne({ userId: userId, entityId: id, entityType: 'Blog' })? true : false;
+    const likedByUser = !!(await Like.findOne({ userId: userId, entityId: id, entityType: 'Blog' }));
+    const dislikedByUser = !!(await Dislike.findOne({ userId: userId, entityId: id, entityType: 'Blog' }));
 
-    const comments = await Comment.find({ blog: id }).populate('author', 'username avatar');
-    const commentsWithLikesDislikes = await Promise.all(
-        comments.map(async (comment) => {
-            const commentLikesCount = await Like.countDocuments({ entityId: comment._id, entityType: 'Comment' });
-            const commentDislikesCount = await Dislike.countDocuments({ entityId: comment._id, entityType: 'Comment' });
-            return {
-                ...comment.toObject(),
-                likesCount: commentLikesCount,
-                dislikesCount: commentDislikesCount
-            };
-        })
-    );
+    const comments = await Comment.find({ blog: id }).populate('author', 'avatar username');
+    const commentCount = comments.length;
+    
+    
+
+    // Find similar blogs by categories and high likes
+    const similarBlogs = await Blog.find({
+        _id: { $ne: id }, // Exclude the current blog
+        categories: { $in: blog.categories } // Match categories
+    })
+    .sort({ likeCount: -1 }) // Sort by likes
+    .limit(3) // Limit to 3 similar blogs
+    .populate('author', 'username avatar'); // Populate author details
+
+    // Get the blog's ranking in popular (all-time likes)
+    const popularBlogs = await Blog.find({}).sort({ likeCount: -1 }).limit(5);
+    const popularRank = popularBlogs.findIndex(b => b._id.toString() === blog._id.toString()) + 1;
+
+    // Get the blog's ranking in trending (likes in the last week)
+    const lastWeek = new Date();
+    lastWeek.setDate(lastWeek.getDate() - 7);
+
+    const trendingBlogs = await Blog.find({
+        updatedAt: { $gte: lastWeek }
+    })
+    .sort({ viewsCount: -1 })
+    .limit(5);
+
+    const trendingRank = trendingBlogs.findIndex(b => b._id.toString() === blog._id.toString()) + 1;
 
     const responseData = {
         user,
@@ -195,23 +206,27 @@ const getBlogById = asyncHandler(async (req, res) => {
             dislikesCount,
             likedByUser,
             dislikedByUser,
+            viewsCount: blog.viewsCount,
+            shareCount: blog.shareCount,
             author: {
                 _id: author._id,
                 username: author.username,
                 avatar: author.avatar,
                 bio: author.bio,
                 blogCount: blogCount,
-                isSelf: userId && userId.toString() === author._id.toString() ? true : false,
-                isFollowed
+                isSelf: userId && userId.toString() === author._id.toString(),
+                isFollowed,
+                followerCount // Added follower count
             },
-            comments: commentsWithLikesDislikes
+            commentCount, // Added comment count
+            similarBlogs, // Added similar blogs
+            popularRank: popularRank > 0 && popularRank <= 5 ? popularRank : null, // Added popular rank
+            trendingRank: trendingRank > 0 && trendingRank <= 5 ? trendingRank : null // Added trending rank
         }
     };
 
-
-    console.log(responseData);
+    // console.log(comments);
     res.render('blog-page', responseData);
-    
 });
 
 
@@ -295,6 +310,30 @@ const dislikeBlog = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, updatedBlog, "Dislike status updated successfully"));
 });
 
+// Increment view count
+const incrementViewCount = asyncHandler(async (req, res, next) => {
+        try {
+          const blogId = req.params.id;
+          const blog = await Blog.findByIdAndUpdate(blogId, { $inc: { viewsCount: 1 } });
+          
+          res.status(200).json(new ApiResponse(200, 'View count incremented'));
+        } catch (error) {
+          return next (new ApiError(500, 'Error incrementing view count'));
+        }
+});
+  
+  // Increment share count
+  const incrementShareCount = asyncHandler(async (req, res, next) => {
+    try {
+        
+        const blogId = req.params.id;
+        await Blog.findByIdAndUpdate(blogId, { $inc: { shareCount: 1 } });
+        res.status(200).json(new ApiResponse(200, 'Share count incremented'));
+      } catch (error) {
+        return next (new ApiError(500, 'Error incrementing share count'));
+      }
+  })
+
 export {
     createBlog,
     updateBlog,
@@ -302,5 +341,7 @@ export {
     getBlogById,
     getAllBlogsOfUser,
     likeBlog,
-    dislikeBlog
+    dislikeBlog,
+    incrementViewCount,
+    incrementShareCount
 }

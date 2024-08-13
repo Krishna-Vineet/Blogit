@@ -415,7 +415,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
         if (!user.length) {
             throw new ApiError(404, "User details not found");
         }
-        console.log({ ...user[0], ...{isSelf}, ...categoriesWithCount });
+        console.log({ ...user[0], ...{blogs}, ...{isSelf}, ...categoriesWithCount });
         res.render('profile', {user: { ...user[0], ...{blogs}, ...{isSelf}, ...{categoriesWithCount} }});
 
     } catch (error) {

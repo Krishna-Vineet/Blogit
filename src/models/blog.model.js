@@ -18,7 +18,7 @@ const blogSchema = new Schema(
         },
         categories: {
             type: Array,
-            default: []
+            default: [] 
         },
         image: {
             type: String
@@ -28,6 +28,14 @@ const blogSchema = new Schema(
             default: 0
         },
         dislikesCount: {
+            type: Number,
+            default: 0
+        },
+        viewsCount: {
+            type: Number,
+            default: 0
+        },
+        shareCount: {
             type: Number,
             default: 0
         }

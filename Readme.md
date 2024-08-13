@@ -138,8 +138,8 @@ This project is a comprehensive blog management system with user authentication,
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repository.git
-   cd your-repository
+   git clone https://github.com/Krishna-Vineet/Blogit.git
+   cd Blogit
 
 
 
@@ -157,3 +157,5 @@ This project is a comprehensive blog management system with user authentication,
 - *31 Jul, 2024:* Authentication frontend-backend integration done along with token logic.
 - *02 Aug, 2024:* Header, HomePage and Add Blog page linked with db and backend.
 - *05 Aug, 2024:* First phase of backend done, all pages and data is accessible.
+- *08 Aug, 2024:* Comments work done finely, no update migth need.
+- *09 Aug, 2024:* Going on an indefinite break.

@@ -4,7 +4,8 @@ import {
     editComment,
     deleteComment,
     likeComment,
-    dislikeComment
+    dislikeComment,
+    getComments
 } from "../controllers/comment.controller.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
 
@@ -15,5 +16,6 @@ router.patch('/edit/:commentId', verifyJWT, editComment);
 router.post('/like/:commentId', verifyJWT, likeComment);
 router.post('/dislike/:commentId', verifyJWT, dislikeComment);
 router.delete('/delete/:commentId', verifyJWT, deleteComment);
+router.get('/get/:blogId', verifyJWT, getComments);
 
 export default router;

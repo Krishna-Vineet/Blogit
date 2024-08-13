@@ -6,7 +6,9 @@ import {
     getBlogById,
     getAllBlogsOfUser,
     likeBlog,
-    dislikeBlog
+    dislikeBlog,
+    incrementViewCount,
+    incrementShareCount
 } from "../controllers/blog.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
@@ -20,5 +22,7 @@ router.get('/view/:id', verifyJWT, getBlogById);
 router.get('/user/:userId', verifyJWT, getAllBlogsOfUser);
 router.post('/like/:id', verifyJWT, likeBlog);
 router.post('/dislike/:id', verifyJWT, dislikeBlog);
+router.post('/incrementViewCount/:id', incrementViewCount);
+router.post('/incrementShareCount/:id', incrementShareCount);
 
 export default router;

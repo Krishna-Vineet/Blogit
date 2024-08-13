@@ -3,7 +3,7 @@
         <img src="<%= blog.image %>" alt="Blog Image">
     
         <div class="blog-insights">
-            <h4><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
+            <h4 class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
             <div class="like">
                 <% if (blog.likedByUser) { %>
                     <i class="fa fa-thumbs-up liked"></i>

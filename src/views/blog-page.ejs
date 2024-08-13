@@ -9,59 +9,48 @@
 </head>
 <body>
     <%- include('partials/header') %>
-    <main>
+    <main id="blog-container" data-blog-id="<%= blog._id %>" data-user-id="<%= user._id %>">
         <div class="popularity">
-            <div class="tag">Popular #4</div>
-            <div class="tag">Trending #1</div>
-            <div class="tag">3562 Views</div>
+            <% if (blog.popularRank) { %>
+                <div class="tag">Popular #<%= blog.popularRank %></div>
+            <% } %>
+            <% if (blog.trendingRank) { %>
+                <div class="tag">Trending #<%= blog.trendingRank %></div>
+            <% } %>
+            <div class="tag"><span id="view-Count"><%= blog.viewsCount %></span> Views</div>
+            <div class="tag"><span class="share-count"><%= blog.shareCount %></span> Shares</div>
         </div>
         <h1 class="title"><%= blog.title %></h1>
         <h4 class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
         <img class="blog-image" src="<%= blog.image || 'https://via.placeholder.com/1200x700' %>" alt="">
         <div class="params">
-            <div class="date"><%= blog.createdAt %> &nbsp; <%= blog.createdAt === blog.updatedAt ? '' : '(edited)' %></div>
+            <div class="date">Posted on: <%= blog.createdAt.toLocaleString('en-In') %></div>
             <div class="stats">
-                <div class="likes"><i class=" <%= !blog.author.isSelf && blog.likedByUser ? 'liked' : ''%> fa fa-thumbs-up"></i> 2.1k</div>
-                <div class="dislikes"><i class=" <%= !blog.author.isSelf && blog.dislikedByUser ? 'disliked' : ''%> fa fa-thumbs-down"></i> 79</div>
-                <div class="shares"><i class="fa fa-share"></i> 794</div>
+                <div class="likes"><i class=" <%= !blog.author.isSelf && blog.likedByUser ? 'liked' : ''%> fa fa-thumbs-up"></i> <%= blog.likesCount %></div>
+                <div class="dislikes"><i class=" <%= !blog.author.isSelf && blog.dislikedByUser ? 'disliked' : ''%> fa fa-thumbs-down"></i> <%= blog.dislikesCount %></div>
+                <div class="shares"><i class="share-blog fa fa-share"></i> <span class="share-count"><%= blog.shareCount %></span></div>
             </div>
         </div>
         <div class="content">
-            <!-- <h2>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut </h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates veniam facilis voluptatibus voluptas, cupiditate necessitatibus atque magnam aliquid deleniti corporis sapiente suscipit, similique consequuntur animi neque aperiam quaerat corrupti consequatur! Aperiam, doloribus dolor error necessitatibus quam obcaecati, libero iste ratione dolore exercitationem itaque hic excepturi magnam modi totam praesentium a?</p>
-            <ul>
-                <li>Hello</li>
-                <li>This</li>
-                <li>For</li>
-                <li>Testing</li>
-                <li>Puspose</li>
-                <li>Only</li>
-            </ul>
-            <h1>Lorem ipsum dolor sit amet.</h1>
-            <p><b>Lorem ipsum dolor sit.</b>Lorem, ipsum dolor sit amet consectetur adipisicing <i>Lorem, ipsum dolor.</i> elit. Ipsum, aliquam.</p>
-            <p><b>Lorem ipsum dolor sit.</b>Lorem, ipsum dolor sit amet consectetur adipisicing <i>Lorem, ipsum dolor.</i> elit. Ipsum, aliquam.</p>
-            <p><b>Lorem ipsum dolor sit.</b>Lorem, ipsum dolor sit amet consectetur adipisicing <i>Lorem, ipsum dolor.</i> elit. Ipsum, aliquam.</p>
-            <h2>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut. Odio, saepe dolorum?</h2>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Inventore atque fuga, animi aliquid excepturi suscipit? Odit libero harum et facere reiciendis obcaecati, fugiat magni ducimus tempore dignissimos odio saepe impedit eius minus, in ea cupiditate laboriosam assumenda error delectus modi suscipit? Consequatur quos quasi animi laboriosam, dolorem commodi voluptatem ad repellendus harum cum tempore quo eum quod est voluptatibus ut iste porro expedita facilis consequuntur, quaerat necessitatibus molestiae mollitia. Illum quam quae tempore suscipit sit fugiat iusto, obcaecati aperiam consequuntur, distinctio laudantium vitae eos. Placeat consequuntur quod iusto magnam. Quas dicta nostrum commodi possimus ratione doloribus, cupiditate expedita eius repellendus soluta incidunt assumenda sunt tempora, obcaecati corporis? Consequuntur fuga quibusdam tempore, voluptas eos quam pariatur unde culpa maxime quidem quo neque facilis nihil ducimus assumenda, officiis dicta cum labore. Blanditiis laborum architecto sint facere maiores id, recusandae est unde voluptates beatae accusantium velit explicabo eligendi, illo animi error ad! Neque incidunt, eos molestiae, exercitationem temporibus quam soluta iste quo dignissimos pariatur quasi magnam doloremque quas, laborum necessitatibus unde placeat itaque tenetur quae deserunt sed non corrupti. Dolor, expedita? Dolore consectetur sed dolorem exercitationem quia, similique amet, dolor repellat ea adipisci nostrum officiis. Fuga repellat nostrum obcaecati quo porro deleniti vero, impedit quasi at provident cupiditate, delectus doloribus excepturi soluta accusamus perferendis ratione quibusdam inventore, velit minus esse animi quae odio. Reprehenderit tenetur excepturi libero. Tenetur omnis accusamus ipsa iure et. Dolorum porro maxime excepturi commodi, voluptates labore aspernatur odit atque a temporibus ullam tempore nam magni corporis maiores dignissimos sunt? -->
-            <%- blog.content %>
+           <%- blog.content %>
         </div>
         <div class="credits">
             <div class="author">
-                <img class="author-avatar" src="<%= blog.author.avatar || 'https://via.placeholder.com/100' %>" alt="avatar">
+                <img class="author-avatar" src="<%= blog.author.avatar || 'https://i.pravatar.cc/100' %>" alt="avatar">
                 <div class="detail">
                     <h4><%= blog.author.username %></h4>
-                    <p>37 followers</p>
+                    <p><%= blog.author.followerCount %> Followers</p>
                 </div>
                 <button><%= !blog.author.isSelf && blog.author.isFollowed ? 'Following' : 'Follow' %></button>
             </div>
             <div class="share">
                 <h4>Share this blog on:</h4>
                 <div class="icons">
-                    <i class="fa-brands fa-facebook"></i>
-                    <i class="fa-brands fa-twitter"></i>
-                    <i class="fa-brands fa-linkedin"></i>
-                    <i class="fa-brands fa-whatsapp"></i>
-                    <i class="fa-brands fa-telegram"></i>
+                    <i class="share-blog fa-brands fa-facebook"></i>
+                    <i class="share-blog fa-brands fa-twitter"></i>
+                    <i class="share-blog fa-brands fa-linkedin"></i>
+                    <i class="share-blog fa-brands fa-whatsapp"></i>
+                    <i class="share-blog fa-brands fa-telegram"></i>
                 </div>
             </div>
         </div>
@@ -69,96 +58,41 @@
 
     <section id="comments">
         <div class="heading">
-            <h2>Comments <span>345</span></h2>
+            <h2>Comments <span><%= blog.commentCount %></span></h2>
             <select name="filter" id="filter">
                 <option value="recent">Recent</option>
                 <option value="popular">Popular</option>
             </select>
         </div>
         <div class="add">
-            <img src="https://via.placeholder.com/100" alt="avatar">
-            <input type="text" placeholder="Add a comment">
-            <button>Post</button>
+            <img src="https://i.pravatar.cc/100" alt="avatar">
+            <input id="commentInput" type="text" placeholder="Add a comment">
+            <button id="postCommentBtn">Post</button>
         </div>
-        <div class="comments">
-            <div class="comment">
-                <img src="https://via.placeholder.com/100" alt="avatar">
-                <div class="content">
-                    <div class="commentator">
-                        <h4 class="name">Hitesh Rai </h4>
-                        <span class="date"> &nbsp;  12 August, 2021 </span>
-                        <span class="edited">&nbsp; (edited)</span>
-                        <a href="#"><i class="fa fa-edit"></i>Edit</a>
-                    </div>
-                    <p class="text">Lorem ipsum adipisicing elit. Maxime mollitia </p>
-                    <div class="reaction">
-                        <a href="#"><i class="liked fa fa-thumbs-up"></i>578</a>
-                        <a href="#"><i class="fa fa-thumbs-down"></i>58</a>
-                    </div>
-                </div>
-            </div>
-            <div class="comment">
-                <img src="https://via.placeholder.com/100" alt="avatar">
-                <div class="content">
-                    <div class="commentator">
-                        <h4 class="name">Hitesh Rai </h4>
-                        <span class="date"> &nbsp;  12 August, 2021 </span>
-                    </div>
-                    <p class="text">Lorem ipsum dolor dolor sit amet consecteturdolor sit amet consecteturdolor sit amet consectetur sit amet consectetur adipisicing elit. Maxime mollitia </p>
-                    <div class="reaction">
-                        <a href="#"><i class="fa fa-thumbs-up"></i>578</a>
-                        <a href="#"><i class="fa fa-thumbs-down"></i>58</a>
-                    </div>
-                </div>
-            </div>
-            <div class="comment">
-                <img src="https://via.placeholder.com/100" alt="avatar">
-                <div class="content">
-                    <div class="commentator">
-                        <h4 class="name">Hitesh Rai </h4>
-                        <span class="date"> &nbsp; 12 August, 2021 </span>
-                        <span class="edited">&nbsp; (edited)</span>
-                    </div>
-                    <p class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia </p>
-                    <div class="reaction">
-                        <a href="#"><i class="fa fa-thumbs-up"></i>578</a>
-                        <a href="#"><i class="disliked fa fa-thumbs-down"></i>58</a>
-                    </div>
-                </div>
-            </div>
+        <div id="commentsContainer">
+        
         </div>
-        <a class="more" href="#">Load More</a>
+        <a class="more" id="showAllComments">Show All</a>
     </section>
 
     <section id="suggestions">
         <h3>Simmilar Blogs</h3>
         <div class="blogs">
-            <div class="blog-card">
-                <img src="https://via.placeholder.com/300x200" alt="Blog 1">
-                <div class="blog-info">
-                    <h3>Blog Title 1</h3>
-                    <p>Short description of the blog post. This is a brief overview.</p>
-                    <a href="blog.html">Read More</a>
+            <% blog.similarBlogs.forEach(Sblog => { %>
+                <div class="blog-card">
+                    <img src="<%= Sblog.image || 'https://via.placeholder.com/300x200' %>" alt="Blog 1">
+                    <div class="blog-info">
+                        <h3><%= Sblog.title %></h3>
+                        <div><%- Sblog.content %></div>
+                        <a href="/blog/view/<%= Sblog._id %>">Read More</a>
+                    </div>
                 </div>
-            </div>
-            <div class="blog-card">
-                <img src="https://via.placeholder.com/300x200" alt="Blog 1">
-                <div class="blog-info">
-                    <h3>Blog Title 1</h3>
-                    <p>Short description of the blog post. This is a brief overview.</p>
-                    <a href="blog.html">Read More</a>
-                </div>
-            </div>
-            <div class="blog-card">
-                <img src="https://via.placeholder.com/300x200" alt="Blog 1">
-                <div class="blog-info">
-                    <h3>Blog Title 1</h3>
-                    <p>Short description of the blog post. This is a brief overview.</p>
-                    <a href="blog.html">Read More</a>
-                </div>
-            </div>
+            <% }) %>
+
         </div>
     </section>
     <%- include('partials/footer') %>
+
+    <script src="/js/blog-page.js"></script>
 </body>
 </html>

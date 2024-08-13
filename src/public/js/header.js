@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/header-data')
             .then(response => response.json())
             .then(data => {
+                // console.log(data);
+                
                 const user = data.user;
                 const trendingBlogs = data.trendingBlogs;
                 const topAuthors = data.topAuthors;
@@ -88,8 +90,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         
         // Remove existing highlights
-        removeHighlights();
+        // removeHighlights();
     
+        alert(query);
         if (query) {
             // Get all text nodes
             const content = document.querySelectorAll('.content');
