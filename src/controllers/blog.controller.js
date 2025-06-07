@@ -8,7 +8,6 @@ import Follow from "../models/follow.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiErrors.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
-import e from "express";
 
 // Create a new blog
 const createBlog = asyncHandler(async (req, res, next) => {
@@ -123,9 +122,13 @@ const deleteBlog = asyncHandler(async (req, res, next) => {
     const authorId = blogToBeDeleted.author._id;
     
     if (userId.toString() !== authorId.toString()) {
-        return next (new ApiError(400, "Bad Authentication"));
-        
+        return next (new ApiError(400, "Bad Authentication"));    
     }
+
+    if (blogToBeDeleted.image) {
+        await deleteFromCloudinary(blogToBeDeleted.image);
+    }
+
     
 
     // Delete the blog

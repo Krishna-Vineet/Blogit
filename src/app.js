@@ -33,10 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Redirects
-app.get('/', (req, res) => res.redirect('/home'));
 
-app.get('/login', (req, res) => res.render('login'))
-app.get('/register', (req, res) => res.render('register'))
 
 
 import siteRoutes from './routes/site.routes.js';

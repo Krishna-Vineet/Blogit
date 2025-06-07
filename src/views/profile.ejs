@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="/css/blog.css">
     <%  } %>
 
-    <title>Profile: @<%= user ? user.displayName : 'Guest' %></title>
+    <title>Profile: @<%= user ? user.displayName : 'Guest' %> | Blogit</title>
 </head>
 <body>
     <%- include('partials/header') %>
@@ -55,7 +55,7 @@
         </div>
     </main>
     <section id="userBlogsSection">
-        <% if (user.blogs != []) { %>
+        <% if (user.blogs && user.blogs.length > 0) { %>
         <h2>Blogs by <%= user ? user.displayName : 'Guest' %></h2>
         <div class="userBlogCategory">
             <h3>Category: </h3>
@@ -83,7 +83,9 @@
             <%  } %>
           <% }) %>
         </div>
-        <% }  %>
+        <% } else { %>
+            <h2 style="margin-bottom: 30px; margin-left: 90px; font-size: xx-large;"><%= user ? user.displayName : 'Guest' %> has not created any blogs yet.</h2>
+            <% } %>
     </section>
 
 

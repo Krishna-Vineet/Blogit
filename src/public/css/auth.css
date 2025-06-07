@@ -64,6 +64,10 @@ body {
     margin-bottom: 20px;
   }
 
+  .form_wrapper .input_field#otpField{
+    display: none;
+  }
+
   .form_wrapper .login_username{
     margin-bottom: 5px;
   }
@@ -77,27 +81,65 @@ body {
     text-align: center;
     width: 30px;
   }
+   .form_wrapper .input_field > button {
+    position: absolute;
+    right: 5;
+    top: 0;
+    color: #cfcfcf;
+    text-align: center;
+    width: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+   }
   .form_wrapper .input_field span.toggle-password {
     right: 5px;
     left: unset;
     cursor: pointer;
     border: none;
   }
+    .form_wrapper .input_field button#sendOtpBtn {
+      right: 5px;
+      left: unset;
+      cursor: pointer;
+      border: none;
+      display: none;
+      width: unset;
+      height: min-content;
+      margin: 9px 4px;
+      color: #e1a70a;
+
+      &:hover{
+        text-decoration: underline;
+        color: #f5ba1a;
+      }
+    }
   .form_wrapper .input_field > span > i {
     padding-top: 10px;
   }
   .form_wrapper .textarea_field > span > i {
     padding-top: 10px;
   }
-  .form_wrapper input {
-    width: 100%;
-    padding: 9px 10px 9px 35px;
-    height: 35px;
-    border: 1px solid #cfcfcf;
-    background: #2c2c2c;
-    box-sizing: border-box;
-    outline: none;
-  }
+.form_wrapper input,
+.form_wrapper input:-webkit-autofill {
+  width: 100%;
+  padding: 9px 10px 9px 35px;
+  height: 35px;
+  border: 1px solid #cfcfcf;
+  background: #2c2c2c;
+  color: #fff;
+  box-sizing: border-box;
+  outline: none;
+}
+
+/* Autofill override */
+.form_wrapper input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #2c2c2c inset; /* override bg */
+  -webkit-text-fill-color: #fff; /* override text */
+  transition: background-color 9999s ease-in-out 0s; /* avoid flicker */
+  caret-color: #fff;
+}
+
   .form_wrapper input:hover {
     background: #181818;
   }
@@ -193,6 +235,11 @@ body {
     font-weight: 400;
     text-transform: uppercase;
   }
+  a.terms {
+    color: #f5ba1a;
+    text-decoration: none;
+    cursor: pointer;
+}
  h3{
   font-weight: 300;
   margin-top: 10px;
@@ -206,6 +253,24 @@ body {
  h3 a:hover{
   text-decoration: underline;
  }
+
+ input[type=submit].btn-disabled {
+  background: #e1a70a;
+  height: 35px;
+  border-radius: 3px;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 10px;
+  cursor: not-allowed;
+  color: #ffffff;
+  text-shadow: #000000 1px 1px 5px;
+  font-size: 1.1em;
+  opacity: 0.6;
+  &:hover {
+    letter-spacing: normal;
+  }
+}
 
  /* Adjust the styling for the Edit Profile page */
 textarea {

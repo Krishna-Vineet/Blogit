@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="/css/auth.css">
-    <title>Edit Profile</title>
+    <title>Edit Profile | Blogit</title>
 </head>
 <body>
     <div class="form_wrapper">
@@ -20,10 +20,6 @@
                     <div class="input_field"> 
                         <span><i aria-hidden="true" class="fa fa-user"></i></span>
                         <input type="text" name="username" placeholder="Username" value="<%= displayName %>" required />
-                    </div>
-                    <div class="input_field"> 
-                        <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
-                        <input type="email" name="email" placeholder="Email" value="<%= email %>" required />
                     </div>
                     <% if (bio) { %>
                     <div class="input_field"> 
@@ -44,10 +40,17 @@
                         <span><i aria-hidden="true" class="fa-brands fa-x-twitter"></i></span>
                         <input type="text" name="x" placeholder="X Username" value="<%= x ? x : '' %>" />
                     </div>
-                    
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                        <input type="password" name="password" placeholder="Password" suggestion="off" autocomplete="off" required id="passwordInput" />
+                        <span class="toggle-password" onclick="togglePassword()">
+                            <i class="fa-regular fa-eye" id="toggleIcon"></i>
+                        </span>
+                    </div>
                     <input class="button" type="submit" value="Save Changes" />
                 </form>
-                <h3>Want to change password? <a id="changePassword">Change Password</a></h3>
+                <h3>Want to change your email? <a id="changeEmail">Change Email</a></h3>
+                <h3>Want to reset password? <a id="changePassword">Reset Password</a></h3>
             </div>
         </div>
     </div>
@@ -70,16 +73,31 @@
             }).showToast();
         }
 
+          function togglePassword() {
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("toggleIcon");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
         document.getElementById('editProfileForm').addEventListener('submit', function(event) {
             event.preventDefault();
     
             // Gather data from the form fields
             const data = {
                 username: document.getElementsByName('username')[0].value,
-                email: document.getElementsByName('email')[0].value,
                 bio: document.getElementsByName('bio')[0].value,
                 instagram: document.getElementsByName('instagram')[0].value,
-                facebook: document.getElementsByName('facebook')[0].value
+                facebook: document.getElementsByName('facebook')[0].value,
+                password: document.getElementsByName('password')[0].value
             };
     
             // Send the PATCH request to update user details
@@ -114,7 +132,11 @@
         });
     
         document.getElementById('changePassword').addEventListener('click', function() {
-            window.location.href = '/user/request-password-reset'; // Redirect to the password reset page
+            window.location.href = '/resetPassword'; // Redirect to the password reset page
+        });
+    
+        document.getElementById('changeEmail').addEventListener('click', function() {
+            window.location.href = '/changeEmail'; // Redirect to the email change page
         });
     </script>
     

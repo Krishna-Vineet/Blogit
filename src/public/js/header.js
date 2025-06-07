@@ -36,9 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate trending blogs
                 const trendingPosts = document.getElementById('trendingPosts');
                 trendingPosts.innerHTML = ''; // Clear existing content
-                const trendingPostsHeading = document.createElement('h2');
-                trendingPostsHeading.textContent = 'Trending Blogs';
-                trendingPosts.parentElement.insertBefore(trendingPostsHeading, trendingPosts);
+                if (trendingBlogs.length > 0) {
+                    const trendingPostsHeading = document.createElement('h2');
+                    trendingPostsHeading.textContent = 'Trending Blogs';
+                    trendingPosts.parentElement.insertBefore(trendingPostsHeading, trendingPosts);
+                }
                 trendingBlogs.forEach(blog => {
                     trendingPosts.innerHTML += `
                         <li onclick="location.href='/blog/view/${blog._id}'" class="blog-banner">
@@ -53,9 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate top authors
                 const topAuthorsList = document.getElementById('topAuthors');
                 topAuthorsList.innerHTML = ''; // Clear existing content
-                const topAuthorHeading = document.createElement('h2');
-                topAuthorHeading.textContent = 'Popular Authors';
-                topAuthorsList.parentElement.insertBefore(topAuthorHeading, topAuthorsList);                
+                if (topAuthors.length > 0) {
+                    const topAuthorHeading = document.createElement('h2');
+                    topAuthorHeading.textContent = 'Popular Authors';
+                    const br = document.createElement('br');
+                    topAuthorsList.parentElement.insertBefore(br, topAuthorsList);                
+                    topAuthorsList.parentElement.insertBefore(topAuthorHeading, topAuthorsList);                
+                }
                 topAuthors.forEach(author => {
                     topAuthorsList.innerHTML += `
                         <li onclick="location.href='/user/profile/${author._id}'" class="author-banner">
@@ -69,11 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate followed user blogs if user is logged in
                 if (user) {
                     const followedBlogsSection = document.getElementById('followedBlogsSection');
-                    if (followedUserBlogs.length > 0) {
-                    followedBlogsSection.innerHTML = '<h2>Blogs from People I Follow</h2><ul id="followedUsersBlogs"></ul>';
-                    }
-                    // const followedBlogsSection = document.getElementById('followedUsersBlogs');
                     followedBlogsSection.innerHTML = ''; // Clear existing content
+                    if (followedUserBlogs.length > 0) {
+                    const followedBlogsHeading = document.createElement('h2');
+                    followedBlogsHeading.textContent = 'Following Posts';
+                    const br = document.createElement('br');
+                    topAuthorsList.parentElement.insertBefore(br, followedBlogsSection);                
+                    topAuthorsList.parentElement.insertBefore(followedBlogsHeading, followedBlogsSection);                
+                }
                     followedUserBlogs.forEach(blog => {
                         followedBlogsSection.innerHTML += `
                             <li onclick="location.href='/blog/view/${blog._id}'" class="blog-banner">

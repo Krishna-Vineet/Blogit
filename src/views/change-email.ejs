@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <title>Verify Your Email | Blogit</title>
+</head>
+<body>
+  <div class="form_wrapper">
+    <div class="form_container">
+      <div class="title_container">
+        <h2 class="company">Blogit</h2>
+        <h2>Change Your Email</h2>
+      </div>
+      <div class="row clearfix">
+        <form id="resetEmailForm" autocomplete="off">
+          <div class="input_field">
+              <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+              <input id="resetEmailInput" type="email" name="email" placeholder="New Email" suggestion="off" required />
+              <button id="sendOtpBtn">Send OTP</button>
+          </div>
+          <div id="otpField" class="input_field">
+              <span><i aria-hidden="true" class="fa fa-key"></i></span>
+              <input type="text" name="otp" placeholder="OTP" suggestion="off" autocomplete="off" required />
+          </div>
+          <input id="resetEmailButton" class="btn-disabled" type="submit" disabled="true" value="Save New Password" />
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+    function showToast(message, type = "error") {
+      Toastify({
+        text: message,
+        style: {
+          borderRadius: "10px",
+          color: "#fff",
+          padding: "15px 10px",
+          background: type === "success" ? "#28a745" : "#ff4141",
+        },
+        duration: 2000,
+        gravity: "top",
+        position: "right",
+        stopOnFocus: true,
+      }).showToast();
+    }
+
+    document.getElementById('resetEmailInput').addEventListener('input', function() {
+            const email = this.value;
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const isValid = emailRegex.test(email);
+            document.getElementById('resetEmailButton').disabled = !isValid;
+            document.getElementById('sendOtpBtn').style.display = isValid ? 'inline-block' : 'none';
+        })
+
+
+        document.getElementById('sendOtpBtn').addEventListener('click', async function() {
+            const email = document.getElementById('resetEmailInput').value.trim();
+
+            if (!email) {
+                showToast('Please enter a valid email');
+                return;
+            }
+            document.getElementById('resetEmailButton').disabled = true;
+            document.getElementById('sendOtpBtn').disabled = true;
+            document.getElementById('sendOtpBtn').innerHTML = 'Sending...';
+            const response = await fetch('/user/sendOtp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, type: 'resetEmail' })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                document.getElementById('sendOtpBtn').disabled = false;
+                document.getElementById('sendOtpBtn').innerHTML = 'Send OTP';
+                document.getElementById('resetEmailButton').disabled = false;
+                console.error('Error:', errorData.error);
+                showToast('Error generating OTP');
+                return;
+            }
+            showToast('OTP sent to your email', 'success');
+            document.getElementById('otpField').style.display = 'block';
+            document.getElementById('sendOtpBtn').disabled = false;
+            document.getElementById('sendOtpBtn').innerHTML = 'Resend OTP';
+            document.getElementById('resetEmailButton').disabled = false;
+            document.getElementById('resetEmailButton').classList.remove('btn-disabled');
+
+        })
+
+        document.getElementById('resetEmailForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            document.getElementById('resetEmailButton').disabled = true; 
+            document.getElementById('resetEmailButton').value = 'Saving new Password...';
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = {
+                newEmail: formData.get('email'),
+                otp: formData.get('otp'),
+            };
+
+            try {
+                const response = await fetch('/user/resetEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();                    
+                    showToast(errorData.errorMessage);
+                } else {
+                    showToast("Email has been reset, you can now login", "success");
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1200);
+                }
+
+            } catch (error) {
+                showToast('An unexpected error occurred');
+                console.error(error);
+                
+            }
+            document.getElementById('resetEmailButton').value = 'Reset Password';
+            document.getElementById('resetEmailButton').disabled = false; 
+        });
+  </script>
+</body>
+</html>

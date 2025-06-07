@@ -115,7 +115,7 @@ function generateComments(comments, filter) {
                             day: '2-digit',
                             month: 'short',
                             year: 'numeric'
-                        }).replace(/ /g, ' ').replace(' 202', ', 202') } ${comment.edited ? '(Edited)' : ''}  </span>
+                        }).replace(/ /g, ' ').replace(' 202', ', 202') } <span id="edited-${ comment._id }"> ${comment.edited ? '(Edited)' : ''} </span> </span>
                         ${ comment.author._id === userId ?
                             `<a onclick="editComment('${comment._id}')" class="edit-comment"><i class="fa fa-edit"></i>Edit</a>
                             <a onclick="deleteComment('${comment._id}')" class="delete-comment"><i class="fa fa-trash"></i>Delete</a>`
@@ -258,13 +258,7 @@ function updateCommentText(commentId) {
         commentInput.nextSibling.outerHTML = '';
         commentInput.outerHTML = `<p id="commentText-${ commentId }" class="text">${newContent}</p>`;
 
-        const commentDateElement = document.getElementById(`commentDate-${commentId}`);
-
-        // Check if the element already contains the "(edited)" span
-        if (!commentDateElement.nextSibling.innerHTML == '(edited)') {
-            // If not, append the "(edited)" span
-            commentDateElement.outerHTML += `<span class="edited">&nbsp; (edited)</span>`;
-        }
+        document.getElementById(`edited-${commentId}`).innerHTML = `(Edited)`;
 
         
     })

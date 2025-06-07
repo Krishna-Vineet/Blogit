@@ -1,12 +1,8 @@
 import User from "../models/user.model.js";
 import Blog from "../models/blog.model.js";
-import Comment from "../models/comment.model.js";
-import Like from "../models/like.model.js";
-import Dislike from "../models/dislike.model.js";
 import Follow from "../models/follow.model.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import ApiError from "../utils/ApiErrors.js";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import sendEmail from "../utils/sendEmail.js";
 

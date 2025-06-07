@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="css/auth.css">
-    <title>Blogit | Sign Up</title>
+    <title>Sign Up | Blogit</title>
 </head>
 <body>
     <div class="form_wrapper">
@@ -23,7 +23,12 @@
                     </div>
                     <div class="input_field"> 
                         <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
-                        <input type="email" name="email" placeholder="Email" suggestion="off" required />
+                        <input id="registrationEmailInput" type="email" name="email" placeholder="Email" suggestion="off" required />
+                        <button id="sendOtpBtn">Send OTP</button>
+                    </div>
+                    <div id="otpField" class="input_field">
+                        <span><i aria-hidden="true" class="fa fa-key"></i></span>
+                        <input type="text" name="otp" placeholder="OTP" suggestion="off" autocomplete="off" required />
                     </div>
                     <div class="input_field"> 
                         <span><i aria-hidden="true" class="fa fa-lock"></i></span>
@@ -34,13 +39,13 @@
                     </div>
                     <div class="input_field checkbox_option">
                         <input type="checkbox" id="cb1" required>
-                        <label for="cb1">I agree with terms and conditions</label>
+                        <label for="cb1">I agree with <a class="terms" onclick="window.location.href='/terms-and-conditions'">Terms & Conditions</a></label>
                     </div>
                     <div class="input_field checkbox_option">
                         <input type="checkbox" id="cb2">
                         <label for="cb2">I want to receive the newsletter</label>
                     </div>
-                    <input class="button" type="submit" value="Register" />
+                    <input id="registerButton" class="btn-disabled" type="submit" disabled="true" value="Register" />
                 </form>
                 <h3>Already have an account? <a href="/login">Login</a></h3>
             </div>
@@ -80,16 +85,62 @@
             }).showToast();
         }
 
+        document.getElementById('registrationEmailInput').addEventListener('input', function() {
+            const email = this.value;
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const isValid = emailRegex.test(email);
+            document.getElementById('registerButton').disabled = !isValid;
+            document.getElementById('sendOtpBtn').style.display = isValid ? 'inline-block' : 'none';
+        })
+
+
+        document.getElementById('sendOtpBtn').addEventListener('click', async function() {
+            const email = document.getElementById('registrationEmailInput').value.trim();
+
+            if (!email) {
+                showToast('Please enter a valid email');
+                return;
+            }
+            document.getElementById('registerButton').disabled = true;
+            document.getElementById('sendOtpBtn').disabled = true;
+            document.getElementById('sendOtpBtn').innerHTML = 'Sending...';
+
+            const response = await fetch('/user/sendOtp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, type: 'register' })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                document.getElementById('sendOtpBtn').disabled = false;
+                document.getElementById('sendOtpBtn').innerHTML = 'Send OTP';
+                document.getElementById('registerButton').disabled = false;
+                console.error('Error:', errorData.error);
+                showToast('Error generating OTP');
+                return;
+            }
+            showToast('OTP sent to your email', 'success');
+            document.getElementById('otpField').style.display = 'block';
+            document.getElementById('sendOtpBtn').disabled = false;
+            document.getElementById('sendOtpBtn').innerHTML = 'Resend OTP';
+            document.getElementById('registerButton').disabled = false;
+            document.getElementById('registerButton').classList.remove('btn-disabled');
+
+        })
+
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
-            document.getElementsByClassName('button')[0].disabled = true; 
-            document.getElementsByClassName('button')[0].value = 'Registering...';
+            document.getElementById('registerButton').disabled = true; 
+            document.getElementById('registerButton').value = 'Registering...';
             const form = event.target;
             const formData = new FormData(form);
             const data = {
                 username: formData.get('username'),
                 email: formData.get('email'),
+                otp: formData.get('otp'),
                 password: formData.get('password')
             };
 
@@ -114,11 +165,11 @@
 
             } catch (error) {
                 showToast('An unexpected error occurred');
-                // console.log(error);
+                console.error(error);
                 
             }
-            document.getElementsByClassName('button')[0].value = 'Register';
-            document.getElementsByClassName('button')[0].disabled = false; 
+            document.getElementById('registerButton').value = 'Register';
+            document.getElementById('registerButton').disabled = false; 
         });
     </script>
 </body>

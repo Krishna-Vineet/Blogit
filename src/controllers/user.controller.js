@@ -13,7 +13,7 @@ import mongoose from "mongoose";
 import ApiResponse from "../utils/ApiResponse.js";
 import crypto from 'crypto';
 import sendEmail from '../utils/sendEmail.js';
-import { log } from "console";
+import Otp from "../models/otp.model.js";
 
 
 
@@ -42,10 +42,115 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 
 
+const sendOtp = asyncHandler(async (req, res, next) => {
+    const { email, type } = req.body;
+
+    if (!email) {
+        return next(new ApiError(400, "Email is required"));
+    }
+    const user = await User.findOne({ email });
+    if (type === 'register' && user) {
+        return next(new ApiError(400, "User with this email already exists"));
+    }
+    try {
+        // Generate a verification code
+        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+        const expirationTime = Date.now() + 300000;
+        await Otp.create({ otp: verificationCode, email, expirationTime });
+
+        let htmlContent, subject;
+        if (type === 'register') {
+             htmlContent = `
+            <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #f9f9f9; color: #333;">
+            <h2 style="color: #222; text-align: center; margin-bottom: 20px;">🔐OTP for Email Verification</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">
+                Hello, <br/><br/>
+                We received a request to verify your email address: <strong style="color: #000;">${email}</strong><br/>
+                To continue with your registration, please use the verification code below:
+                </p>
+                
+            <div style="background-color: #1a1a1a; color: #f5ba1a; font-size: 24px; font-weight: bold; text-align: center; padding: 15px 0; border-radius: 8px; margin: 20px 0;">
+            ${verificationCode}
+            </div>
+            
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">
+            This code will expire in <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+            </p>
+            
+            <div style="text-align: center; font-size: 13px; color: #999; margin-top: 25px;">
+            — Blogit Registration System
+            </div>
+        </div>
+        `
+            subject = "OTP for Email Verification";
+        } else if (type === 'resetPassword') {
+            htmlContent = `
+            <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #f9f9f9; color: #333;">
+            <h2 style="color: #222; text-align: center; margin-bottom: 20px;">🔐OTP for Password Reset</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">
+                Hello, <br/><br/>
+                We received a request to reset the password for your email: <strong style="color: #000;">${email}</strong><br/>
+                To continue with the password reset process, please use the verification code below:
+                </p>
+                
+            <div style="background-color: #1a1a1a; color: #f5ba1a; font-size: 24px; font-weight: bold; text-align: center; padding: 15px 0; border-radius: 8px; margin: 20px 0;">
+            ${verificationCode}
+            </div>
+            
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">
+            This code will expire in <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+            </p>
+            
+            <div style="text-align: center; font-size: 13px; color: #999; margin-top: 25px;">
+            — Blogit Password Reset System
+            </div>
+        </div>
+        `
+            subject = "OTP for Password Reset";
+        } else {
+            htmlContent = `
+            <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #f9f9f9; color: #333;">
+            <h2 style="color: #222; text-align: center; margin-bottom: 20px;">🔐OTP for Email Verification</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">
+                Hello, <br/><br/>
+                We received a request to generate OTP for email address: <strong style="color: #000;">${email}</strong><br/>
+                To continue, please use the verification code below:
+                </p>
+                
+            <div style="background-color: #1a1a1a; color: #f5ba1a; font-size: 24px; font-weight: bold; text-align: center; padding: 15px 0; border-radius: 8px; margin: 20px 0;">
+            ${verificationCode}
+            </div>
+            
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">
+            This code will expire in <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+            </p>
+            
+            <div style="text-align: center; font-size: 13px; color: #999; margin-top: 25px;">
+            — Blogit Verification System
+            </div>
+            `
+            subject = "OTP request";
+        }
+        // Send verification code to user's email
+        await sendEmail({
+            to: email,
+            subject: subject,
+            html: htmlContent
+        });
+    } catch (error) {
+        return next(new ApiError(500, "Something went wrong while generating OTP:" + error.message));
+    }
+    res.status(200).json(new ApiResponse(200, "OTP sent to your email"));
+});
+
+
 const registerUser = asyncHandler(async (req, res, next) => {
-    const { email, username, password } =  req.body;
+    const { email, username, password, otp } =  req.body;
     
-    if ( [email, username, password].some(field => field === "")) {
+    if ( [email, username, password, otp].some(field => field === "")) {
         return next(new ApiError(400, "All fields are required"));
     }
     
@@ -58,13 +163,26 @@ const registerUser = asyncHandler(async (req, res, next) => {
       return next(new ApiError(400, "Password must be at least 8 characters long"));
     }
 
-
-    const existedUser = await  User.findOne({
-        $or: [{ username }, { email }]
-    })
-    if(existedUser){
-       return next(new ApiError(400, "User already exists"));
+    const usernameExist = await User.findOne({ username });
+    if (usernameExist) {
+        return next(new ApiError(400, "Username already exists, try another one."));
     }
+
+    const existedUser = await  User.findOne({ email });
+    if(existedUser){
+       return next(new ApiError(400, "User with this email already exists"));
+    }
+
+    const userOtp = await Otp.findOne({ otp, email });
+    if(!userOtp){
+        return next(new ApiError(400, "Invalid OTP"));
+    }
+
+    if(userOtp.expirationTime < Date.now()){
+        return next(new ApiError(400, "OTP has expired, please request a new one"));
+    }
+
+    await Otp.findByIdAndDelete(userOtp._id);
 
     const avatar = await uploadOnCloudinary(`https://ui-avatars.com/api/?name=${username}&size=512&background=random&length=1&rounded=true`);
 
@@ -122,7 +240,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
     const isPasswordValid = await user.isPasswordCorrect(password);
 
     if (!isPasswordValid) {
-        return next(new ApiError(401, "Invalid password"));
+        return next(new ApiError(401, "Incorrect password"));
     }
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
@@ -184,120 +302,31 @@ const logoutUser = asyncHandler(async (req, res) => {
     }
 });
 
-const requestPasswordReset = asyncHandler(async (req, res, next) => {
-    try {
-        // Check if user is available in request
-        if (!req.user || !req.user._id) {
-            return next(new ApiError(404, "User not found"));
-        }
-
-        // Find the user in the database
-        const user = await User.findById(req.user._id).select("-password -refreshToken");
-        if (!user) {
-            return next(new ApiError(404, "User not found in database"));
-        }
-
-        const email = user.email;
-
-        // Generate a verification code
-        const verificationCode = crypto.randomBytes(3).toString('hex').toUpperCase();
-        user.verificationCode = verificationCode;
-        user.verificationCodeExpires = Date.now() + 300000; // 5 min expiration
-
-        // Save the updated user with the verification code
-        await user.save();
-        const updatedUser = await User.findById(req.user._id).select("-password -refreshToken");
-        
-
-        const htmlContent = `
-        <div style="font-family: Arial, sans-serif; background-color: #222222; padding: 50px; border-radius: 10px;">
-          <h1 style="color: #E1A70A;">This mail is from Blogit</h1>
-          <h2 style="color: #cccccc;">Password Reset Verification Code</h2>
-          <p style="font-size: 0.99em; display: inline-block; color: #cccccc; ">Your verification code is:
-          <span style="background-color: #f2f2f2; color: #333; font-weight: bold; font-size: 1.2em; margin-right: 30px; display: inline-block; padding: 10px; border-radius: 5px;">${verificationCode}</span></p>
-          <p style="font-size: 0.95em; color: #777;">This code is valid for 5 minutes.</p>
-          <br>
-          <p style="font-size: 0.9em; color: #999;">Thank you, <br> Blogit Team</p>
-        </div>
-      `;
-        // Send verification code to user's email
-        await sendEmail({
-            to: email,
-            subject: 'Password Reset Verification Code',
-            html: htmlContent
-        });
-
-
-        // Render the change-password page with the user's email
-        res.render('change-password', { email, verificationCode });
-    } catch (error) {
-        return next(new ApiError(500, "Something went wrong while requesting password reset"));
-    }
-});
-
-const resetPassword = asyncHandler(async (req, res) => {
-    const { verificationCode, newPassword } = req.body;
-
-    // Check for valid inputs
-    if (!verificationCode || !newPassword) {
-        return next (new ApiError(400, "Verification code and new password are required"));
-    }
-
-    if (newPassword.length < 8) {
-        return next (new ApiError(400, "Password must be at least 8 characters long"));
-    }
-
-    const currentDate = new Date();
-    // Find the user by the verification code and check expiration
-    const user = await User.findOne({
-        verificationCode,
-        verificationCodeExpires: { $gt: currentDate } // Code is still valid
-    });
-
-    
-
-    if (!user) {
-        throw new ApiError(400, "Invalid or expired verification code");
-    }
-
-    // Update the user's password
-    user.password = newPassword;
-
-    // Clear the verification code and expiration
-    user.verificationCode = undefined;
-    user.verificationCodeExpires = undefined;
-
-    // Save the updated user information
-    await user.save();
-
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
-    };
-    // Respond with success
-    return res.
-    status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, null, "Password reset successfully"));
-});
-
-
 
 const updateUserDetails = asyncHandler(async (req, res, next) => {
-    const { email, username, bio, instagram, facebook } = req.body;
+    const { username, bio, instagram, facebook, password } = req.body;
 
+    if (!password) {
+        return next(new ApiError(400, "Password is required"));
+    }
 
-    if (!email && !username && !bio && !instagram && !facebook) {
+    if (!username && !bio && !instagram && !facebook) {
         return next(new ApiError(400, "No details to update"));
     }
-    if (!email || !username) {
-        return next(new ApiError(400, "Email and Username are required"));
+    if (!username) {
+        return next(new ApiError(400, "Username is required"));
     }
 
-    if (!req.user) {
-        return next(new ApiError(400, "Login to update account details"));
+    const user = await User.findById(req.user?._id);
+
+    if (!user) {
+        return next(new ApiError(404, "Login to update account details"));
+    }
+
+    const isPasswordValid = await user.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+        return next(new ApiError(401, "Incorrect password"));
     }
 
     try {
@@ -307,7 +336,6 @@ const updateUserDetails = asyncHandler(async (req, res, next) => {
                 $set: {
                     username: username.trim().toLowerCase(),
                     displayName: username,
-                    email: email,
                     bio: bio,
                     instagram: instagram,
                     facebook: facebook
@@ -326,7 +354,7 @@ const updateUserDetails = asyncHandler(async (req, res, next) => {
 });
 
 
-const updateUserAvatar = asyncHandler(async (req, res) => {
+const updateUserAvatar = asyncHandler(async (req, res, next) => {
     if (!req.user) {
         throw new ApiError(400, "Login again to update avatar");
     }
@@ -363,7 +391,7 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 
-const deleteUserAccount = asyncHandler(async (req, res) => {
+const deleteUserAccount = asyncHandler(async (req, res, next) => {
     try {
         const userId = req.user?._id;
 
@@ -422,7 +450,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 });
 
 
-const getUserDetails = asyncHandler(async (req, res) => {
+const getUserDetails = asyncHandler(async (req, res, next) => {
     try {
         const requestedUserId = req.params.userId; // Changed to req.params
         const currentUserId = req?.user?._id || null;
@@ -612,8 +640,87 @@ const getUserDetails = asyncHandler(async (req, res) => {
     }
 });
 
+const resetPassword = asyncHandler(async (req, res, next) => {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+    if(!user){
+        return next(new ApiError(400, "User with this email does not exist"));
+    }
+
+    const userOtp = await Otp.findOne({ otp, email });
+    if(!userOtp){
+        return next(new ApiError(400, "Invalid OTP"));
+    }
+
+    if(userOtp.expirationTime < Date.now()){
+        return next(new ApiError(400, "OTP has expired, please request a new one"));
+    }
+
+    if (newPassword.length < 8) {
+        return next (new ApiError(400, "Password must be at least 8 characters long"));
+    }
+
+    try {
+        await Otp.findByIdAndDelete(userOtp._id);
+
+    // Update the user's password
+    user.password = newPassword;
+
+    // Save the updated user information
+    await user.save();
+
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+    };
+    // Respond with success
+    return res.
+    status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, null, "Password reset successfully"));
+
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        throw new ApiError(500, "An error occurred while resetting password", error);
+    }
+});
+
+const changeEmail = asyncHandler(async (req, res, next) => {
+    const { newEmail, otp } = req.body;
+    
+    const user = await User.findById(req.user?._id);
+    if(!user){
+        return next(new ApiError(400, "Login to change email"));
+    }
+    
+    const userOtp = await Otp.findOne({ otp, email : newEmail });
+
+    
+    if(!userOtp){
+        return next(new ApiError(400, "Invalid OTP"));
+    }
+
+    if(userOtp.expirationTime < Date.now()){
+        return next(new ApiError(400, "OTP has expired, please request a new one"));
+    }
 
 
-export {generateAccessAndRefreshToken, registerUser, loginUser, logoutUser, requestPasswordReset,
-    resetPassword, updateUserAvatar, updateUserDetails, deleteUserAccount, getUserDetails
+    try {
+        await Otp.findByIdAndDelete(userOtp._id);
+        // Update the user's email
+        const updatedUser = await User.findByIdAndUpdate(req.user?._id, { email: newEmail }, { new: true });
+        
+        return res.status(200).json(new ApiResponse(200, null, "Email changed successfully"));
+    } catch (error) {
+        console.error("Error changing email:", error);
+        throw new ApiError(500, "An error occurred while changing email", error);
+    }
+});
+
+
+
+export {generateAccessAndRefreshToken, registerUser, loginUser, logoutUser, updateUserAvatar, updateUserDetails, deleteUserAccount, getUserDetails, sendOtp, resetPassword, changeEmail
 }

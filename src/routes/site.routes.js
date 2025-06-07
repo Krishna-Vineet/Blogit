@@ -20,6 +20,12 @@ const router = express.Router();
 
 // router.post('/register', registerUser);
 // router.post('/login', loginUser);
+
+router.get('/', verifyJWT, getHomePage);
+router.get('/login', (req, res) => res.render('login'))
+router.get('/register', (req, res) => res.render('register'))
+router.get('/resetPassword', (req, res) => res.render('reset-password'))
+router.get('/changeEmail', (req, res) => res.render('change-email'))
 router.get('/home', verifyJWT, getHomePage);
 router.get('/add-blog', verifyJWT, getAddBlogPage);
 router.get('/all-blogs', verifyJWT, getAllBlogs);
