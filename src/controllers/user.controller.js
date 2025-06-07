@@ -109,6 +109,31 @@ const sendOtp = asyncHandler(async (req, res, next) => {
         </div>
         `
             subject = "OTP for Password Reset";
+        } else if (type === 'resetEmail') {
+            htmlContent = `
+            <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #f9f9f9; color: #333;">
+            <h2 style="color: #222; text-align: center; margin-bottom: 20px;">🔐OTP for Email Reset</h2>
+            
+            <p style="font-size: 16px; line-height: 1.6;">
+                Hello, <br/><br/>
+                We received a request to reset your email address: <strong style="color: #000;">${email}</strong><br/>
+                To continue with the email reset process, please use the verification code below:
+                </p>
+                
+            <div style="background-color: #1a1a1a; color: #f5ba1a; font-size: 24px; font-weight: bold; text-align: center; padding: 15px 0; border-radius: 8px; margin: 20px 0;">
+            ${verificationCode}
+            </div>
+            
+            <p style="font-size: 15px; color: #555; line-height: 1.5;">
+            This code will expire in <strong>5 minutes</strong>. If you did not request this, you can safely ignore this email.
+            </p>
+            
+            <div style="text-align: center; font-size: 13px; color: #999; margin-top: 25px;">
+            — Blogit Email Reset System
+            </div>
+        </div>
+        `
+            subject = "OTP for Email Reset";
         } else {
             htmlContent = `
             <div style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; border: 1px solid #ccc; border-radius: 10px; padding: 25px; background-color: #f9f9f9; color: #333;">

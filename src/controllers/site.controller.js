@@ -71,8 +71,47 @@ const getHeaderDetails = asyncHandler(async (req, res, next) => {
         user = await User.findById(req.user?._id).select("-password -refreshToken");
     }
     try {
-        const topAuthors = await User.find({}).select("-password -refreshToken -email").sort({ blogCount: -1 }).limit(3);
-        const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(10).populate("author", "_id displayName avatar");
+      
+      const topAuthors = await Blog.aggregate([
+        {
+          $group: {
+            _id: '$author',
+            blogCount: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { blogCount: -1 }
+        },
+        {
+          $limit: 3
+        },
+        {
+          $lookup: {
+            from: 'users', // collection name in MongoDB (usually plural lowercase)
+            localField: '_id',
+            foreignField: '_id',
+            as: 'userInfo'
+          }
+        },
+        {
+          $unwind: '$userInfo'
+        },
+        {
+          $project: {
+            blogCount: 1,
+            user: {
+              _id: '$userInfo._id',
+              username: '$userInfo.username',
+              displayName: '$userInfo.displayName',
+              avatar: '$userInfo.avatar',
+              bio: '$userInfo.bio',
+              followersCount: '$userInfo.followersCount',
+              // Add any other fields you want to include
+            }
+          }
+      }
+    ]);
+      const trendingBlogs = await Blog.find({}).sort({ views: -1 }).limit(10).populate("author", "_id displayName avatar");
     
             // Fetch blogs from people user follows (assuming req.user contains the logged-in user's info)
         let followedUserBlogs = [];

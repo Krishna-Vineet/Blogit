@@ -65,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 topAuthors.forEach(author => {
                     topAuthorsList.innerHTML += `
                         <li onclick="location.href='/user/profile/${author._id}'" class="author-banner">
-                            <img src="${author.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp'}" alt="Author Avatar">
+                            <img src="${author.user.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp'}" alt="Author Avatar">
                             <div class="author-details">
-                                <h3>${author.displayName}</h3>
+                                <h3>${author.user.displayName}</h3>
                             </div>
                         </li>`;
                 });
