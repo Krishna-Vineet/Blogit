@@ -7,56 +7,56 @@
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="/css/add-blog.css">
-    <title>Add Blog</title>
+    <title>Edit Blog</title>
 </head>
 <body>
     <%- include('partials/header') %>
     <div class="body">
         <div class="container">
             
-            <h2 class="heading">Add Blog</h2>
+            <h2 id="pageHeading" class="heading" data-blogId="<%= blog._id %>">Edit Blog</h2>
             <form id="addBlogForm" autocomplete="off">
                 <div class="input_field">
-                    <input type="text" id="blogTitle" name="blogTitle" placeholder="Blog Title">
-                    
+                    <input type="text" id="blogTitle" name="blogTitle" value="<%= blog.title %>" required>
                 </div>
                 <div class="input_field">
-                    <label for="blogImage">Choose Blog Image</label>
+                    <label for="blogImage">Choose New Image</label>
                     <input type="file" id="blogImage" name="blogImage" accept="image/*">
-                    <div class="file-info" id="fileInfo">No file chosen</div>
+                    <div class="file-info" id="fileInfo">Old image</div>
                 </div>
                 <div class="image-preview" id="imagePreview">
+                    <img src="<%= blog.image || '' %>" alt="">
                 </div>
                 <div class="input_field">
                     <div id="editor" name="blogContent">
-                        
+                        <%- blog.content %>
                     </div>
                 </div>
                 <div class="input_field">
                     <select id="categorySelect">
                         <option value="">Select Category</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Travel">Travel</option>
-                        <option value="Food">Food</option>
-                        <option value="Health">Health</option>
-                        <option value="Science">Science</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Sports">Sports</option>
+                        <% const allCategories = ["Technology", "Travel", "Food", "Health", "Science", "Finance", "Fashion", "Sports"]; %>
+                        <% allCategories.forEach(category => { %>
+                            <% if (!blog.categories.includes(category)) { %>
+                                <option value="<%= category %>"><%= category %></option>
+                            <% } %>
+                        <% }) %>
                     </select>
                 </div>
                 <div class="category-container" id="categoryContainer">
-                    <!-- <div class="category-chip">Travel <button class="remove-btn">×</button></div> -->
+                    <%  blog.categories.forEach(category => { %>
+                        <div class="category-chip"><%= category %> <button class="remove-btn">×</button></div>
+                    <% }) %>
                 </div>
                 <div class="input_field publish-button-input">
-                    <button id="publish" type="submit">Publish Blog</button>
+                    <button type="submit">Update</button>
                 </div>
             </form>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/35.0.0/classic/ckeditor.js"></script>
-    <script src="js/add-blog.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="/js/edit-blog.js"></script>
     <%- include('partials/footer') %>
 </body>
 </html>

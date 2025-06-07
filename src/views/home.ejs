@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/home.css">
+    <!-- <link rel="stylesheet" href="/css/blog.css"> //BUG -->
+
     
-    <link rel="stylesheet" href="css/blog.css">
+    
     <title>Homepage</title>
 </head>
 <body>
@@ -31,35 +33,35 @@
         <!-- Categories Section -->
         <section class="categories">
             <h2>Explore by Categories</h2>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/tech'" class="category">
                 <i class="fa fa-laptop" aria-hidden="true"></i>
                 <p>Tech</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/travel'" class="category">
                 <i class="fa fa-plane" aria-hidden="true"></i>
                 <p>Travel</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/food'" class="category">
                 <i class="fa fa-utensils" aria-hidden="true"></i>
                 <p>Food</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/health'" class="category">
                 <i class="fa fa-heartbeat" aria-hidden="true"></i>
                 <p>Health</p>
             </div>
-            <div class="category">
+            <div window.location.href='/blog/category/science' class="category">
                 <i class="fa fa-flask" aria-hidden="true"></i>
                 <p>Science</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/fashion'" class="category">
                 <i class="fa fa-tshirt" aria-hidden="true"></i>
                 <p>Fashion</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/finance'" class="category">
                 <i class="fa fa-dollar" aria-hidden="true"></i>
                 <p>Finance</p>
             </div>
-            <div class="category">
+            <div onclick="window.location.href='/blog/category/sports'" class="category">
                 <i class="fa fa-futbol" aria-hidden="true"></i>
                 <p>Sports</p>
             </div>
@@ -72,16 +74,15 @@
             <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": true }'>
                 <% latestBlogs.forEach(blog => { %>
                     <div class="blog-card carousel-cell">
-                        <img src="<%= blog.image || `https://via.placeholder.com/300x200` %>" alt="Blog 3">
+                        <img src="<%= blog.image || `https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png` %>" alt="Blog 3">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
-                            <div><%- blog.content.replace('<h2>', '<h3>').replace('</h2>', '</h3>').replace('<h1>', '<h3>').replace('</h1>', '</h3>') %></div>
-                            <a href="/blog/view/<%= blog._id %>">Read More</a>
+                            <div><%- blog.content %></div>
                         </div>
+                        <a href="/blog/view/<%= blog._id %>">Read Blog</a>
                     </div>
                 <% }) %>
             </div>
-            <a href="/blogs/latest" class="view-more">View More Latest Blogs</a>
         </section>
 
 
@@ -130,16 +131,15 @@
             <div class="carousel" data-flickity='{ "wrapAround": true, "autoPlay": true }'>
                 <% popularBlogs.forEach(blog => { %>
                     <div class="blog-card carousel-cell">
-                        <img src="<%= blog.image || `https://via.placeholder.com/300x200` %>" alt="Blog 3">
+                        <img src="<%= blog.image || `https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png` %>" alt="Blog 3">
                         <div class="blog-info">
                             <h3><%= blog.title %></h3>
-                            <div><%- blog.content.replace('<h2>', '<h3>').replace('</h2>', '</h3>').replace('<h1>', '<h3>').replace('</h1>', '</h3>') %></div>
-                            <a href="/blog/view/<%= blog._id %>">Read More</a>
+                            <div><%- blog.content %></div>
                         </div>
+                        <a href="/blog/view/<%= blog._id %>">Read More</a>
                     </div>
                 <% }) %>
             </div>
-            <a href="/blogs/popular" class="view-more">View More Trending Blogs</a>
         </section>
 
         <!-- Statistics Section -->
@@ -156,11 +156,11 @@
                 </div>
                 <div class="stat-card cursor">
                     <h3>Top Author</h3>
-                    <p class="stat-value"><%= statistics.topAuthor %></p>
+                    <p class="stat-value"><%= statistics.topAuthor || 'N/A' %></p>
                 </div>
                 <div class="stat-card cursor">
                     <h3>Most Liked Blog</h3>
-                    <p class="stat-value"><%= statistics.mostLikedBlog %></p>
+                    <p class="stat-value"><%= statistics.mostLikedBlog || 'N/A' %></p>
                 </div>
             </div>
         </section>

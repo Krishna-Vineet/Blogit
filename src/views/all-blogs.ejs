@@ -13,23 +13,36 @@
 
     <main>
         <section class="blogs-container">
-            <div class="blogs-header">
-                <h1>All Blogs</h1>
-                <div class="filter-buttons">
-                    <button class="filter-btn" data-filter="latest">Latest</button>
-                    <button class="filter-btn" data-filter="trending">Trending</button>
-                    <button class="filter-btn" data-filter="technology">Technology</button>
-                    <button class="filter-btn" data-filter="travel">Travel</button>
-                    <button class="filter-btn" data-filter="food">Food</button>
-                    <!-- Add more filter buttons as needed -->
-                </div>
+            <% if (blogs && blogs.length) { %>
+             
+            <% if (categoriesWithCount) { %>
+                <div class="blogCategory">
+                    <h3>Category: </h3>
+                    <select id="categorySelect">
+                        <option value="all">All (<%= blogsCount %>)</option>
+                            <% categoriesWithCount.forEach(category => { %>
+                                <option value="<%= category.category %>"><%= category.category %> (<%= category.count %>)</option>
+                            <% }) %>
+                    </select>
+                </div>  
+            <% } %>
+            <div class="sortOptions">
+                <h3>Sort by: </h3>
+                <a href="#" data-sort="likesCount" data-order="asc">Popularity</a>
+                <a href="#" data-sort="updatedAt" data-order="asc">Oldest</a>
+                <a href="#" data-sort="updatedAt" data-order="desc">Latest</a>
             </div>
 
-            <div class="blogs-grid">
-                <% for (const blog of blogs) { %>
+            <div class="blogs-grid" id="blogsGrid">
+                <% blogs.forEach(blog => { %>
                     <%- include('partials/blog', { blog }) %>
-                <% } %>
+                <% }) %>
+
             </div>
+
+            <% } else { %>
+                <h2 style="text-align: center; margin: 200px auto;">No blogs found</h2>
+            <% } %>
         </section>
     </main>
     <%- include('partials/footer') %>

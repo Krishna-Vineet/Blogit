@@ -1,5 +1,7 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 <link rel="stylesheet" href="/css/header.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="/js/header.js"></script>
 
     <div class="header-container">
         <div class="left">
@@ -7,7 +9,7 @@
                 <i class="fa fa-bars"></i>
             </div>
             <div class="add">
-                <button onclick="location.href='/add-blog'"><i class="fa-solid fa-pencil"></i>Add Blog</button>
+                <button onclick="addBlog()"><i class="fa-solid fa-pencil"></i>Add Blog</button>
             </div>
         </div>
         <div class="logo" onclick="location.href='/'">
@@ -28,11 +30,9 @@
             <i class="fa fa-x" onclick="toggleSidebar()"></i>
         </div>
         <div class="sidebar-content">
-            <h2>Trending Blogs</h2>
             <ul id="trendingPosts">
                 <!-- Trending blogs will be dynamically updated -->
             </ul>
-            <h2>Popular Authors</h2>
             <ul id="topAuthors">
                 <!-- Top authors will be dynamically updated -->
             </ul>
@@ -41,6 +41,6 @@
             </div>
         </div>
     </div>
-    <script src="/js/header.js"></script>
+    
 
 

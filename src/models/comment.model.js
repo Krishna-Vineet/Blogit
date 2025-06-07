@@ -16,6 +16,10 @@ const commentSchema = new Schema(
             ref: "Blog",
             required: true,
         },
+        edited: {
+            type: Boolean,
+            default: false
+        },
         likesCount: {
             type: Number,
             default: 0

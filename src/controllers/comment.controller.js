@@ -11,7 +11,7 @@ import { response } from "express";
 const addComment = asyncHandler(async (req, res, next) => {
     const { blogId } = req.params;
     const { text } = req.body;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     if (!userId) {
         return next (new ApiError(401, "Unauthorized"));
@@ -39,9 +39,7 @@ const addComment = asyncHandler(async (req, res, next) => {
         .populate('author')
         .lean();
 
-    // Send response with the created comment
-    console.log({...populatedComment, ...{userId}});
-    
+    // Send response with the created comment    
     res.status(201).json(new ApiResponse(201, populatedComment, "Comment added successfully"));
 });
 
@@ -49,7 +47,7 @@ const addComment = asyncHandler(async (req, res, next) => {
 const editComment = asyncHandler(async (req, res, next) => {
     const { commentId } = req.params;
     const { text } = req.body;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     // Validate that text is provided
     if (!text) {
@@ -69,6 +67,7 @@ const editComment = asyncHandler(async (req, res, next) => {
 
     // Update the comment
     comment.content = text;
+    comment.edited = true;
     await comment.save();
 
 
@@ -81,7 +80,7 @@ const editComment = asyncHandler(async (req, res, next) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     // Find the comment by ID
     const comment = await Comment.findById(commentId);
@@ -108,7 +107,7 @@ const deleteComment = asyncHandler(async (req, res) => {
 // Controller to like or unlike a comment
 const likeComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user?._id;
     let likedByUser;
 
     // Find the comment
@@ -148,7 +147,6 @@ const likeComment = asyncHandler(async (req, res) => {
         dislikesCount : updatedComment.dislikesCount,
         likedByUser
     }
-    // console.log(response);
     
     // Send success response
     res.status(200).json(new ApiResponse(200, response, "Like status updated successfully"));
@@ -158,7 +156,7 @@ const likeComment = asyncHandler(async (req, res) => {
 // Controller to dislike or remove dislike from a comment
 const dislikeComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
-    const userId = req.user._id;
+    const userId = req.user?._id;
     let dislikedByUser;
     // Find the comment
     const comment = await Comment.findById(commentId);
@@ -198,8 +196,6 @@ const dislikeComment = asyncHandler(async (req, res) => {
         dislikedByUser
     }
 
-    // console.log(response);
-    
     // Send success response
     res.status(200).json(new ApiResponse(200, response, "Dislike status updated successfully"));
 });
@@ -215,7 +211,7 @@ const getComments = asyncHandler(async (req, res, next) => {
     // Fetch all comments for the specified blog, sorted by creation date
     let comments = await Comment.find({ blog: blogId })
                                 .sort({ updatedAt: -1 })
-                                .populate("author", "username avatar"); // Populate the author's details
+                                .populate("author", "displayName avatar"); // Populate the author's details
 
     if (userId) {
       // Iterate over each comment and determine if the user liked or disliked it
@@ -237,7 +233,6 @@ const getComments = asyncHandler(async (req, res, next) => {
       );
     }
 
-    console.log(comments);
     
     // Send the comments as the response
     res.status(200).json(new ApiResponse(200, comments, "Comments fetched successfully"));

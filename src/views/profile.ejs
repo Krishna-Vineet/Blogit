@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <% if (user.isSelf) { %>
+        <link rel="stylesheet" href="/css/user-blog.css">
+    <% } else { %>
+        <link rel="stylesheet" href="/css/blog.css">
+    <%  } %>
 
-    <link rel="stylesheet" href="/css/blog.css">
-    <link rel="stylesheet" href="/css/user-blog.css">
-
-    <title>Profile: @<%= user ? user.username : 'Guest' %></title>
+    <title>Profile: @<%= user ? user.displayName : 'Guest' %></title>
 </head>
 <body>
     <%- include('partials/header') %>
@@ -18,36 +21,42 @@
         
         <div id="details">
             <div class="name">
-                <h1>@<%= user ? user.username : 'Guest' %></h1>
-                <% if (user && user.isSelf) { %>
-                    <a href="/profile/edit" class=" btn followed"><i class="fa-solid fa-user-pen"></i>Edit Profile</a>
-                <% } else if (user) { %>
-                    <% if (user.isfollowed) { %>
-                        <a href="#" class="btn followed">Unfollow</a>
-                    <% } else {%>
-                    <a href="#" class="btn notfollowed">Follow</a>
-                    <% } %>
+                <h1>@<%= user ? user.displayName : 'Guest' %></h1>
+                <% if (user.instagram) { %>
+                    <a href="<%= user.instagram %>" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <% } %>
+                <% if (user.facebook) { %>
+                    <a href="<%= user.facebook %>" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                <% } %>
+                <% if (user.x) { %>
+                    <a href="<%= user.x %>" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                <% } %>
+                <% if (user && user.isSelf && currentUserId) { %>
+                    <a href="/edit-profile" class="btn followed"><i class="fa-solid fa-user-pen"></i>Edit Profile</a>
+                <% } else if (user && currentUserId) { %>
+                   <a id="followBtn" class="btn <%= user.isFollowed ? 'followed' : 'notfollowed' %>" onclick="toggleFollow('<%= user._id %>')"><%= user.isFollowed ? 'Unfollow' : 'Follow' %></a>
                 <% } %>
             </div>
             <div class="bio">
                 <%= user ? user.bio : 'This is a guest profile.' %>
             </div>
             <div class="detail">
-                <h3><span><%= user ? user.followersCount : 0 %></span> Followers</h3>
+                <h3><span id="followerCount"><%= user ? user.followersCount : 0 %></span> Followers</h3>
                 <h3><span><%= user ? user.followingCount : 0 %></span> Following</h3>
                 <h3><span><%= user ? user.blogsCount : 0 %></span> Blogs</h3>
             </div>
         </div>
         <div id="avatar">
-            <img src="<%= user.avatar || 'https://i.pravatar.cc/300' %>" alt="avatar">
+            <img src="<%= user.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp' %>" alt="avatar">
             <% if (user && user.isSelf) { %>
                 <a class="change" id="changeAvatarLink" href="#"><i class="fa-solid fa-pen-to-square"></i></a>
                 <input type="file" id="avatarFileInput" accept="image/*" style="display: none;">
             <% } %>
         </div>
     </main>
-    <section>
-        <h2>Blogs by <%= user ? user.username : 'Guest' %></h2>
+    <section id="userBlogsSection">
+        <% if (user.blogs != []) { %>
+        <h2>Blogs by <%= user ? user.displayName : 'Guest' %></h2>
         <div class="userBlogCategory">
             <h3>Category: </h3>
             <select id="categorySelect">
@@ -74,9 +83,13 @@
             <%  } %>
           <% }) %>
         </div>
+        <% }  %>
     </section>
 
+
     <%- include('partials/footer') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="/js/profile.js"></script>
 </body>
 </html>

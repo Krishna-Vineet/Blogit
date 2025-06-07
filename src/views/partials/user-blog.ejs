@@ -1,23 +1,29 @@
-<div class="profile-blog" onclick="window.location.href='/blog/view/<%= blog._id %>'">
-    <img src="<%= blog.image || 'https://via.placeholder.com/200x120' %>" alt="Blog Image" >
+<div class="blog-card" onclick="window.location.href='/blog/view/<%= blog._id %>'">
+    <img src="<%= blog.image || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png' %>" alt="Blog Image" >
+
     <div class="blog-actions">
-        <button class="edit-btn" onclick="event.stopPropagation(); window.location.href='/blog/edit/<%= blog._id %>'">
+        <button class="edit-btn" onclick="event.stopPropagation(); window.location.href='/blog/editPage/<%= blog._id %>'">
             <i class="fa fa-edit"></i> Edit
         </button>
         <button id="delete-btn" class="delete-btn" onclick="event.stopPropagation(); deleteBlog('<%= blog._id %>')">
             <i class="fa fa-trash"></i> Delete
         </button>
     </div>
-    <div class="blog-content" >
-        <h2 class="title"><%= blog.title %></h2>
-        <div class="excerpt"><%- blog.content %></div>
+    
+    <div class="blog-info">
+        <h3><%= blog.title %></h3>
+        <div><%- blog.content %></div>
     </div>
     <div class="blog-meta" >
         <span class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></span>
         <div class="blog-stats">
-            <span class="date" data-date="<%= blog.updatedAt.toISOString().split('T')[0] %>"><%= blog.updatedAt.toLocaleString('en-In').split(',')[0] %></span>
+            <span class="date" data-date="<%= blog.updatedAt %>"><%= blog.createdAt.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }).replace(/ /g, ' ').replace(' 202', ', 202') %></span>
             <div class="comments">
-                <i class="fa fa-comments"></i> <span><%= blog.commentsCount %></span>
+                <i class="fa fa-comments"></i> <span><%= blog.commentCount %></span>
             </div>
             <div class="likesCount">
                 <i class="fa fa-thumbs-up"></i> <span><%= blog.likesCount %></span>
@@ -36,7 +42,6 @@
                 method: 'DELETE',
             }).then((response) => {
                 if (response.ok) {
-                    console.log('Blog deleted successfully');
                     window.location.reload(); // Reload page or redirect
                 } else {
                     console.error('Failed to delete blog');

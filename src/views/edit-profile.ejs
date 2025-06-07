@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <div class="form_wrapper">
+        <div class="form_container">
+            <div class="title_container">
+                <h2 class="company">Blogit</h2>
+                <h2>Edit Your Profile</h2>
+            </div>
+            <div class="row clearfix">
+                <form id="editProfileForm" autocomplete="off" enctype="multipart/form-data">
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-user"></i></span>
+                        <input type="text" name="username" placeholder="Username" value="<%= displayName %>" required />
+                    </div>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
+                        <input type="email" name="email" placeholder="Email" value="<%= email %>" required />
+                    </div>
+                    <% if (bio) { %>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa fa-info-circle"></i></span>
+                        <textarea name="bio" placeholder="Bio"><%= bio %></textarea>
+                    </div>
+                    <% } %>
+                    
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fab fa-instagram"></i></span>
+                        <input type="text" name="instagram" placeholder="Instagram Username" value="<%= instagram ? instagram : '' %>" />
+                    </div>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fab fa-facebook-f"></i></span>
+                        <input type="text" name="facebook" placeholder="Facebook Username" value="<%= facebook ? facebook : '' %>" />
+                    </div>
+                    <div class="input_field"> 
+                        <span><i aria-hidden="true" class="fa-brands fa-x-twitter"></i></span>
+                        <input type="text" name="x" placeholder="X Username" value="<%= x ? x : '' %>" />
+                    </div>
+                    
+                    <input class="button" type="submit" value="Save Changes" />
+                </form>
+                <h3>Want to change password? <a id="changePassword">Change Password</a></h3>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        function showToast(message, type = "error") {
+            Toastify({
+                text: message,
+                style: {
+                    borderRadius: "10px",
+                    color: "#fff",
+                    padding: "15px 10px",
+                    background: type === "success" ? "#28a745" : "#ff4141",
+                },
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+            }).showToast();
+        }
+
+        document.getElementById('editProfileForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            // Gather data from the form fields
+            const data = {
+                username: document.getElementsByName('username')[0].value,
+                email: document.getElementsByName('email')[0].value,
+                bio: document.getElementsByName('bio')[0].value,
+                instagram: document.getElementsByName('instagram')[0].value,
+                facebook: document.getElementsByName('facebook')[0].value
+            };
+    
+            // Send the PATCH request to update user details
+            fetch('/user/update', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json' // Specify JSON format
+                },
+                body: JSON.stringify(data) // Convert the data to JSON format
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        console.error('Error:', errorData);
+                        showToast(errorData.errorMessage || 'An unexpected error occurred'); // Throw an error to be caught in the catch block
+                    });
+                }
+                return response.json(); // Parse the JSON response if successful
+            })
+            .then(data => {
+                data = data.data;
+                
+                showToast('Profile updated successfully', 'success');
+                setTimeout(() => {
+                    window.location.href = `/user/profile/${data._id}`;
+                },  200);
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log the error to the console for debugging
+                showToast('An unexpected error occurred: ' + error.message);
+            });
+        });
+    
+        document.getElementById('changePassword').addEventListener('click', function() {
+            window.location.href = '/user/request-password-reset'; // Redirect to the password reset page
+        });
+    </script>
+    
+</body>
+</html>

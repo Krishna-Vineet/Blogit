@@ -1,10 +1,24 @@
-
+function showToast(message, type = "error") {
+            Toastify({
+                text: message,
+                style: {
+                    borderRadius: "10px",
+                    color: "#fff",
+                    padding: "15px 10px",
+                    background: type === "success" ? "#28a745" : "#ff4141",
+                },
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+            }).showToast();
+        }
 
 document.addEventListener('DOMContentLoaded', function() {
         fetch('/header-data')
             .then(response => response.json())
+            .then(data => data.data)
             .then(data => {
-                // console.log(data);
                 
                 const user = data.user;
                 const trendingBlogs = data.trendingBlogs;
@@ -14,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate user information
                 const userProfile = document.getElementById('user-profile');
                 if (user) {
-                    userProfile.innerHTML = `<a href="/user/profile/${user._id}"><img src="${user.avatar || 'https://i.pravatar.cc/100'}" alt="User Avatar"></a>`;
+                    userProfile.innerHTML = `<a href="/user/profile/${user?._id}"><img src="${user.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp'}" alt="User Avatar"></a>`;
                 } else {
                     userProfile.innerHTML = '<button class="sign-in" onclick="location.href=\'/login\'"><i class="fa fa-user"></i> Sign In</button>';
                 }
@@ -22,13 +36,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate trending blogs
                 const trendingPosts = document.getElementById('trendingPosts');
                 trendingPosts.innerHTML = ''; // Clear existing content
+                const trendingPostsHeading = document.createElement('h2');
+                trendingPostsHeading.textContent = 'Trending Blogs';
+                trendingPosts.parentElement.insertBefore(trendingPostsHeading, trendingPosts);
                 trendingBlogs.forEach(blog => {
                     trendingPosts.innerHTML += `
-                        <li class="blog-banner">
+                        <li onclick="location.href='/blog/view/${blog._id}'" class="blog-banner">
                             <img src="${blog.image}" alt="Blog Image">
                             <div class="blog-details">
                                 <h3>${blog.title}</h3>
-                                <p>by ${blog.author.username}</p>
+                                <p>by ${blog.author.displayName}</p>
                             </div>
                         </li>`;
                 });
@@ -36,12 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Populate top authors
                 const topAuthorsList = document.getElementById('topAuthors');
                 topAuthorsList.innerHTML = ''; // Clear existing content
+                const topAuthorHeading = document.createElement('h2');
+                topAuthorHeading.textContent = 'Popular Authors';
+                topAuthorsList.parentElement.insertBefore(topAuthorHeading, topAuthorsList);                
                 topAuthors.forEach(author => {
                     topAuthorsList.innerHTML += `
-                        <li class="author-banner">
-                            <img src="${author.avatar || 'https://i.pravatar.cc/100'}" alt="Author Avatar">
+                        <li onclick="location.href='/user/profile/${author._id}'" class="author-banner">
+                            <img src="${author.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp'}" alt="Author Avatar">
                             <div class="author-details">
-                                <h3>${author.username}</h3>
+                                <h3>${author.displayName}</h3>
                             </div>
                         </li>`;
                 });
@@ -52,22 +72,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (followedUserBlogs.length > 0) {
                     followedBlogsSection.innerHTML = '<h2>Blogs from People I Follow</h2><ul id="followedUsersBlogs"></ul>';
                     }
-                    const followedUsersBlogs = document.getElementById('followedUsersBlogs');
-                    followedUsersBlogs.innerHTML = ''; // Clear existing content
+                    // const followedBlogsSection = document.getElementById('followedUsersBlogs');
+                    followedBlogsSection.innerHTML = ''; // Clear existing content
                     followedUserBlogs.forEach(blog => {
-                        followedUsersBlogs.innerHTML += `
-                            <li class="blog-banner">
+                        followedBlogsSection.innerHTML += `
+                            <li onclick="location.href='/blog/view/${blog._id}'" class="blog-banner">
                                 <img src="${blog.image}" alt="Blog Image">
                                 <div class="blog-details">
                                     <h3>${blog.title}</h3>
-                                    <p>by ${blog.author.username}</p>
+                                    <p>by ${blog.author.displayName}</p>
                                 </div>
                             </li>`;
                     });
                 }
+                
+                
             })
-            .catch(error => {
+                .catch(error => {
                 console.error('Error fetching header data:', error);
+                showToast('Error fetching header data');
             });
         
 
@@ -84,23 +107,42 @@ document.addEventListener('DOMContentLoaded', function() {
             sidebar.style.transform = 'translateX(0px)';
         }
     }
+
+    async function addBlog() {
+        try {
+            const response = await fetch('/add-blog', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                showToast(errorData.errorMessage);
+            } else {
+                // All good, now redirect to render the page
+                window.location.href = '/add-blog';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast(error.errorMessage);
+        }
+    }
+
     
     function searchBlogs() {
         // Get the search query
         const query = document.getElementById('searchInput').value.toLowerCase();
-        
-        // Remove existing highlights
-        // removeHighlights();
-    
-        alert(query);
-        if (query) {
-            // Get all text nodes
-            const content = document.querySelectorAll('.content');
-            content.forEach(container => {
-                highlightText(container, query);
-            });
+
+        if (!query) {
+            showToast('Please enter a search query.');
+            return;
         }
+        
+        window.location.href = `/search-blog?query=${encodeURIComponent(query)}`;
     }
+    
     
     function highlightText(container, query) {
         // Use a TreeWalker to traverse text nodes

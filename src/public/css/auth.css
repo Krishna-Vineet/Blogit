@@ -28,7 +28,7 @@ body {
     z-index: 1;
     border-top: 5px solid #f5ba1a;
     border-radius: 3px;
-    box-shadow: #ffffff66 0px 3px 8px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     -webkit-transform-origin: 50% 0%;
     transform-origin: 50% 0%;
     -webkit-transform: scale3d(1, 1, 1);
@@ -58,18 +58,12 @@ body {
   .form_wrapper .row {
     margin: 10px -15px;
   }
-  .form_wrapper .row > div {
-    padding: 0 15px;
-    box-sizing: border-box;
-  }
-  .form_wrapper .col_half {
-    width: 50%;
-    float: left;
-  }
+
   .form_wrapper .input_field {
     position: relative;
     margin-bottom: 20px;
   }
+
   .form_wrapper .login_username{
     margin-bottom: 5px;
   }
@@ -82,6 +76,12 @@ body {
     border-right: 1px solid #cfcfcf;
     text-align: center;
     width: 30px;
+  }
+  .form_wrapper .input_field span.toggle-password {
+    right: 5px;
+    left: unset;
+    cursor: pointer;
+    border: none;
   }
   .form_wrapper .input_field > span > i {
     padding-top: 10px;
@@ -206,6 +206,30 @@ body {
  h3 a:hover{
   text-decoration: underline;
  }
+
+ /* Adjust the styling for the Edit Profile page */
+textarea {
+  width: 100%;
+  padding: 9px 10px 9px 35px;
+  height: 100px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border: 1px solid #cfcfcf;
+  background: #2c2c2c;
+  box-sizing: border-box;
+  outline: none;
+  resize: none;
+}
+
+textarea:hover {
+  background: #181818;
+}
+
+textarea:focus {
+  box-shadow: 0 0 2px 1px rgba(255, 169, 0, 0.5);
+  border: 1px solid #f5ba1a;
+  background: #202020;
+}
+
   
   @-webkit-keyframes check {
     0% {

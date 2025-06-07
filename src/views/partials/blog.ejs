@@ -1,35 +1,31 @@
 
-<div class="blog" onclick="window.location.href='/blog/view/<%= blog._id %>'">
-        <img src="<%= blog.image %>" alt="Blog Image">
+<div class="blog-card" onclick="window.location.href='/blog/view/<%= blog._id %>'">
+    <img src="<%= blog.image || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png' %>" alt="Blog Image">
+
+    <div class="blog-meta">
+        <div onclick="event.stopPropagation(); window.location.href='user/profile/<%= blog.author._id %>'" class="author">
+            <img src="<%= blog.author.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp' %>" alt="Writer Image">
+            <h4><%= blog.author.displayName %></h4>
+        </div>
+        <span class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></span>
+    </div>
+
+    <div class="blog-info">
+        <h3><%= blog.title %></h3>
+        <div> <%- blog.content %> </div>
+    </div>
     
-        <div class="blog-insights">
-            <h4 class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
-            <div class="like">
-                <% if (blog.likedByUser) { %>
-                    <i class="fa fa-thumbs-up liked"></i>
-                <% } else { %>
-                    <i class="fa fa-thumbs-up"></i>
-                <% } %>
-                <p class="like-count"><%= blog.likesCount %></p>
-            </div>
-            <div class="dislike">
-                <% if (blog.dislikedByUser) { %>
-                    <i class="fa fa-thumbs-down disliked"></i>
-                <% } else { %>
-                    <i class="fa fa-thumbs-down"></i>
-                <% } %>
-                <p class="dislike-count"><%= blog.dislikesCount %></p>
-            </div>
-        </div>
-        <div class="heading">
-            <h3><%= blog.title %></h3>
-            <div> <%- blog.content.replace('<h2>', '<h3>').replace('</h2>', '</h3>').replace('<h1>', '<h3>').replace('</h1>', '</h3>') %> </div>
-        </div>
-        <div class="writer-detail">
-            <div onclick="window.location.href='user/profile/<%= blog.author._id %>'" class="writer">
-                <img src="<%= blog.author.avatar || 'https://i.pravatar.cc/100' %>" alt="Writer Image">
-                <h4><%= blog.author.username %></h4>
-            </div>
-            <div><h4 class="date"><%= blog.updatedAt.toLocaleDateString() %></h4></div>
+    <div class="blog-insights">
+        <span class="date" data-date="<%= blog.updatedAt %>"><%= blog.createdAt.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).replace(/ /g, ' ').replace(' 202', ', 202') %></span>
+        <div class="blog-stats">
+            <div class="comments"><i class="fa fa-comments"></i> <%= blog.commentCount %></div>
+            <div class="likesCount"><i onclick="likeBlog()" class=" <%= blog.likedByUser ? 'liked' : ''%> fa fa-thumbs-up"></i> <span> <%= blog.likesCount %></span></div>
+            <div class="dislikesCount"><i onclick="dislikeBlog()" class=" <%= blog.dislikedByUser ? 'disliked' : ''%> fa fa-thumbs-down"></i><span> <%= blog.dislikesCount %></span></div>
         </div>
     </div>
+
+</div>

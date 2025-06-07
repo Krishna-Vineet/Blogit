@@ -7,7 +7,7 @@ import Follow from "../models/follow.model.js";
 // Controller to toggle follow status
 const toggleFollow = asyncHandler(async (req, res) => {
     const {targetUserId} = req.params;
-    const currentUserId = req.user._id;
+    const currentUserId = req.user?._id;
 
     // Ensure the user is not trying to follow/unfollow themselves
     if (targetUserId === currentUserId.toString()) {
@@ -17,7 +17,7 @@ const toggleFollow = asyncHandler(async (req, res) => {
     // Check if the target user exists
     const targetUser = await User.findById(targetUserId);
     if (!targetUser) {
-        throw new ApiError(404, "User not found");
+        throw new ApiError(404, "User you are trying to follow does not exist");
     }
 
     // Check if the current user is already following the target user
@@ -35,7 +35,7 @@ const toggleFollow = asyncHandler(async (req, res) => {
         currentUser.followingCount -= 1;
         await currentUser.save();
 
-        return res.status(200).json(new ApiResponse(200, { isFollowed: false }, "User unfollowed successfully"));
+        return res.status(200).json(new ApiResponse(200, {displayName: targetUser.displayName, isFollowed: false }, "User unfollowed successfully"));
     } else {
         // If not following, follow
         await Follow.create({ hasFollowed: currentUserId, isFollowed: targetUserId });
@@ -48,7 +48,7 @@ const toggleFollow = asyncHandler(async (req, res) => {
         currentUser.followingCount += 1;
         await currentUser.save();
 
-        return res.status(200).json(new ApiResponse(200, { isFollowed: true }, "User followed successfully"));
+        return res.status(200).json(new ApiResponse(200, {displayName: targetUser.displayName, isFollowed: true }, "User followed successfully"));
     }
 });
 

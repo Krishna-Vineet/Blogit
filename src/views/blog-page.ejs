@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= blog.title %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="/css/blog-page.css">
 </head>
 <body>
     <%- include('partials/header') %>
-    <main id="blog-container" data-blog-id="<%= blog._id %>" data-user-id="<%= user._id %>">
+    <main id="blog-container" data-blog-id="<%= blog._id %>" data-user-id="<%= user?._id || '' %>">
+        <% if (blog.author.isSelf) { %>
+            <div id="forAuthor">
+                <a onclick="deleteBlog()" id="deleteBlog"><i class="fa fa-trash"></i>Delete</a>
+                <a href="/blog/editPage/<%= blog._id %>" id="editBlog"><i class="fa fa-edit"></i>Edit</a>
+            </div>
+        <% } %>
         <div class="popularity">
             <% if (blog.popularRank) { %>
                 <div class="tag">Popular #<%= blog.popularRank %></div>
@@ -22,13 +29,17 @@
         </div>
         <h1 class="title"><%= blog.title %></h1>
         <h4 class="category"><%= blog.categories.toString().replaceAll(',', ' | ') %></h4>
-        <img class="blog-image" src="<%= blog.image || 'https://via.placeholder.com/1200x700' %>" alt="">
+        <img class="blog-image" src="<%= blog.image || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png' %>" alt="">
         <div class="params">
-            <div class="date">Posted on: <%= blog.createdAt.toLocaleString('en-In') %></div>
+            <div class="date">Posted on: <%= blog.createdAt.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }).replace(/ /g, ' ').replace(' 202', ', 202') %> <%= blog.edited ? `(Edited)` : '' %></div>
             <div class="stats">
-                <div class="likes"><i class=" <%= !blog.author.isSelf && blog.likedByUser ? 'liked' : ''%> fa fa-thumbs-up"></i> <%= blog.likesCount %></div>
-                <div class="dislikes"><i class=" <%= !blog.author.isSelf && blog.dislikedByUser ? 'disliked' : ''%> fa fa-thumbs-down"></i> <%= blog.dislikesCount %></div>
-                <div class="shares"><i class="share-blog fa fa-share"></i> <span class="share-count"><%= blog.shareCount %></span></div>
+                <div class="likes"><i onclick="likeBlog()" class=" <%= blog.likedByUser ? 'liked' : ''%> fa fa-thumbs-up"></i> <%= blog.likesCount %></div>
+                <div class="dislikes"><i onclick="dislikeBlog()" class=" <%= blog.dislikedByUser ? 'disliked' : ''%> fa fa-thumbs-down"></i> <%= blog.dislikesCount %></div>
+                <div class="shares"><i id="shareButton" class="share-blog fa fa-share"></i> <span class="share-count"><%= blog.shareCount %></span></div>
             </div>
         </div>
         <div class="content">
@@ -36,21 +47,24 @@
         </div>
         <div class="credits">
             <div class="author">
-                <img class="author-avatar" src="<%= blog.author.avatar || 'https://i.pravatar.cc/100' %>" alt="avatar">
+                <img class="author-avatar" src="<%= blog.author.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp' %>" alt="avatar">
                 <div class="detail">
-                    <h4><%= blog.author.username %></h4>
-                    <p><%= blog.author.followerCount %> Followers</p>
+                    <h4><%= blog.author.displayName %></h4>
+                    <p><span id="followerCount"><%= blog.author.followerCount %></span> Followers</p>
                 </div>
-                <button><%= !blog.author.isSelf && blog.author.isFollowed ? 'Following' : 'Follow' %></button>
+                <% if(user && !blog.author.isSelf) { %>
+                <button id="followBtn" class="<%= blog.author.isFollowed ? 'followed' : '' %>" onclick="toggleFollow('<%= blog.author._id %>')"><%= blog.author.isFollowed ? 'Unfollow' : 'Follow' %></button>
+                <% } %>
+
             </div>
             <div class="share">
                 <h4>Share this blog on:</h4>
                 <div class="icons">
-                    <i class="share-blog fa-brands fa-facebook"></i>
-                    <i class="share-blog fa-brands fa-twitter"></i>
-                    <i class="share-blog fa-brands fa-linkedin"></i>
-                    <i class="share-blog fa-brands fa-whatsapp"></i>
-                    <i class="share-blog fa-brands fa-telegram"></i>
+                    <a id="shareButton-facebook"><i class="share-blog fa-brands fa-facebook"></i></a>
+                    <a id="shareButton-twitter"><i class="share-blog fa-brands fa-twitter"></i></a>
+                    <a id="shareButton-linkedin"><i class="share-blog fa-brands fa-linkedin"></i></a>
+                    <a id="shareButton-whatsapp"><i class="share-blog fa-brands fa-whatsapp"></i></a>
+                    <a id="shareButton-telegram"><i class="share-blog fa-brands fa-telegram"></i></a>
                 </div>
             </div>
         </div>
@@ -65,27 +79,27 @@
             </select>
         </div>
         <div class="add">
-            <img src="https://i.pravatar.cc/100" alt="avatar">
-            <input id="commentInput" type="text" placeholder="Add a comment">
-            <button id="postCommentBtn">Post</button>
+            <img src="<%= user?.avatar || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749215907/808ad011a0f8bfe16369175cede99aa7_xzppy3.webp' %>" alt="avatar">
+            <input id="commentInput" type="text" placeholder="Add a comment" onkeypress="if(event.keyCode == 13) postComment()">
+            <button onclick="postComment()">Post</button>
         </div>
         <div id="commentsContainer">
-        
+            <h1>Loading Comments...</h1>
         </div>
         <a class="more" id="showAllComments">Show All</a>
     </section>
 
     <section id="suggestions">
-        <h3>Simmilar Blogs</h3>
+        <h3><%= blog.similarBlogs.length > 0 ? blog.similarBlogs.length > 1 ? 'Similar blogs' : 'Similar blog' : '' %></h3>
         <div class="blogs">
             <% blog.similarBlogs.forEach(Sblog => { %>
                 <div class="blog-card">
-                    <img src="<%= Sblog.image || 'https://via.placeholder.com/300x200' %>" alt="Blog 1">
+                    <img src="<%= Sblog.image || 'https://res.cloudinary.com/blogit-cloud/image/upload/v1749225682/a79b49a9-bf3b-486d-ab54-d03e68b51497.png' %>" alt="Blog 1">
                     <div class="blog-info">
                         <h3><%= Sblog.title %></h3>
                         <div><%- Sblog.content %></div>
-                        <a href="/blog/view/<%= Sblog._id %>">Read More</a>
                     </div>
+                    <a href="/blog/view/<%= Sblog._id %>">Read Blog</a>
                 </div>
             <% }) %>
 
@@ -93,6 +107,7 @@
     </section>
     <%- include('partials/footer') %>
 
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="/js/blog-page.js"></script>
 </body>
 </html>

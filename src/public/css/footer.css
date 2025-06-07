@@ -22,7 +22,7 @@ footer .footer-content {
     text-align: center;
 }
 
-.categories h3, .feedback h3, .about h3 {
+.footer-categories h3, .feedback h3, .about h3 {
     font-size: 1.5em;
     margin-bottom: 10px;
     border-bottom: 2px solid #f5ba1a;
@@ -30,16 +30,26 @@ footer .footer-content {
     display: inline-block;
     width: auto;
 }
+.footer-categories div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 80%;
+    margin: 0 auto;
+    align-content: space-around;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+}
 
-.footer-content .categories{
+.footer-content .footer-categories{
     margin: 0;
     padding: 0;
 }
-.footer-content .categories p {
+.footer-content .footer-categories p {
     margin: 5px 0;
     font-size: 1em;
 }
-.footer-content .categories p:hover{
+.footer-content .footer-categories p:hover{
     color: #f5ba1a;
     cursor: pointer;
     text-decoration: underline;
@@ -64,7 +74,7 @@ footer .footer-content {
     font-family: Arial, sans-serif;
 }
 
-.feedback button {
+.feedback a {
     background-color: #f5ba1a;
     color: #333;
     border: none;
@@ -75,7 +85,7 @@ footer .footer-content {
     font-size: 1em;
 }
 
-.feedback button:hover {
+.feedback a:hover {
     background-color: #e1a70a;
 }
 
@@ -95,6 +105,7 @@ footer .footer-content {
     text-decoration: none;
     margin: 0 10px;
     font-size: 0.9em;
+    cursor: pointer;
 }
 
 .about .links a:hover {

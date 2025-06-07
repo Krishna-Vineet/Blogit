@@ -149,7 +149,9 @@ h2 {
     background-color: #3a3a3a;
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
     width: 300px;
+    height: 380px;
     background: linear-gradient(135deg, #2a2a2a 0%, #4a4a4a 100%);
     box-shadow: 0 4px 8px #0000004d;
     transition: transform 0.3s, box-shadow 0.3s;
@@ -163,40 +165,80 @@ h2 {
 
 .blog-card img {
     width: 100%;
+    aspect-ratio: 16/9;
     object-fit: cover;
 }
 
 .blog-info {
-    padding: 15px;
+    padding: 16px;
+    padding-bottom: 0;
+    max-height: 164px;
+    overflow: hidden;
 }
 
 .blog-info h3 {
-    height: 1.2em;
+    height: 1.3em;
     overflow: hidden;
     margin-bottom: 10px;
-    font-size: 1.2em;
+    font-size: 1.3em;
+    display: -webkit-box;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
 }
 
 .blog-info div {
     margin-bottom: 10px;
-    height: 135px;
+    /* height: 135px; */
     overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 4;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
     *{
         color: #e7e7e7;
+        text-align: left;
+    }
+    h2 {
+        margin-bottom: 4px;
+        font-size: 24px;
+    }
+    h3, h4 {
+        margin-bottom: 4px;
+        font-size: 20px;
+    }
+    p, ul, ol{
+        font-size: 16px;
+    }
+    blockquote {
+        font-size: 20px;
+        font-style: italic;
+        margin-left: 10px;
+    }
+    a {
+        color: #e7e7e7;
+        font-size: 16px;
+        text-decoration: underline;
+        font-weight: normal;
     }
     li {
         margin-left: 20px;
     }
 }
 
-.blog-info a {
+.blog-card>a {
     color: #f5ba1a;
     text-decoration: none;
+    position: absolute;
     /* display: block; */
     font-weight: bold;
+    padding-left: 15px;
+    bottom: 15px;
 }
 
-.blog-info a:hover {
+.blog-card a:hover {
     text-decoration: underline;
 } 
 

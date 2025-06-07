@@ -4,7 +4,8 @@ import {
     registerUser,
     loginUser,
     logoutUser,
-    changeCurrentPassword,
+    requestPasswordReset,
+    resetPassword,
     updateUserAvatar,
     updateUserDetails,
     deleteUserAccount,
@@ -22,8 +23,15 @@ router.post('/login', loginUser);
 router.post('/logout', verifyJWT, logoutUser);
 router.patch('/update', verifyJWT, updateUserDetails);
 router.patch('/update-avatar', verifyJWT, upload.single('avatar'), updateUserAvatar);
-router.patch('/update-password', verifyJWT, changeCurrentPassword);
 router.delete('/delete-account', verifyJWT, deleteUserAccount);
 router.get('/profile/:userId', verifyJWT, getUserDetails);  
+
+
+
+// Request password reset (send verification code)
+router.get('/request-password-reset', verifyJWT, requestPasswordReset);
+
+// Reset password (verify code and set new password)
+router.post('/reset-password', resetPassword);
 
 export default router;

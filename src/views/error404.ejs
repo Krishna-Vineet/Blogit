@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/css/error404.css">
+    <title>Page Not Found</title>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+<main class="error-container">
+  <section class="error-content">
+    <div class="error-animation">
+      <svg class="planet-svg" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" stroke="#f5ba1a" stroke-width="2" fill="#3a3a3a" />
+        <circle cx="50" cy="50" r="4" fill="#f5ba1a" />
+        <path d="M10 50a40 40 0 0 1 80 0a40 10 0 0 1 -80 0" fill="none" stroke="#f5ba1a88" stroke-width="1.5" />
+      </svg>
+    </div>
+
+    <h1>404</h1>
+    <h2>Oops! Page Not Found</h2>
+    <p>Looks like you’ve wandered into unknown space. The page you’re looking for doesn’t exist.</p>
+    <a href="/" class="home-btn">Take Me Home</a>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+
+</body>
+</html>

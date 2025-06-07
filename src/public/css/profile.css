@@ -6,6 +6,7 @@
 }
 body{
     background-color: #1f1f1f;
+    font-family: Arial, Helvetica, sans-serif;
 }
 main{
     margin: 130px 100px 30px 100px;
@@ -57,12 +58,17 @@ main{
 .name {
     padding: 0 20px;
     display: flex;
+    align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+
+    a{
+        font-size: 25px;
+    }
 }
 
 .name h1 {
+    font-family: serif;
     font-size: 4.5vw;
     margin: 0;
 }
@@ -70,6 +76,7 @@ main{
 .btn {
     padding: 8px 25px;
     border-radius: 10px;
+    cursor: pointer;
     text-decoration: none;
     font-size: 1.5vw;
     font-weight: 600;
@@ -82,8 +89,12 @@ main{
 }
 
 .followed {
-    background-color: #cccccca6;
+    background-color: #cccccc85;
     border: 2px solid transparent;
+    color: #333333;
+    i{
+        color: inherit;
+    }
 }
 
 .followed:hover {
@@ -123,21 +134,22 @@ main{
 }
 
 section {
-    margin: 60px;
-    margin-top: 90px;
+    padding: 20px;
+    margin-top: 60px;
     background-color: #1f1f1f;
     color: #fff;
 }
 
 section h2 {
     font-size: 2.5vw;
+    margin-left: 30px;
 }
 
     
     .userBlogCategory {
         font-size: 1.6vw;
         margin: 20px;
-        margin-left: 0;
+        margin-left: 30px;
         display: inline-flex;
         flex-direction: row;
         align-items: center;
@@ -207,5 +219,5 @@ section h2 {
         flex-direction: row;
         justify-content: space-around;
         flex-wrap: wrap;
-        gap: 15px;
+        gap: 9px;
     }

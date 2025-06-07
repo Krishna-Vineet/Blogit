@@ -4,7 +4,12 @@ import {
    getHomePage,
    getAddBlogPage,
    getHeaderDetails,
-   getAllBlogs
+   getAllBlogs,
+   editProfile,
+   searchBlog,
+   submitFeedback,
+   termsAndConditions,
+   privacyPolicy
    } from "../controllers/site.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import verifyJWT from "../middlewares/auth.middleware.js";
@@ -19,6 +24,11 @@ router.get('/home', verifyJWT, getHomePage);
 router.get('/add-blog', verifyJWT, getAddBlogPage);
 router.get('/all-blogs', verifyJWT, getAllBlogs);
 router.get('/header-data', verifyJWT, getHeaderDetails);
+router.get('/edit-profile', verifyJWT, editProfile);
+router.get('/search-blog', verifyJWT, searchBlog);
+router.post('/feedback', verifyJWT, submitFeedback);
+router.get('/terms-and-conditions', verifyJWT, termsAndConditions);
+router.get('/privacy-policy', verifyJWT, privacyPolicy);
 
 // router.patch('/update', verifyJWT, updateUserDetails);
 // router.patch('/update-avatar', verifyJWT, upload.single('avatar'), updateUserAvatar);

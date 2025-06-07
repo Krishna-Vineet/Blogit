@@ -12,6 +12,10 @@ const userSchema = new Schema(
             trim: true, 
             index: true
         },
+        displayName: {
+            type: String,
+            required: true,
+        },
         email: {
             type: String,
             required: true,
@@ -24,6 +28,23 @@ const userSchema = new Schema(
             type: String,
             default: "Hey, I am a Blogit User"
         },
+        followersCount: {
+            type: Number,
+            default: 0
+        },
+        followingCount: {
+            type: Number,
+            default: 0
+        },
+        instagram: {
+            type: String,
+        },
+        facebook: {
+            type: String,
+        },
+        x: {
+            type: String,
+        },
         avatar: {
             type: String, // cloudinary url
         },
@@ -33,6 +54,12 @@ const userSchema = new Schema(
         },
         refreshToken: {
             type: String
+        },
+        verificationCode: {
+            type: String
+        },
+        verificationCodeExpires: {
+            type: Date
         }
 
     },

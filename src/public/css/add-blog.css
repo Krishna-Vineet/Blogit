@@ -2,11 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: #fff;
 }
 .body {
-
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #1f1f1f;
     display: flex;
     flex-direction: column;
@@ -19,7 +18,7 @@
     margin-top: 90px;
     margin-bottom: 30px;
 }
-.container h2 {
+.container h2.heading {
     font-size: 2rem;
     margin-bottom: 20px;
     text-align: center;
@@ -52,8 +51,9 @@
 .input_field label {
     display: block;
     padding: 10px;
+    border-radius: 3px;
     background-color: #f5ba1a;
-    color: #fff;
+    color: #000000;
     cursor: pointer;
     text-align: center;
     margin-bottom: 10px;
@@ -75,7 +75,9 @@
     padding: 10px 20px;
     background-color: #f5ba1a;
     border: none;
-    color: #fff;
+    border-radius: 3px;
+    color: #000;
+    font-weight: 700;
     margin-left: auto;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -154,11 +156,53 @@
     border: 1px solid #fff !important;
     padding: 15px !important;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif !important;
+    h2 {
+        font-size: 2em;
+        margin-bottom: 15px;
+    }
+    h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    h4 {
+        font-size: 1.2em;
+    }
+    p {
+        margin-bottom: 5px;
+    }
+    ul, ol {
+        margin-bottom: 5px;
+    }
+     a {
+        color: #fff;
+     }
+     a:hover {
+        color: #f5ba1a;
+     }
+    blockquote {
+      position: relative;
+      font-size: 1.2rem;
+      margin-left: 10px;
+      font-style: italic;
+      font-weight: 800;
+      display: inline-block;
+      color: #ffffff;
+      padding: 5px 10px;
+      quotes: "“" "”" "‘" "’";
+    }
+    
+    li {
+        margin-left: 20px;
+        color: #fff;
+    }
 }
 .ck-rounded-corners .ck.ck-editor__main>.ck-editor__editable, .ck.ck-editor__main>.ck-editor__editable.ck-rounded-corners{
     height: 200px;
 }
-
+.ck.ck-toolbar>.ck-toolbar__items>:not(.ck-toolbar__line-break) {
+    margin-bottom: 0 !important;
+    margin-left: 2px;
+}
 .ck.ck-toolbar {
     background-color: #292929 !important;
     border: none !important;

@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="css/auth.css">
-    <title>Sign In</title>
+    <title>Blogit | Sign In</title>
     
 </head>
 <body>
@@ -24,14 +25,13 @@
                 <div class="input_field"> <span><i aria-hidden="true" class="fa fa-envelope"></i></span>
                   <input type="email" name="email" placeholder="Email" />
                 </div>
-                <div class="input_field"> <span><i aria-hidden="true" class="fa fa-lock"></i></span>
-                  <input type="password" name="password" suggestion="off" placeholder="Password" required />
+                <div class="input_field"> 
+                  <span><i aria-hidden="true" class="fa fa-lock"></i></span>
+                  <input type="password" name="password" placeholder="Password" suggestion="off" autocomplete="off" required id="passwordInput" />
+                  <span class="toggle-password" onclick="togglePassword()">
+                      <i class="fa-regular fa-eye" id="toggleIcon"></i>
+                  </span>
                 </div>
-                
-                <!-- <div class="input_field checkbox_option">
-                      <input type="checkbox" id="cb3">
-                      <label for="cb3">Remember me</label>
-                  </div> -->
                 <input class="button" type="submit" value="Login" />
               </form>
               <h3>Don't have an account? <a onclick="window.location.href='/register'">Register</a></h3>
@@ -39,10 +39,43 @@
           </div>
         
       </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
       <script>
+        function togglePassword() {
+            const input = document.getElementById("passwordInput");
+            const icon = document.getElementById("toggleIcon");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+        function showToast(message, type = "error") {
+            Toastify({
+                text: message,
+                style: {
+                    borderRadius: "10px",
+                    color: "#fff",
+                    padding: "15px 10px",
+                    background: type === "success" ? "#28a745" : "#ff4141",
+                },
+                duration: 2000,
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
+            }).showToast();
+        }
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            document.getElementsByClassName('button')[0].disabled = true; 
+            document.getElementsByClassName('button')[0].value = 'Logging in...';
             const form = event.target;
             const formData = new FormData(form);
             const data = {
@@ -52,25 +85,32 @@
             };
 
             try {
-        const response = await fetch('/user/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
+              const response = await fetch('/user/login', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+              });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            alert(errorData.errorMessage || 'An unexpected error occurred');
-        } else {
-            const responseData = await response.json();
-            console.log(responseData.data.user);
-            window.location.href = '/';
-        }
-    } catch (error) {
-        alert('An unexpected error occurred');
-    }
+              if (!response.ok) {
+                  const errorData = await response.json();
+                  showToast(errorData.errorMessage || 'An unexpected error occurred');
+              } else {            
+                  showToast("Logged in successfully!", "success");
+                  setTimeout(() => {
+                      window.location.href = '/';
+                  }, 200);
+              }
+            } catch (error) {
+                console.error(error);
+                showToast('An unexpected error occurred');
+                
+            }
+
+            document.getElementsByClassName('button')[0].disabled = false; 
+            document.getElementsByClassName('button')[0].value = 'Login';
+        
         });
     </script>
 </body>

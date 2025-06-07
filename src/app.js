@@ -31,14 +31,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// app.use((err, req, res, next) => {
-//     if (err instanceof ApiError) {
-//         res.status(err.statusCode).json({ message: err.message });
-//     } else {
-//         res.status(500).json({ message: "Internal Server Error" });
-//     }
-// });
-
 
 // Redirects
 app.get('/', (req, res) => res.redirect('/home'));
@@ -65,7 +57,13 @@ app.use('/follow', followRoutes);
 
 
 
-// Error handling middleware should be the last middleware
+// ✅ 404 handler — catch all unmatched routes
+app.use((req, res) => {
+  const user = req.user || null;
+  res.status(404).render('error404', { user });
+});
+
+// ✅ Centralized error handler (like for thrown errors)
 app.use(errorHandler);
 
 

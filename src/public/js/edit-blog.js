@@ -1,29 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     function showToast(message, type = "error") {
-            Toastify({
-                text: message,
-                style: {
-                    borderRadius: "10px",
-                    color: "#fff",
-                    padding: "15px 10px",
-                    background: type === "success" ? "#28a745" : "#ff4141",
-                },
-                duration: 2000,
-                gravity: "top",
-                position: "right",
-                stopOnFocus: true,
-            }).showToast();
-        }
-
+        Toastify({
+            text: message,
+            style: {
+                borderRadius: "10px",
+                color: "#fff",
+                padding: "15px 10px",
+                background: type === "success" ? "#28a745" : "#ff4141",
+            },
+            duration: 2000,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+        }).showToast();
+    }
+    
     let editorInstance;
-
+    let initialData = {};
     ClassicEditor
         .create(document.querySelector('#editor'), {
-            toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
+            toolbar: ['heading', '|', 'bold', 'italic', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
         })
         .then(editor => {
             editorInstance = editor;
+
+            // Store initial data to detect changes later
+            initialData = {
+                title: document.getElementById('blogTitle').value,
+                content: editorInstance.getData(),
+                categories: Array.from(document.querySelectorAll('.category-chip')).map(chip => chip.textContent.trim().replace(' ×', '')),
+                image: document.getElementById('imagePreview').querySelector('img')?.src || null
+            };
         })
         .catch(error => {
             console.error(error);
@@ -32,10 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('addBlogForm').addEventListener('submit', async function(event) {
         event.preventDefault();
-        const btn = document.getElementById('publish');
-        btn.innerText = 'Publishing...';
-        btn.disabled = true;
-        // Ensure the editor content is updated in the textarea
+
         if (editorInstance) {
             document.getElementById('editor').value = editorInstance.getData();
         }
@@ -44,75 +49,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const blogImage = document.getElementById('blogImage').files[0];
         const blogContent = document.getElementById('editor').value;
         const categories = Array.from(document.querySelectorAll('.category-chip')).map(chip => chip.textContent.trim().replace(' ×', ''));
+        const blogId = document.getElementById('pageHeading').getAttribute('data-blogId');
 
-        // Form validation
-        if (!blogTitle.trim()) {
-            btn.disabled = false;
-            btn.innerText = 'Publish Blog';
-            showToast('Please give a title to your blog.');
-            return;
-        }
-        
-        if (!blogImage) {
-            btn.disabled = false;
-            btn.innerText = 'Publish Blog';
-            showToast('Please add an image to your blog.');
-            return;
-        }
-        
-        
-        if (!blogContent.trim()) {
-            btn.disabled = false;
-            btn.innerText = 'Publish Blog';
-            showToast('Please add some content to your blog.');
-            return;
-        }
-        if (categories.length === 0) {
-            btn.disabled = false;
-            btn.innerText = 'Publish Blog';
-            showToast('Please add at least one category to your blog.');
+        // Validate required fields
+        if (!blogTitle || !blogContent || categories.length === 0) {
+            showToast("Title, content, and at least one category are required.");
             return;
         }
 
+        // Prepare form data only for the changed fields
         const formData = new FormData();
-        formData.append('title', blogTitle);
-        formData.append('content', blogContent);
-        formData.append('categories', JSON.stringify(categories));
-        
+        let isDataChanged = false;
+
+        if (blogTitle !== initialData.title) {
+            formData.append('title', blogTitle);
+            isDataChanged = true;
+        }
+
+        if (blogContent !== initialData.content) {
+            formData.append('content', blogContent);
+            isDataChanged = true;
+        }
+
+        if (JSON.stringify(categories) !== JSON.stringify(initialData.categories)) {
+            categories.forEach(category => formData.append('categories[]', category));
+            isDataChanged = true;
+        }
+
         if (blogImage) {
             formData.append('image', blogImage);
+            isDataChanged = true;
+        }
+
+        // If no data has changed, no need to send a request
+        if (!isDataChanged) {
+            showToast('No changes detected.');
+            return;
         }
 
         try {
-            const response = await fetch('/blog/create', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: formData
+            const response = await fetch(`/blog/update/${blogId}`, {
+                method: 'PATCH',
+                body: formData // Automatically sets the correct Content-Type
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                btn.disabled = false;
-                btn.innerText = 'Publish Blog';
                 showToast(errorData.errorMessage || 'An unexpected error occurred');
             } else {
-                const responseData = await response.json();
-                btn.disabled = false;
-                btn.innerText = 'Publish Blog';
-                showToast('Blog created successfully', 'success');
+                showToast('Blog updated successfully', 'success');
                 setTimeout(() => {
-                    if (document.referrer) {
-                        window.location.href = document.referrer;
-                    } else {
-                        window.location.href = '/'; // Redirect to home page
-                    }
+                    window.location.href = document.referrer || '/';
                 }, 200);
             }
         } catch (error) {
-            btn.disabled = false;
-            btn.innerText = 'Publish Blog';
             console.error(error);
             showToast('An unexpected error occurred');
         }
@@ -134,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 imagePreview.appendChild(img);
             }
             reader.readAsDataURL(file);
-            
         } else {
             fileInfo.textContent = 'Select the blog Image';
             imagePreview.innerHTML = '';
@@ -167,11 +156,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const parent = btn.parentElement;
-            
             const option = document.createElement('option');
-            option.value = selectedCategory;
-            option.text = selectedCategory;
-            document.getElementById('categorySelect').appendChild(option);
+            option.value = parent.childNodes[0].nodeValue.trim();
+            option.text = option.value;
+            categorySelect.appendChild(option);
             parent.remove();
         });
     });

@@ -1,4 +1,8 @@
-
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 .header-container {
     display: grid;
@@ -151,10 +155,12 @@
 
 .sidebar-content ul li {
     margin-bottom: 20px;
+    cursor: pointer;
 }
 
 .blog-banner, .author-banner {
     display: flex;
+    
     gap: 10px;
 }
 
@@ -173,24 +179,29 @@
 }
 
 .blog-details, .author-details {
-    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.author-details {
+    justify-content: center;
 }
 
 .blog-details h3, .author-details h3 {
     margin: 0;
     font-size: 1.2em;
+    line-height: 1.4;
     color: #f5ba1a;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .blog-details p, .author-details p {
     margin: 5px 0 0;
     font-size: 0.9em;
     color: #ccc;
-}
-
-/* Toggle sidebar */
-.header-container .hamburger {
-    cursor: pointer;
-    font-size: 1.5em;
 }
 
