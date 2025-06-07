@@ -159,3 +159,8 @@ This project is a comprehensive blog management system with user authentication,
 - *05 Aug, 2024:* First phase of backend done, all pages and data is accessible.
 - *08 Aug, 2024:* Comments work done finely, no update migth need.
 - *09 Aug, 2024:* Going on an indefinite break.
+- *04 Jun, 2025:* Finally got time to work again on this.
+- *05 Jun, 2025:* Understanding the codebase.
+- *06 Jun, 2025:* Done every core thing.
+- *07 Jun, 2025:* OTP verifications at various points, and final edit of files.
+- *08 Jun, 2025:* The final commit at 00:28 am.
