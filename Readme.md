@@ -163,4 +163,8 @@ This project is a comprehensive blog management system with user authentication,
 - *05 Jun, 2025:* Understanding the codebase.
 - *06 Jun, 2025:* Done every core thing.
 - *07 Jun, 2025:* OTP verifications at various points, and final edit of files.
+<<<<<<< HEAD
 - *08 Jun, 2025:* The final commit at 00:28 am.
+=======
+- *08 Jun, 2025:* The final commit at 00:28 am.
+>>>>>>> ad9ff2d (adding vercel file)

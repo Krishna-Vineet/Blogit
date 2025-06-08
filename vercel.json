@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/index.js"
+    }
+  ],
+  "env": {
+    "PORT": "3000",
+    "NODE_ENV": "production",
+    "MONGODB_URI" : "mongodb+srv://blogit:Blogit%408ep@data.hofks.mongodb.net",
+    "ACCESS_TOKEN_SECRET" : "jfjwecgriry48Bb-nv0u0yy-5cmhtpu_e40345-vKUFNSYO",
+    "ACCESS_TOKEN_EXPIRY" : "1800  #30 min in sec",
+    "REFRESH_TOKEN_SECRET" : "lsdifyyBIG0987YFTEBG_UO-YONUDGoy_nfyo89bNU-t2y-7T",
+    "REFRESH_TOKEN_EXPIRY" : "604800  #7 days in sec",
+    "CLOUDINARY_CLOUD_NAME" : "blogit-cloud",
+    "CLOUDINARY_API_KEY" : "675498818651693",
+    "CLOUDINARY_API_SECRET" : "1Riw_JPoXdKxmzdKe2moPBLoCP4",
+    "EMAIL_USERNAME" : "vineetsahu005@gmail.com",
+    "EMAIL_PASSWORD" : "gsiwdjnwafrgusmn"
+  }
+}
