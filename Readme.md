@@ -1,6 +1,4 @@
 # Blogit 📝  [View Blogit](https://blogit-gamma.vercel.app/)
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-
 
 A full-stack **blogging web application** where users can write and interact with blogs using likes, dislikes, comments, shares, and follows. Built with a powerful backend using Node.js, Express, and MongoDB, and rendered with EJS templating for polished user experience.
 
