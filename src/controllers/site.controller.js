@@ -118,7 +118,7 @@ const getHeaderDetails = asyncHandler(async (req, res, next) => {
         if (user) {
             const followedUsers = await Follow.find({ hasFollowed: user?._id });
           
-            followedUserBlogs = await Blog.find({ author: { $in: followedUsers.map(follow => follow.isFollowed._id) } }).limit(10);
+            followedUserBlogs = await Blog.find({ author: { $in: followedUsers.map(follow => follow.isFollowed._id) } }).populate("author", "_id displayName avatar").sort({ createdAt: -1 }).limit(10);
         }
         
 
