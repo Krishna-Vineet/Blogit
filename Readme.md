@@ -8,7 +8,7 @@ A full-stack **blogging web application** where users can write and interact wit
 
 ## 🌐 Live Demo
 
-👉 [Click here to view Blogit Website]((https://blogit-gamma.vercel.app/))
+👉 [Click here to view Blogit Website](https://blogit-gamma.vercel.app/)
 
 ---
 
