@@ -1,4 +1,6 @@
 # Blogit 📝  [View Blogit](https://blogit-gamma.vercel.app/)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 
 A full-stack **blogging web application** where users can write and interact with blogs using likes, dislikes, comments, shares, and follows. Built with a powerful backend using Node.js, Express, and MongoDB, and rendered with EJS templating for polished user experience.
 
@@ -207,6 +209,30 @@ npm run dev
 
 This project is open-source and available under the MIT License.
 
+---
+
+
+## Project Timeline
+- *15 Jul, 2024:* Got a task by Bharat Intern to make basic blogging page for them.
+- *17 Jul, 2024:* Decided to make an loaded full fledged blog webapp **BLOGIT** as a personal project, rejected Bharat Intern
+- *19 Jul, 2024:* Basic frontend design complete.
+- *20 Jul, 2024:* Team member added _Sunaina_
+- *21 Jul, 2024:* Backend work start
+- *22 Jul, 2024:* _Sunaina_ Kicked out from project
+- *26 Jul, 2024:* 1st round Backend work finished
+- *27 Jul, 2024:* Frontend Integration Begins
+- *28 Jul, 2024:* Undo every integration due to lots of error
+- *30 Jul, 2024:* All routes till date are tested in Postman
+- *31 Jul, 2024:* Authentication frontend-backend integration done along with token logic.
+- *02 Aug, 2024:* Header, HomePage and Add Blog page linked with db and backend.
+- *05 Aug, 2024:* First phase of backend done, all pages and data is accessible.
+- *08 Aug, 2024:* Comments work done finely, no update migth need.
+- *09 Aug, 2024:* Going on an indefinite break.
+- *04 Jun, 2025:* Finally got time to work again on this.
+- *05 Jun, 2025:* Understanding the codebase.
+- *06 Jun, 2025:* Done every core thing.
+- *07 Jun, 2025:* OTP verifications at various points, and final edit of files.
+- *08 Jun, 2025:* The final commit at 00:28 am.
 
 
 ---
