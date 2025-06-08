@@ -1,4 +1,4 @@
-# Blogit 📝
+# Blogit 📝  [View Blogit](https://blogit-gamma.vercel.app/)
 
 A full-stack **blogging web application** where users can write and interact with blogs using likes, dislikes, comments, shares, and follows. Built with a powerful backend using Node.js, Express, and MongoDB, and rendered with EJS templating for polished user experience.
 
@@ -8,7 +8,7 @@ A full-stack **blogging web application** where users can write and interact wit
 
 ## 🌐 Live Demo
 
-Coming Soon – \[Screenshots will be added later]
+👉 [Click here to view Blogit Website]((https://blogit-gamma.vercel.app/))
 
 ---
 
