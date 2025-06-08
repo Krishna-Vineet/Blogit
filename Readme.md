@@ -1,4 +1,6 @@
-# Blogit 📝
+# Blogit 📝  [View Blogit](https://blogit-gamma.vercel.app/)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 
 A full-stack **blogging web application** where users can write and interact with blogs using likes, dislikes, comments, shares, and follows. Built with a powerful backend using Node.js, Express, and MongoDB, and rendered with EJS templating for polished user experience.
 
@@ -8,7 +10,7 @@ A full-stack **blogging web application** where users can write and interact wit
 
 ## 🌐 Live Demo
 
-Coming Soon – \[Screenshots will be added later]
+👉 [Click here to view Blogit Website](https://blogit-gamma.vercel.app/)
 
 ---
 
@@ -184,7 +186,7 @@ npm run dev
 * Convert frontend to React.js or Next.js
 * Add 3D elements via Three.js
 * Redis caching
-* Make UI fully responsive with Tailwind or CSS3
+* Make UI better with better fonts, colors and responsiveness.
 * Improve SEO and metadata
 
 ---
@@ -206,6 +208,7 @@ npm run dev
 ## 📌 License
 
 This project is open-source and available under the MIT License.
+
 
 
 ---
