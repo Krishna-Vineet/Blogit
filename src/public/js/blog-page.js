@@ -450,7 +450,7 @@ document.getElementById('shareButton').addEventListener('click', async () => {
         await navigator.share({
           title: 'Hey, I found this really interesting blog on Blogit!!',
           text: 'Do check it out : ',
-          url: `http://localhost:4000/blog/view/${blogId}`,
+          url: `https://blogit-gamma.vercel.app/blog/view/${blogId}`,
         });
       } catch (error) {
         console.error('Error sharing:', error);
