@@ -14,7 +14,9 @@ const createBlog = asyncHandler(async (req, res, next) => {
     
     const { title, content } = req.body;
     let { categories } = req.body;
-    const imageLocalPath = req.file?.path;
+    // const imageLocalPath = req.file?.path;
+    const imageLocalPath = req.file?.buffer;
+    const imageLocanName = req.file?.originalname;
     let image = "";
     const user = await User.findById(req.user?._id);
     if (!user) {
@@ -35,7 +37,8 @@ const createBlog = asyncHandler(async (req, res, next) => {
     }
 
     if (imageLocalPath) {    
-        image = await uploadOnCloudinary(imageLocalPath);
+        
+        image = await uploadOnCloudinary(imageLocalPath, imageLocanName);
         image = image.secure_url;
     } else {
         return next(new ApiError(400, "Image is required"));
@@ -95,7 +98,7 @@ const updateBlog = asyncHandler(async (req, res, next) => {
         if (blog.image) {
             await deleteFromCloudinary(blog.image);
         }
-        const image = await uploadOnCloudinary(req.file.path);
+        const image = await uploadOnCloudinary(req.file?.buffer, req.file?.originalname);
         blog.image = image.secure_url;
     }
 
