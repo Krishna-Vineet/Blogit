@@ -3,7 +3,11 @@ import multer from 'multer';
 // Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/temp'); // Make sure this directory exists
+    const dir = 'public/temp';   // Make sure this directory exists
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname); // Prefix with a timestamp to avoid name collisions
